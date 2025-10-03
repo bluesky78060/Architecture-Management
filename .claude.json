@@ -1,0 +1,22 @@
+{
+  "commandsPath": "/Users/leechanhee/.claude/commands",
+  "mcpServers": {},
+  "permissions": {
+    "allow": [
+      "Bash(npm start)",
+      "Bash(lsof:*)",
+      "Bash(pkill:*)",
+      "Bash(npx:*)",
+      "Bash(npm install:*)",
+      "Bash(git clone:*)",
+      "Bash(pipx install:*)",
+      "Bash(brew install:*)",
+      "Bash(pipx upgrade:*)",
+      "Bash(SuperClaude install)",
+      "Bash(SuperClaude install:*)",
+      "WebSearch"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

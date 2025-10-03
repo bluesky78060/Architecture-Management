@@ -1,0 +1,49 @@
+/* Print styles for invoice modal */
+@media print {
+  @page { 
+    size: A4 portrait; 
+    margin: 10mm; 
+  }
+  
+  body * { 
+    visibility: hidden; 
+  }
+  
+  .print-modal, 
+  .print-modal * { 
+    visibility: visible; 
+  }
+  
+  .print-modal { 
+    position: absolute; 
+    left: 0; 
+    top: 0; 
+    width: 100%; 
+  }
+  
+  .no-page-break { 
+    page-break-inside: avoid !important; 
+    break-inside: avoid !important; 
+    -webkit-region-break-inside: avoid !important; 
+    display: block !important; 
+    width: 100% !important; 
+    margin: 4px 0 !important; 
+  }
+  
+  .signature-section { 
+    page-break-before: auto !important; 
+    page-break-after: auto !important; 
+    page-break-inside: avoid !important; 
+    break-inside: avoid !important; 
+    -webkit-region-break-inside: avoid !important; 
+    display: block !important; 
+    width: 100% !important; 
+    margin: 4px 0 !important; 
+    float: none !important; 
+  }
+  
+  body, 
+  div { 
+    display: block !important; 
+  }
+}

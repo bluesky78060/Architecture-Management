@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>견적서 출력 - 건설관리시스템</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1e71f6",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#101722",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .print-break {
+                page-break-before: always;
+            }
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-200">
+    <!-- 인쇄/뒤로가기 버튼 -->
+    <div class="no-print max-w-4xl mx-auto p-4 flex justify-between items-center">
+        <button onclick="history.back()" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors">
+            ← 뒤로가기
+        </button>
+        <button onclick="window.print()" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors">
+            🖨️ 인쇄하기
+        </button>
+    </div>
+
+    <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
+        <div class="bg-white dark:bg-gray-900 shadow-xl rounded-xl">
+            <!-- 헤더 -->
+            <header class="p-8 border-b border-gray-200 dark:border-gray-700/50 relative overflow-hidden">
+                <div class="absolute -top-16 -left-16 w-48 h-48 bg-primary/10 dark:bg-primary/20 rounded-full"></div>
+                <div class="absolute -bottom-24 -right-12 w-48 h-48 bg-primary/10 dark:bg-primary/20 rounded-full transform rotate-45"></div>
+                <div class="relative z-10 flex justify-between items-start">
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
+                                <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h6m-6 4h6m-6 4h6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                                </svg>
+                            </div>
+                            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Buildify</h1>
+                        </div>
+                        <h2 class="mt-4 text-4xl sm:text-5xl font-extrabold text-primary tracking-tight">견적서 (Quotation)</h2>
+                        <p class="mt-2 text-gray-500 dark:text-gray-400">Quotation ID: <span id="quotationId">#Q2024-00123</span></p>
+                        <p class="text-gray-500 dark:text-gray-400">Date: <span id="issueDate">July 26, 2024</span></p>
+                    </div>
+                </div>
+            </header>
+
+            <section class="grid md:grid-cols-2 gap-8 p-8">
+                <div class="bg-background-light dark:bg-background-dark p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 border-b-2 border-primary pb-2">발주처 정보 (Client Information)</h3>
+                    <div class="space-y-3">
+                        <p><strong>Client Name:</strong> <span id="clientCompany">Acme Corp</span></p>
+                        <p><strong>Contact Person:</strong> <span id="clientContact">John Doe</span></p>
+                        <p><strong>Email:</strong> <span id="clientEmail">john.doe@acme.com</span></p>
+                        <p><strong>Phone:</strong> <span id="clientPhone">(123) 456-7890</span></p>
+                    </div>
+                </div>
+                <div class="bg-background-light dark:bg-background-dark p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 border-b-2 border-primary pb-2">시공업체 정보 (Contractor Information)</h3>
+                    <div class="space-y-3">
+                        <p><strong>Contractor Name:</strong> <span id="contractorCompany">ConstructPro Inc.</span></p>
+                        <p><strong>Contact Person:</strong> <span id="contractorContact">Jane Smith</span></p>
+                        <p><strong>Email:</strong> <span id="contractorEmail">jane.smith@constructpro.com</span></p>
+                        <p><strong>Phone:</strong> <span id="contractorPhone">(987) 654-3210</span></p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="p-8">
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">견적 내역 (Quotation Details)</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="bg-gray-100 dark:bg-gray-800">
+                            <tr>
+                                <th class="p-4 font-semibold text-gray-700 dark:text-gray-300">순번 (No.)</th>
+                                <th class="p-4 font-semibold text-gray-700 dark:text-gray-300">구분 (Category)</th>
+                                <th class="p-4 font-semibold text-gray-700 dark:text-gray-300 w-1/3">공종 및 내용 (Description)</th>
+                                <th class="p-4 font-semibold text-gray-700 dark:text-gray-300">수량 (Qty)</th>
+                                <th class="p-4 font-semibold text-gray-700 dark:text-gray-300">단위 (Unit)</th>
+                                <th class="p-4 font-semibold text-gray-700 dark:text-gray-300">단가 (Unit Price)</th>
+                                <th class="p-4 font-semibold text-gray-700 dark:text-gray-300">금액 (Amount)</th>
+                                <th class="p-4 font-semibold text-gray-700 dark:text-gray-300">비고 (Notes)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700/50" id="quotationItems">
+                            <tr>
+                                <td class="p-4">1</td>
+                                <td class="p-4">Demolition</td>
+                                <td class="p-4">Remove existing walls and flooring</td>
+                                <td class="p-4">1</td>
+                                <td class="p-4">Lot</td>
+                                <td class="p-4">$5,000</td>
+                                <td class="p-4 font-medium">$5,000</td>
+                                <td class="p-4 text-sm text-gray-500 dark:text-gray-400">As per plan</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4">2</td>
+                                <td class="p-4">Construction</td>
+                                <td class="p-4">Build new walls and install doors</td>
+                                <td class="p-4">200</td>
+                                <td class="p-4">Sq Ft</td>
+                                <td class="p-4">$50</td>
+                                <td class="p-4 font-medium">$10,000</td>
+                                <td class="p-4 text-sm text-gray-500 dark:text-gray-400">Including materials</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4">3</td>
+                                <td class="p-4">Electrical</td>
+                                <td class="p-4">Install new lighting and outlets</td>
+                                <td class="p-4">1</td>
+                                <td class="p-4">Lot</td>
+                                <td class="p-4">$3,000</td>
+                                <td class="p-4 font-medium">$3,000</td>
+                                <td class="p-4 text-sm text-gray-500 dark:text-gray-400">Including wiring</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4">4</td>
+                                <td class="p-4">Plumbing</td>
+                                <td class="p-4">Install new fixtures</td>
+                                <td class="p-4">1</td>
+                                <td class="p-4">Lot</td>
+                                <td class="p-4">$2,000</td>
+                                <td class="p-4 font-medium">$2,000</td>
+                                <td class="p-4 text-sm text-gray-500 dark:text-gray-400">Including pipes</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4">5</td>
+                                <td class="p-4">Finishing</td>
+                                <td class="p-4">Paint walls and install flooring</td>
+                                <td class="p-4">200</td>
+                                <td class="p-4">Sq Ft</td>
+                                <td class="p-4">$25</td>
+                                <td class="p-4 font-medium">$5,000</td>
+                                <td class="p-4 text-sm text-gray-500 dark:text-gray-400">Including materials</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="p-8 grid md:grid-cols-2 gap-8 bg-gray-50 dark:bg-gray-800/50">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">특이사항 및 조건 (Terms & Conditions)</h3>
+                    <ul class="list-disc list-inside text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                        <li>Payment terms: 50% upfront, 50% upon completion.</li>
+                        <li>This quotation is valid for 30 days.</li>
+                        <li>Changes to the scope of work may result in additional charges.</li>
+                        <li>Please review and approve the quotation below.</li>
+                    </ul>
+                </div>
+                <div class="flex flex-col items-end">
+                    <div class="w-full max-w-sm space-y-2">
+                        <div class="flex justify-between">
+                            <span>Subtotal</span>
+                            <span id="subtotal">$25,000.00</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Tax (10%)</span>
+                            <span id="vat">$2,500.00</span>
+                        </div>
+                        <div class="border-t border-gray-300 dark:border-gray-600 my-2"></div>
+                        <div class="flex justify-between font-bold text-lg text-primary">
+                            <span>총 견적금액 (Total Amount)</span>
+                            <span id="totalAmount">$27,500.00</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="p-8">
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">승인 (Approval)</h3>
+                <div class="grid md:grid-cols-2 gap-8 items-end">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300" for="client-signature">Client Signature</label>
+                        <div class="mt-8 border-b-2 border-gray-300 dark:border-gray-600"></div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300" for="date">Date</label>
+                        <div class="mt-8 border-b-2 border-gray-300 dark:border-gray-600"></div>
+                    </div>
+                </div>
+                <div class="mt-12 text-center">
+                    <button class="bg-primary text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-primary/90 transition-colors duration-300">
+                        Approve Quotation
+                    </button>
+                </div>
+            </section>
+
+            <footer class="p-8 text-center text-sm text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700/50">
+                <p>Thank you for your business!</p>
+                <p>Buildify Inc. © 2024</p>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        // 견적서 데이터를 동적으로 로드하는 함수
+        function loadQuotationData(data) {
+            if (!data) return;
+            
+            // 헤더 정보
+            if (data.quotationId) document.getElementById('quotationId').textContent = data.quotationId;
+            if (data.issueDate) document.getElementById('issueDate').textContent = data.issueDate;
+            if (data.validUntil) document.getElementById('validUntil').textContent = data.validUntil;
+            
+            // 발주처 정보
+            if (data.client) {
+                document.getElementById('clientCompany').textContent = data.client.company || '';
+                document.getElementById('clientContact').textContent = data.client.contact || '';
+                document.getElementById('clientEmail').textContent = data.client.email || '';
+                document.getElementById('clientPhone').textContent = data.client.phone || '';
+            }
+            
+            // 시공업체 정보
+            if (data.contractor) {
+                document.getElementById('contractorCompany').textContent = data.contractor.company || '';
+                document.getElementById('contractorContact').textContent = data.contractor.contact || '';
+                document.getElementById('contractorEmail').textContent = data.contractor.email || '';
+                document.getElementById('contractorPhone').textContent = data.contractor.phone || '';
+            }
+            
+            // 견적 항목
+            if (data.items && Array.isArray(data.items)) {
+                const tbody = document.getElementById('quotationItems');
+                tbody.innerHTML = '';
+                
+                data.items.forEach((item, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="p-3 border border-gray-300 dark:border-gray-600 text-center">${index + 1}</td>
+                        <td class="p-3 border border-gray-300 dark:border-gray-600">${item.category || ''}</td>
+                        <td class="p-3 border border-gray-300 dark:border-gray-600">${item.description || ''}</td>
+                        <td class="p-3 border border-gray-300 dark:border-gray-600 text-center">${item.quantity || ''}</td>
+                        <td class="p-3 border border-gray-300 dark:border-gray-600 text-center">${item.unit || ''}</td>
+                        <td class="p-3 border border-gray-300 dark:border-gray-600 text-right">${(item.unitPrice || 0).toLocaleString()}</td>
+                        <td class="p-3 border border-gray-300 dark:border-gray-600 text-right font-medium">${(item.amount || 0).toLocaleString()}</td>
+                        <td class="p-3 border border-gray-300 dark:border-gray-600 text-sm text-gray-500">${item.notes || ''}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+            
+            // 금액 정보
+            if (data.amounts) {
+                document.getElementById('subtotal').textContent = '$' + (data.amounts.subtotal || 0).toLocaleString() + '.00';
+                document.getElementById('vat').textContent = '$' + (data.amounts.vat || 0).toLocaleString() + '.00';
+                document.getElementById('totalAmount').textContent = '$' + (data.amounts.total || 0).toLocaleString() + '.00';
+            }
+        }
+        
+        // URL 파라미터에서 견적 ID를 가져와서 데이터를 로드할 수 있음
+        const urlParams = new URLSearchParams(window.location.search);
+        const quotationId = urlParams.get('id');
+        
+        if (quotationId) {
+            // 실제 시스템에서는 API를 통해 데이터를 가져옴
+            // loadQuotationFromAPI(quotationId);
+        }
+        
+        // 숫자 포맷팅 함수
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+        
+        // 인쇄 전 스타일 조정
+        window.addEventListener('beforeprint', function() {
+            document.body.classList.add('print-mode');
+        });
+        
+        window.addEventListener('afterprint', function() {
+            document.body.classList.remove('print-mode');
+        });
+    </script>
+</body>
+</html>

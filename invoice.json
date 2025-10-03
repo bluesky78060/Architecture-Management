@@ -1,0 +1,367 @@
+{
+  "designSystem": {
+    "meta": {
+      "name": "Invo Dashboard Design System",
+      "description": "Modern invoice management dashboard with clean design, card-based layout, and blue accent theme",
+      "version": "1.0.0",
+      "designPrinciples": [
+        "Clean and minimal interface",
+        "Card-based component architecture",
+        "Consistent use of blue accent colors",
+        "Clear visual hierarchy with proper spacing",
+        "Data-driven dashboard layout"
+      ]
+    },
+    "colorPalette": {
+      "primary": {
+        "blue50": "#E6F0FF",
+        "blue100": "#CCE0FF",
+        "blue500": "#2563EB",
+        "blue600": "#1D4ED8",
+        "blue700": "#1E40AF"
+      },
+      "semantic": {
+        "success": "#10B981",
+        "successLight": "#ECFDF5",
+        "danger": "#EF4444",
+        "dangerLight": "#FEF2F2",
+        "warning": "#F59E0B",
+        "warningLight": "#FFFBEB",
+        "info": "#3B82F6",
+        "infoLight": "#EFF6FF"
+      },
+      "neutral": {
+        "white": "#FFFFFF",
+        "gray50": "#F9FAFB",
+        "gray100": "#F3F4F6",
+        "gray200": "#E5E7EB",
+        "gray300": "#D1D5DB",
+        "gray400": "#9CA3AF",
+        "gray500": "#6B7280",
+        "gray600": "#4B5563",
+        "gray700": "#374151",
+        "gray800": "#1F2937",
+        "gray900": "#111827"
+      },
+      "revenue": "#F97316",
+      "invoices": "#10B981",
+      "clients": "#3B82F6",
+      "loyalty": "#EC4899"
+    },
+    "typography": {
+      "fontFamily": {
+        "primary": "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+      },
+      "fontSizes": {
+        "xs": "12px",
+        "sm": "14px",
+        "base": "16px",
+        "lg": "18px",
+        "xl": "20px",
+        "2xl": "24px",
+        "3xl": "30px",
+        "4xl": "36px"
+      },
+      "fontWeights": {
+        "normal": "400",
+        "medium": "500",
+        "semibold": "600",
+        "bold": "700"
+      },
+      "lineHeights": {
+        "tight": "1.25",
+        "normal": "1.5",
+        "relaxed": "1.75"
+      }
+    },
+    "spacing": {
+      "0": "0px",
+      "1": "4px",
+      "2": "8px",
+      "3": "12px",
+      "4": "16px",
+      "5": "20px",
+      "6": "24px",
+      "8": "32px",
+      "10": "40px",
+      "12": "48px",
+      "16": "64px",
+      "20": "80px"
+    },
+    "borderRadius": {
+      "none": "0px",
+      "sm": "4px",
+      "md": "8px",
+      "lg": "12px",
+      "xl": "16px",
+      "2xl": "20px",
+      "3xl": "24px",
+      "full": "9999px"
+    },
+    "shadows": {
+      "xs": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+      "sm": "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
+      "md": "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+      "lg": "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+      "xl": "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+    },
+    "layout": {
+      "sidebar": {
+        "width": "240px",
+        "background": "linear-gradient(180deg, #F9FAFB 0%, #FFFFFF 100%)",
+        "padding": "24px 16px"
+      },
+      "header": {
+        "height": "80px",
+        "background": "#FFFFFF",
+        "padding": "0 32px"
+      },
+      "mainContent": {
+        "padding": "32px",
+        "background": "#F9FAFB"
+      },
+      "maxWidth": "1200px",
+      "containerPadding": "24px"
+    },
+    "components": {
+      "sidebar": {
+        "navigation": {
+          "itemHeight": "48px",
+          "itemPadding": "12px 16px",
+          "itemRadius": "12px",
+          "activeBackground": "#2563EB",
+          "activeTextColor": "#FFFFFF",
+          "inactiveTextColor": "#6B7280",
+          "hoverBackground": "#F3F4F6",
+          "iconSize": "20px",
+          "fontSize": "16px",
+          "fontWeight": "500"
+        }
+      },
+      "statsCard": {
+        "background": "#FFFFFF",
+        "borderRadius": "16px",
+        "padding": "24px",
+        "shadow": "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+        "iconSize": "24px",
+        "titleFontSize": "14px",
+        "titleColor": "#6B7280",
+        "valueFontSize": "32px",
+        "valueFontWeight": "700",
+        "valueColor": "#111827",
+        "trendFontSize": "14px",
+        "trendFontWeight": "500"
+      },
+      "chartCard": {
+        "background": "#FFFFFF",
+        "borderRadius": "16px",
+        "padding": "32px",
+        "shadow": "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+        "titleFontSize": "18px",
+        "titleFontWeight": "600",
+        "titleColor": "#111827"
+      },
+      "chart": {
+        "barColor": "#2563EB",
+        "barRadius": "4px",
+        "gridColor": "#E5E7EB",
+        "tooltipBackground": "#1F2937",
+        "tooltipTextColor": "#FFFFFF",
+        "tooltipRadius": "8px",
+        "axisLabelColor": "#6B7280",
+        "axisLabelSize": "12px"
+      },
+      "table": {
+        "background": "#FFFFFF",
+        "borderRadius": "16px",
+        "padding": "24px",
+        "shadow": "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+        "headerBackground": "#F9FAFB",
+        "headerTextColor": "#374151",
+        "headerFontWeight": "600",
+        "rowPadding": "16px",
+        "rowBorderColor": "#E5E7EB",
+        "cellFontSize": "14px",
+        "cellTextColor": "#111827"
+      },
+      "badge": {
+        "paid": {
+          "background": "#ECFDF5",
+          "textColor": "#10B981",
+          "borderColor": "#10B981"
+        },
+        "overdue": {
+          "background": "#FEF2F2",
+          "textColor": "#EF4444",
+          "borderColor": "#EF4444"
+        },
+        "pending": {
+          "background": "#FFFBEB",
+          "textColor": "#F59E0B",
+          "borderColor": "#F59E0B"
+        },
+        "borderRadius": "20px",
+        "padding": "4px 12px",
+        "fontSize": "12px",
+        "fontWeight": "500"
+      },
+      "button": {
+        "primary": {
+          "background": "#2563EB",
+          "textColor": "#FFFFFF",
+          "hoverBackground": "#1D4ED8",
+          "borderRadius": "12px",
+          "padding": "12px 24px",
+          "fontSize": "14px",
+          "fontWeight": "600"
+        },
+        "secondary": {
+          "background": "#FFFFFF",
+          "textColor": "#374151",
+          "borderColor": "#D1D5DB",
+          "hoverBackground": "#F9FAFB",
+          "borderRadius": "12px",
+          "padding": "12px 24px"
+        }
+      },
+      "notification": {
+        "background": "#2563EB",
+        "textColor": "#FFFFFF",
+        "borderRadius": "24px",
+        "padding": "16px 24px",
+        "titleFontSize": "18px",
+        "titleFontWeight": "600",
+        "descriptionFontSize": "14px",
+        "buttonBackground": "#FFFFFF",
+        "buttonTextColor": "#2563EB"
+      },
+      "activityItem": {
+        "padding": "16px",
+        "borderRadius": "12px",
+        "background": "#FFFFFF",
+        "avatarSize": "40px",
+        "titleFontSize": "14px",
+        "titleFontWeight": "600",
+        "descriptionFontSize": "12px",
+        "descriptionColor": "#6B7280",
+        "timestampFontSize": "12px",
+        "timestampColor": "#9CA3AF"
+      },
+      "searchBar": {
+        "background": "#F9FAFB",
+        "borderRadius": "12px",
+        "padding": "12px 16px",
+        "fontSize": "14px",
+        "placeholderColor": "#9CA3AF",
+        "iconColor": "#6B7280"
+      },
+      "avatar": {
+        "borderRadius": "50%",
+        "sizes": {
+          "sm": "32px",
+          "md": "40px",
+          "lg": "48px"
+        }
+      }
+    },
+    "animations": {
+      "duration": {
+        "fast": "150ms",
+        "normal": "300ms",
+        "slow": "500ms"
+      },
+      "easing": {
+        "easeIn": "cubic-bezier(0.4, 0, 1, 1)",
+        "easeOut": "cubic-bezier(0, 0, 0.2, 1)",
+        "easeInOut": "cubic-bezier(0.4, 0, 0.2, 1)"
+      },
+      "hover": {
+        "scale": "1.02",
+        "opacity": "0.8"
+      }
+    },
+    "breakpoints": {
+      "xs": "475px",
+      "sm": "640px",
+      "md": "768px",
+      "lg": "1024px",
+      "xl": "1280px",
+      "2xl": "1536px"
+    },
+    "grid": {
+      "columns": 12,
+      "gap": "24px",
+      "statsGrid": {
+        "columns": 4,
+        "gap": "24px",
+        "responsive": {
+          "md": 2,
+          "sm": 1
+        }
+      }
+    },
+    "dataVisualization": {
+      "colors": {
+        "primary": "#2563EB",
+        "secondary": "#10B981",
+        "tertiary": "#F59E0B",
+        "quaternary": "#EC4899",
+        "gradient": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+      },
+      "chart": {
+        "padding": "32px",
+        "gridLines": "#E5E7EB",
+        "axis": "#9CA3AF",
+        "labels": "#6B7280"
+      }
+    },
+    "accessibility": {
+      "focusRing": "2px solid #2563EB",
+      "focusOffset": "2px",
+      "minTouchTarget": "44px",
+      "colorContrast": {
+        "normal": "4.5:1",
+        "large": "3:1"
+      }
+    },
+    "semanticTokens": {
+      "background": {
+        "app": "#F9FAFB",
+        "surface": "#FFFFFF",
+        "elevated": "#FFFFFF"
+      },
+      "text": {
+        "primary": "#111827",
+        "secondary": "#6B7280",
+        "tertiary": "#9CA3AF",
+        "inverse": "#FFFFFF"
+      },
+      "border": {
+        "default": "#E5E7EB",
+        "strong": "#D1D5DB",
+        "subtle": "#F3F4F6"
+      }
+    },
+    "implementationNotes": {
+      "framework": "React + Tailwind CSS recommended",
+      "chartLibrary": "Chart.js or Recharts",
+      "iconLibrary": "Heroicons or Lucide React",
+      "stateManagement": "Zustand or Redux Toolkit",
+      "keyFeatures": [
+        "Responsive sidebar navigation with active states",
+        "Statistics cards with trend indicators",
+        "Interactive revenue chart with tooltips",
+        "Data table with status badges",
+        "Activity feed with timestamps",
+        "Notification cards with CTAs"
+      ],
+      "layoutStructure": [
+        "Fixed sidebar navigation (240px width)",
+        "Main content area with top header",
+        "4-column stats grid",
+        "2-column layout for chart and notifications",
+        "Bottom section with activities and recent invoices table"
+      ]
+    }
+  }
+}
