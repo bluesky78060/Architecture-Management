@@ -10,7 +10,7 @@ export default function InvoiceDetailTable({ items, format, totalAmount }: Props
   const sum = (items || []).reduce((s, it) => {
     const q = Number(it.quantity) || 0;
     const u = Number(it.unitPrice) || 0;
-    const t = (it as any).total != null ? Number((it as any).total) : q * u;
+    const t = it.total != null ? Number(it.total) : q * u;
     return s + (isNaN(t) ? 0 : t);
   }, 0);
 
@@ -37,7 +37,7 @@ export default function InvoiceDetailTable({ items, format, totalAmount }: Props
           const sk = (Number(rec['laborPersons'] ?? 0) || 0) * (Number(rec['laborUnitRate'] ?? 0) || 0);
           const laborTotal = gen + sk;
           const totalFallback = (Number(it.quantity) || 0) * (Number(it.unitPrice) || 0);
-          const lineTotal = Number((it as any).total ?? totalFallback) || totalFallback;
+          const lineTotal = Number(it.total ?? totalFallback) || totalFallback;
 
           return (
             <tr key={i} className="align-top">

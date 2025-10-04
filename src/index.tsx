@@ -63,8 +63,11 @@ const routes = createRoutesFromElements(
 );
 
 const useHash = process.env.REACT_APP_USE_HASH_ROUTER === '1';
-// Cast to any to support environments where type defs lag behind runtime support
-const futureFlags = { v7_startTransition: true, v7_relativeSplatPath: true } as any;
+// React Router v7 future flags for forward compatibility
+const futureFlags: { v7_startTransition: boolean; v7_relativeSplatPath: boolean } = {
+  v7_startTransition: true,
+  v7_relativeSplatPath: true
+};
 const router = useHash
   ? createHashRouter(routes, { basename: basePath, future: futureFlags })
   : createBrowserRouter(routes, { basename: basePath, future: futureFlags });

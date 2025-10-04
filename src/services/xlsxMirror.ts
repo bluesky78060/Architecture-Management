@@ -44,7 +44,7 @@ export function buildWorkbook(snapshot: AppSnapshot): ExcelJS.Workbook {
   const wb = new ExcelJS.Workbook();
 
   // Helper function to add JSON data to worksheet
-  const addJsonSheet = (data: any[], sheetName: string) => {
+  const addJsonSheet = (data: Array<Record<string, unknown>>, sheetName: string) => {
     const ws = wb.addWorksheet(sheetName);
     if (data.length > 0) {
       const headers = Object.keys(data[0]);
@@ -59,13 +59,13 @@ export function buildWorkbook(snapshot: AppSnapshot): ExcelJS.Workbook {
 
   // Company (single row)
   const companyRows = [companyInfo];
-  addJsonSheet(companyRows, 'Company');
+  addJsonSheet(companyRows as unknown as Array<Record<string, unknown>>, 'Company');
 
   // Core entities
-  addJsonSheet(normalizeArray(clients), 'Clients');
-  addJsonSheet(normalizeArray(workItems), 'WorkItems');
-  addJsonSheet(normalizeArray(invoices), 'Invoices');
-  addJsonSheet(normalizeArray(estimates), 'Estimates');
+  addJsonSheet(normalizeArray(clients) as unknown as Array<Record<string, unknown>>, 'Clients');
+  addJsonSheet(normalizeArray(workItems) as unknown as Array<Record<string, unknown>>, 'WorkItems');
+  addJsonSheet(normalizeArray(invoices) as unknown as Array<Record<string, unknown>>, 'Invoices');
+  addJsonSheet(normalizeArray(estimates) as unknown as Array<Record<string, unknown>>, 'Estimates');
 
   // Lookups
   addJsonSheet(normalizeArray(units).map(v => ({ unit: v })), 'Units');
