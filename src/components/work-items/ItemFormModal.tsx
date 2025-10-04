@@ -59,7 +59,19 @@ export default function ItemFormModal({ open, editingItem, newItem, clients, uni
               <div className="grid grid-cols-2 gap-3 mt-3">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">프로젝트명</label>
-                  <input type="text" name="projectName" value={newItem.projectName || ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} placeholder="프로젝트명" className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required />
+                  {(() => {
+                    const selectedClient = clients.find(c => String(c.id) === String(newItem.clientId));
+                    const clientProjects = selectedClient?.projects || [];
+
+                    return clientProjects.length > 0 ? (
+                      <select name="projectName" value={newItem.projectName || ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required>
+                        <option value="">프로젝트 선택</option>
+                        {clientProjects.map(proj => (<option key={proj} value={proj}>{proj}</option>))}
+                      </select>
+                    ) : (
+                      <input type="text" name="projectName" value={newItem.projectName || ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} placeholder="프로젝트명 입력" className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required />
+                    );
+                  })()}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">카테고리</label>
