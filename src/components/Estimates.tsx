@@ -589,7 +589,7 @@ const Estimates: React.FC = () => {
                 
                 {/* 기본 정보 */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
-                  <div className="flex items-center mb-3 gap-2">
+                  <div className="flex items-center mb-3 gap-3">
                     <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-50 text-indigo-600">📄</span>
                     <h4 className="text-base font-semibold text-gray-900">기본 정보</h4>
                   </div>
@@ -751,7 +751,7 @@ const Estimates: React.FC = () => {
                 {/* 견적 항목들 */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
                   <div className="flex justify-between items-center mb-2">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                       <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-green-50 text-green-600">🗂️</span>
                       <h4 className="text-base font-semibold text-gray-900">견적 항목</h4>
                     </div>
