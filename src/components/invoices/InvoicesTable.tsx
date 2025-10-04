@@ -59,7 +59,7 @@ export default function InvoicesTable({ items, allSelected, selectedIds, onToggl
               </td>
               <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-900">{invoice.date}</td>
               <td className="px-3 py-2 whitespace-nowrap text-sm font-medium">
-                <div className="flex justify-center space-x-3">
+                <div className="flex justify-center space-x-4">
                   <Tooltip label="상세보기"><button onClick={() => onViewDetails(invoice)} className="text-blue-600 hover:text-blue-900" title="청구서 상세보기">🔍</button></Tooltip>
                   <Tooltip label="출력"><button onClick={() => onOpenPrint(invoice)} className="text-green-600 hover:text-green-900" title="청구서 출력">🖨️</button></Tooltip>
                   <Tooltip label="삭제"><button onClick={() => onDelete(invoice.id as string)} className="text-red-600 hover:text-red-900" title="청구서 삭제">🗑️</button></Tooltip>
