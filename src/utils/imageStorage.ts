@@ -1,5 +1,5 @@
 // 도장 이미지 저장을 위한 유틸리티 (보안 강화)
-import { setSecureItem, getSecureItem, removeSecureItem } from './secureStorage';
+import { setSecureItem, getSecureItem, removeSecureItem } from './secureStorageAdapter';
 
 const STAMP_IMAGE_KEY = 'constructionApp_stampImage';
 

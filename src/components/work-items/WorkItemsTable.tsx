@@ -26,7 +26,7 @@ export default function WorkItemsTable({ items, selection, format, getLaborCost,
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-3 py-3 text-left text-base font-medium text-gray-500 uppercase tracking-wider w-12">
+              <th className="px-3 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider w-12">
                 <input
                   type="checkbox"
                   onChange={(e) => selection.toggleAll(e.target.checked)}
@@ -35,15 +35,33 @@ export default function WorkItemsTable({ items, selection, format, getLaborCost,
                   title="전체 선택"
                 />
               </th>
-              <th className="px-2 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider w-24">건축주</th>
-              <th className="px-2 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider w-52">내용</th>
-              <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider w-24">작업장</th>
-              <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider w-28">프로젝트</th>
-              <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider w-20">카테고리</th>
-              <th className="px-3 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider w-32">단가/수량</th>
-              <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider w-16">상태</th>
-              <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider w-24">날짜</th>
-              <th className="px-3 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider w-32">작업</th>
+              <th className="px-2 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider w-24">
+                건 축 주
+              </th>
+              <th className="px-2 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider w-52">
+                내&nbsp;&nbsp;&nbsp;&nbsp;용
+              </th>
+              <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider w-24">
+                작 업 장
+              </th>
+              <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider w-28">
+                프로젝트
+              </th>
+              <th className="px-3 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider w-20 whitespace-nowrap">
+카테고리
+              </th>
+              <th className="px-3 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider w-32 whitespace-nowrap">
+단가/수량
+              </th>
+              <th className="px-3 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider w-16">
+                상&nbsp;&nbsp;&nbsp;&nbsp;태
+              </th>
+              <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider w-24">
+                날&nbsp;&nbsp;&nbsp;&nbsp;짜
+              </th>
+              <th className="px-3 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider w-20">
+                작&nbsp;&nbsp;&nbsp;&nbsp;업
+              </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">

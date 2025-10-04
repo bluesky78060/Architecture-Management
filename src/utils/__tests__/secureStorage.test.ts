@@ -4,7 +4,7 @@ import {
   removeSecureItem,
   migrateSensitiveData,
   getStorageInfo,
-} from '../secureStorage';
+} from '../secureStorage.legacy';
 
 describe('secureStorage', () => {
   beforeEach(() => {

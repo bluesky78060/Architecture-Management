@@ -1,3 +1,4 @@
+import { logger } from '../utils/logger';
 import React, { useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../contexts/AppContext';
@@ -87,7 +88,7 @@ const Dashboard: React.FC = () => {
                 if (data.stampImage !== undefined) setStampImage(data.stampImage);
                 alert('데이터 복원이 완료되었습니다.');
               } catch (err) {
-                console.error('복원 오류:', err);
+                logger.error('복원 오류:', err);
                 alert('복원 중 오류가 발생했습니다. 올바른 백업 파일인지 확인하세요.');
               } finally {
                 if (restoreInputRef.current) restoreInputRef.current.value = '';

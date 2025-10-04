@@ -3,6 +3,7 @@
  * Dexie.js를 사용한 건축 관리 시스템 데이터베이스
  */
 
+import { logger } from '../utils/logger';
 import Dexie, { Table } from 'dexie';
 import type {
   Client,
@@ -112,9 +113,9 @@ export class CMSDatabase extends Dexie {
         });
       }
 
-      console.log('✅ Database initialized successfully');
+      logger.log('✅ Database initialized successfully');
     } catch (error) {
-      console.error('❌ Database initialization failed:', error);
+      logger.error('❌ Database initialization failed:', error);
       throw error;
     }
   }
@@ -516,7 +517,7 @@ export class CMSDatabase extends Dexie {
       await this.invoices.clear();
       await this.estimates.clear();
     });
-    console.log('✅ All data cleared');
+    logger.log('✅ All data cleared');
   }
 
   /**
@@ -561,4 +562,4 @@ export class CMSDatabase extends Dexie {
 export const db = new CMSDatabase();
 
 // 앱 시작 시 자동 초기화
-db.initialize().catch(console.error);
+db.initialize().catch(logger.error);

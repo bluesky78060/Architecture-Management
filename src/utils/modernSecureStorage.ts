@@ -4,6 +4,8 @@
  * Web Crypto API 사용
  */
 
+import { logger } from './logger';
+
 /**
  * 암호화된 데이터 구조
  */
@@ -209,7 +211,7 @@ export class ModernSecureStorage {
       const serialized = this.serializeEncryptedData(encrypted);
       window.localStorage.setItem(key, serialized);
     } catch (error) {
-      console.error('보안 저장 실패:', error);
+      logger.error('보안 저장 실패:', error);
       throw error;
     }
   }
@@ -243,7 +245,7 @@ export class ModernSecureStorage {
       // 복호화
       return await this.decrypt(encrypted);
     } catch (error) {
-      console.error('보안 읽기 실패:', error);
+      logger.error('보안 읽기 실패:', error);
       return null;
     }
   }

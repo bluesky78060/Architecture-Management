@@ -1,3 +1,4 @@
+import { logger } from '../utils/logger';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
@@ -102,7 +103,7 @@ export default function WorkLogForm() {
       alert('작업일지가 성공적으로 저장되었습니다.');
       // Optionally, reset form or redirect
     } catch (error) {
-      console.error('Error saving work log:', error);
+      logger.error('Error saving work log:', error);
       alert('작업일지 저장 중 오류가 발생했습니다.');
     }
   };
@@ -140,7 +141,7 @@ export default function WorkLogForm() {
       };
       setLaborEntries(newLabor);
     } catch (e) {
-      console.error(e);
+      logger.error(e);
       alert('추천 단가 조회 중 오류가 발생했습니다.');
     }
   };

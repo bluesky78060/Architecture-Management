@@ -44,7 +44,7 @@ export function buildWorkbook(snapshot: AppSnapshot): ExcelJS.Workbook {
   const wb = new ExcelJS.Workbook();
 
   // Helper function to add JSON data to worksheet
-  const addJsonSheet = (data: Array<Record<string, unknown>>, sheetName: string) => {
+  const addJsonSheet = <T extends Record<string, unknown>>(data: T[], sheetName: string) => {
     const ws = wb.addWorksheet(sheetName);
     if (data.length > 0) {
       const headers = Object.keys(data[0]);
@@ -58,10 +58,10 @@ export function buildWorkbook(snapshot: AppSnapshot): ExcelJS.Workbook {
   };
 
   // Company (single row)
-  const companyRows = [companyInfo];
-  addJsonSheet(companyRows as unknown as Array<Record<string, unknown>>, 'Company');
+  const companyRows = [companyInfo as Record<string, unknown>];
+  addJsonSheet(companyRows, 'Company');
 
-  // Core entities
+  // Core entities - Convert domain types to generic records for Excel export
   addJsonSheet(normalizeArray(clients) as unknown as Array<Record<string, unknown>>, 'Clients');
   addJsonSheet(normalizeArray(workItems) as unknown as Array<Record<string, unknown>>, 'WorkItems');
   addJsonSheet(normalizeArray(invoices) as unknown as Array<Record<string, unknown>>, 'Invoices');

@@ -130,10 +130,6 @@ export default function ItemFormModal({ open, editingItem, newItem, clients, uni
 
               <div className="grid grid-cols-4 gap-3 mt-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">단가</label>
-                  <input type="text" name="defaultPrice" value={newItem.defaultPrice ? format(newItem.defaultPrice) : ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} placeholder="예: 200,000" className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
-                </div>
-                <div>
                   <label className="block text-sm font-medium text-gray-700">수량</label>
                   <input type="text" name="quantity" value={newItem.quantity ?? ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} placeholder="예: 1" className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
                 </div>
@@ -143,6 +139,10 @@ export default function ItemFormModal({ open, editingItem, newItem, clients, uni
                     <option value="">단위 선택</option>
                     {units.map(u => (<option key={u} value={u}>{u}</option>))}
                   </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">단가</label>
+                  <input type="text" name="defaultPrice" value={newItem.defaultPrice ? format(newItem.defaultPrice) : ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} placeholder="예: 200,000" className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">합계</label>

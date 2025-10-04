@@ -1,3 +1,4 @@
+import { logger } from '../utils/logger';
 import axios, { AxiosInstance } from 'axios';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000/api';
@@ -25,7 +26,7 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    console.error('API Error:', error);
+    logger.error('API Error:', error);
     return Promise.reject(error);
   }
 );

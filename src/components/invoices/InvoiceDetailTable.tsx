@@ -30,11 +30,14 @@ export default function InvoiceDetailTable({ items, format, totalAmount }: Props
       </thead>
       <tbody>
         {(items || []).map((it, i) => {
-          const rec = it as unknown as Record<string, unknown>;
-          const category = String(rec['category'] ?? '') || '';
-          const desc = String(rec['description'] ?? '') || '';
-          const gen = (Number(rec['laborPersonsGeneral'] ?? 0) || 0) * (Number(rec['laborUnitRateGeneral'] ?? 0) || 0);
-          const sk = (Number(rec['laborPersons'] ?? 0) || 0) * (Number(rec['laborUnitRate'] ?? 0) || 0);
+          const category = it.category || '';
+          const desc = it.description || '';
+          const laborPersonsGeneral = typeof it.laborPersonsGeneral === 'number' ? it.laborPersonsGeneral : 0;
+          const laborUnitRateGeneral = typeof it.laborUnitRateGeneral === 'number' ? it.laborUnitRateGeneral : 0;
+          const laborPersons = typeof it.laborPersons === 'number' ? it.laborPersons : 0;
+          const laborUnitRate = typeof it.laborUnitRate === 'number' ? it.laborUnitRate : 0;
+          const gen = laborPersonsGeneral * laborUnitRateGeneral;
+          const sk = laborPersons * laborUnitRate;
           const laborTotal = gen + sk;
           const totalFallback = (Number(it.quantity) || 0) * (Number(it.unitPrice) || 0);
           const lineTotal = Number(it.total ?? totalFallback) || totalFallback;
@@ -59,8 +62,8 @@ export default function InvoiceDetailTable({ items, format, totalAmount }: Props
                   <div className="text-xs text-blue-600 mt-1">
                     <span className="font-medium">인부임:</span>{' '}
                     {[
-                      gen > 0 ? `일반: ${Number(rec['laborPersonsGeneral'] || 0)}명 × ${(Number(rec['laborUnitRateGeneral'] || 0)).toLocaleString()}원` : null,
-                      sk > 0 ? `숙련: ${Number(rec['laborPersons'] || 0)}명 × ${(Number(rec['laborUnitRate'] || 0)).toLocaleString()}원` : null,
+                      gen > 0 ? `일반: ${laborPersonsGeneral}명 × ${laborUnitRateGeneral.toLocaleString()}원` : null,
+                      sk > 0 ? `숙련: ${laborPersons}명 × ${laborUnitRate.toLocaleString()}원` : null,
                     ].filter(Boolean).join(', ')} = {laborTotal.toLocaleString()}원
                   </div>
                 )}

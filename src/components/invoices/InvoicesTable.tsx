@@ -20,17 +20,33 @@ export default function InvoicesTable({ items, allSelected, selectedIds, onToggl
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-3 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider w-12">
               <input type="checkbox" className="w-4 h-4 rounded border-gray-300" checked={allSelected} onChange={(e) => onToggleAll(e.target.checked)} title="전체 선택" />
             </th>
-            <th className="px-3 py-2 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">청구서 번호</th>
-            <th className="px-3 py-2 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">건축주</th>
-            <th className="px-3 py-2 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">프로젝트</th>
-            <th className="px-3 py-2 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">작업장</th>
-            <th className="px-3 py-2 text-center text-sm font-medium text-gray-500 uppercase tracking-wider">청구 금액</th>
-            <th className="px-3 py-2 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">상태</th>
-            <th className="px-3 py-2 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">날짜</th>
-            <th className="px-3 py-2 text-center text-sm font-medium text-gray-500 uppercase tracking-wider">작업</th>
+            <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+              청구서 번호
+            </th>
+            <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+              건 축 주
+            </th>
+            <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+              프로젝트
+            </th>
+            <th className="px-2 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+              작 업 장
+            </th>
+            <th className="px-2 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider">
+              청구 금액
+            </th>
+            <th className="px-2 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider">
+              상&nbsp;&nbsp;&nbsp;&nbsp;태
+            </th>
+            <th className="px-2 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+              날&nbsp;&nbsp;&nbsp;&nbsp;짜
+            </th>
+            <th className="px-2 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider w-20">
+              작&nbsp;&nbsp;&nbsp;&nbsp;업
+            </th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">

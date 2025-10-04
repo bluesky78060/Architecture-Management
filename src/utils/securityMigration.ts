@@ -3,8 +3,9 @@
  * XOR 암호화(v1) → AES-256-GCM(v2) 마이그레이션
  */
 
+import { logger } from './logger';
 import { secureStorage } from './modernSecureStorage';
-import { getSecureItem as getLegacyItem } from './secureStorage';
+import { getSecureItem as getLegacyItem } from './secureStorage.legacy';
 
 /**
  * 마이그레이션 결과
@@ -78,17 +79,17 @@ async function migrateKey(key: string, masterPassword: string): Promise<boolean>
 
     // 이미 신버전이면 스킵
     if (isModernEncryption(rawData)) {
-      console.log(`[Migration] ${key}: 이미 신버전 암호화 - 스킵`);
+      logger.log(`[Migration] ${key}: 이미 신버전 암호화 - 스킵`);
       return true;
     }
 
     // 구버전이 아니면 스킵 (평문 또는 다른 형식)
     if (!isLegacyEncryption(rawData)) {
-      console.log(`[Migration] ${key}: 구버전 암호화 아님 - 스킵`);
+      logger.log(`[Migration] ${key}: 구버전 암호화 아님 - 스킵`);
       return true;
     }
 
-    console.log(`[Migration] ${key}: 구버전 감지, 마이그레이션 시작...`);
+    logger.log(`[Migration] ${key}: 구버전 감지, 마이그레이션 시작...`);
 
     // 1. 구버전으로 복호화
     const decrypted = getLegacyItem(key);
@@ -96,16 +97,16 @@ async function migrateKey(key: string, masterPassword: string): Promise<boolean>
       throw new Error('구버전 복호화 실패');
     }
 
-    console.log(`[Migration] ${key}: 구버전 복호화 성공 (${decrypted.length} bytes)`);
+    logger.log(`[Migration] ${key}: 구버전 복호화 성공 (${decrypted.length} bytes)`);
 
     // 2. 신버전으로 암호화
     await secureStorage.setSecureItem(key, decrypted);
 
-    console.log(`[Migration] ${key}: 신버전 암호화 및 저장 완료 ✓`);
+    logger.log(`[Migration] ${key}: 신버전 암호화 및 저장 완료 ✓`);
 
     return true;
   } catch (error) {
-    console.error(`[Migration] ${key} 마이그레이션 실패:`, error);
+    logger.error(`[Migration] ${key} 마이그레이션 실패:`, error);
     return false;
   }
 }
@@ -118,15 +119,15 @@ async function migrateKey(key: string, masterPassword: string): Promise<boolean>
 export async function migrateAllSensitiveData(
   masterPassword: string
 ): Promise<MigrationResult> {
-  console.log('=== 보안 시스템 마이그레이션 시작 ===');
-  console.log(`대상 키: ${SENSITIVE_KEYS.length}개`);
+  logger.log('=== 보안 시스템 마이그레이션 시작 ===');
+  logger.log(`대상 키: ${SENSITIVE_KEYS.length}개`);
 
   // 시스템 키 초기화
   try {
     await secureStorage.initializeSystemKey(masterPassword);
-    console.log('시스템 보안 키 초기화 완료 ✓');
+    logger.log('시스템 보안 키 초기화 완료 ✓');
   } catch (error) {
-    console.error('시스템 키 초기화 실패:', error);
+    logger.error('시스템 키 초기화 실패:', error);
     return {
       success: false,
       migratedKeys: [],
@@ -169,10 +170,10 @@ export async function migrateAllSensitiveData(
     }
   }
 
-  console.log('=== 마이그레이션 완료 ===');
-  console.log(`성공: ${result.migratedKeys.length}개`);
-  console.log(`스킵: ${result.skippedKeys.length}개`);
-  console.log(`실패: ${result.failedKeys.length}개`);
+  logger.log('=== 마이그레이션 완료 ===');
+  logger.log(`성공: ${result.migratedKeys.length}개`);
+  logger.log(`스킵: ${result.skippedKeys.length}개`);
+  logger.log(`실패: ${result.failedKeys.length}개`);
 
   return result;
 }
@@ -210,13 +211,13 @@ export function checkMigrationStatus(): Record<string, string> {
  * 주의: 이 함수는 마이그레이션이 완료되고 검증된 후에만 실행해야 합니다.
  */
 export function removeLegacyEncryptionSystem(): void {
-  console.warn(
+  logger.warn(
     '⚠️ 이 작업은 되돌릴 수 없습니다. 마이그레이션이 완료되고 검증된 경우에만 실행하세요.'
   );
 
   // 구버전 암호화 관련 코드는 secureStorage.ts에 있으므로
   // 실제 제거는 수동으로 파일을 삭제하거나 리팩토링해야 합니다.
-  console.log('구버전 시스템 제거는 secureStorage.ts 파일을 삭제/수정하여 진행하세요.');
+  logger.log('구버전 시스템 제거는 secureStorage.ts 파일을 삭제/수정하여 진행하세요.');
 }
 
 /**
@@ -230,21 +231,21 @@ export async function autoMigrate(masterPassword: string): Promise<void> {
     const needsMigration = Object.values(status).some((s) => s.includes('v1'));
 
     if (!needsMigration) {
-      console.log('✓ 모든 데이터가 이미 최신 암호화 형식입니다.');
+      logger.log('✓ 모든 데이터가 이미 최신 암호화 형식입니다.');
       return;
     }
 
-    console.log('⚠️ 구버전 암호화 감지 - 자동 마이그레이션 시작');
+    logger.log('⚠️ 구버전 암호화 감지 - 자동 마이그레이션 시작');
 
     // 마이그레이션 실행
     const result = await migrateAllSensitiveData(masterPassword);
 
     if (result.success && result.failedKeys.length === 0) {
-      console.log('✓ 자동 마이그레이션 완료');
+      logger.log('✓ 자동 마이그레이션 완료');
     } else {
-      console.error('⚠️ 마이그레이션 중 일부 오류 발생:', result);
+      logger.error('⚠️ 마이그레이션 중 일부 오류 발생:', result);
     }
   } catch (error) {
-    console.error('자동 마이그레이션 실패:', error);
+    logger.error('자동 마이그레이션 실패:', error);
   }
 }

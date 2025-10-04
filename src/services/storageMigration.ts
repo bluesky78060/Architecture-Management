@@ -4,6 +4,7 @@
  */
 
 import { db } from './database';
+import { logger } from '../utils/logger';
 import type { Client, WorkItem, Invoice, Estimate, CompanyInfo } from '../types/domain';
 
 /**
@@ -51,7 +52,7 @@ function getLocalStorageData<T>(key: string): T[] | null {
 
     return JSON.parse(rawData);
   } catch (error) {
-    console.error(`Failed to read localStorage key: ${key}`, error);
+    logger.error(`Failed to read localStorage key: ${key}`, error);
     return null;
   }
 }
@@ -70,7 +71,7 @@ function getLocalStorageObject<T>(key: string): T | null {
 
     return JSON.parse(rawData);
   } catch (error) {
-    console.error(`Failed to read localStorage key: ${key}`, error);
+    logger.error(`Failed to read localStorage key: ${key}`, error);
     return null;
   }
 }
@@ -81,7 +82,7 @@ function getLocalStorageObject<T>(key: string): T | null {
 async function migrateClients(): Promise<number> {
   const clients = getLocalStorageData<Client>(STORAGE_KEYS.clients);
   if (!clients || clients.length === 0) {
-    console.log('No clients data to migrate');
+    logger.log('No clients data to migrate');
     return 0;
   }
 
@@ -99,11 +100,11 @@ async function migrateClients(): Promise<number> {
       }
       count++;
     } catch (error) {
-      console.error(`Failed to migrate client ${client.id}:`, error);
+      logger.error(`Failed to migrate client ${client.id}:`, error);
     }
   }
 
-  console.log(`✅ Migrated ${count} clients`);
+  logger.log(`✅ Migrated ${count} clients`);
   return count;
 }
 
@@ -113,7 +114,7 @@ async function migrateClients(): Promise<number> {
 async function migrateWorkItems(): Promise<number> {
   const workItems = getLocalStorageData<WorkItem>(STORAGE_KEYS.workItems);
   if (!workItems || workItems.length === 0) {
-    console.log('No work items data to migrate');
+    logger.log('No work items data to migrate');
     return 0;
   }
 
@@ -128,11 +129,11 @@ async function migrateWorkItems(): Promise<number> {
       }
       count++;
     } catch (error) {
-      console.error(`Failed to migrate work item ${item.id}:`, error);
+      logger.error(`Failed to migrate work item ${item.id}:`, error);
     }
   }
 
-  console.log(`✅ Migrated ${count} work items`);
+  logger.log(`✅ Migrated ${count} work items`);
   return count;
 }
 
@@ -142,7 +143,7 @@ async function migrateWorkItems(): Promise<number> {
 async function migrateInvoices(): Promise<number> {
   const invoices = getLocalStorageData<Invoice>(STORAGE_KEYS.invoices);
   if (!invoices || invoices.length === 0) {
-    console.log('No invoices data to migrate');
+    logger.log('No invoices data to migrate');
     return 0;
   }
 
@@ -157,11 +158,11 @@ async function migrateInvoices(): Promise<number> {
       }
       count++;
     } catch (error) {
-      console.error(`Failed to migrate invoice ${invoice.id}:`, error);
+      logger.error(`Failed to migrate invoice ${invoice.id}:`, error);
     }
   }
 
-  console.log(`✅ Migrated ${count} invoices`);
+  logger.log(`✅ Migrated ${count} invoices`);
   return count;
 }
 
@@ -171,7 +172,7 @@ async function migrateInvoices(): Promise<number> {
 async function migrateEstimates(): Promise<number> {
   const estimates = getLocalStorageData<Estimate>(STORAGE_KEYS.estimates);
   if (!estimates || estimates.length === 0) {
-    console.log('No estimates data to migrate');
+    logger.log('No estimates data to migrate');
     return 0;
   }
 
@@ -186,11 +187,11 @@ async function migrateEstimates(): Promise<number> {
       }
       count++;
     } catch (error) {
-      console.error(`Failed to migrate estimate ${estimate.id}:`, error);
+      logger.error(`Failed to migrate estimate ${estimate.id}:`, error);
     }
   }
 
-  console.log(`✅ Migrated ${count} estimates`);
+  logger.log(`✅ Migrated ${count} estimates`);
   return count;
 }
 
@@ -200,16 +201,16 @@ async function migrateEstimates(): Promise<number> {
 async function migrateCompanyInfo(): Promise<number> {
   const companyInfo = getLocalStorageObject<CompanyInfo>(STORAGE_KEYS.companyInfo);
   if (!companyInfo) {
-    console.log('No company info to migrate');
+    logger.log('No company info to migrate');
     return 0;
   }
 
   try {
     await db.companyInfo.update(1, companyInfo);
-    console.log('✅ Migrated company info');
+    logger.log('✅ Migrated company info');
     return 1;
   } catch (error) {
-    console.error('Failed to migrate company info:', error);
+    logger.error('Failed to migrate company info:', error);
     return 0;
   }
 }
@@ -224,7 +225,7 @@ async function migrateSettings(): Promise<number> {
   const units = getLocalStorageData<string>(STORAGE_KEYS.units);
   if (units && units.length > 0) {
     await db.setSetting('units', units);
-    console.log(`✅ Migrated ${units.length} units`);
+    logger.log(`✅ Migrated ${units.length} units`);
     count++;
   }
 
@@ -232,7 +233,7 @@ async function migrateSettings(): Promise<number> {
   const categories = getLocalStorageData<string>(STORAGE_KEYS.categories);
   if (categories && categories.length > 0) {
     await db.setSetting('categories', categories);
-    console.log(`✅ Migrated ${categories.length} categories`);
+    logger.log(`✅ Migrated ${categories.length} categories`);
     count++;
   }
 
@@ -252,7 +253,7 @@ export async function needsMigration(): Promise<boolean> {
     stats.estimates > 0;
 
   if (hasIndexedDBData) {
-    console.log('✅ IndexedDB already has data, migration not needed');
+    logger.log('✅ IndexedDB already has data, migration not needed');
     return false;
   }
 
@@ -264,11 +265,11 @@ export async function needsMigration(): Promise<boolean> {
     !!getLocalStorageData(STORAGE_KEYS.estimates);
 
   if (hasLocalStorageData) {
-    console.log('⚠️ localStorage has data, migration needed');
+    logger.log('⚠️ localStorage has data, migration needed');
     return true;
   }
 
-  console.log('✅ No data to migrate');
+  logger.log('✅ No data to migrate');
   return false;
 }
 
@@ -292,7 +293,7 @@ export async function migrateAllData(): Promise<MigrationResult> {
     duration: 0,
   };
 
-  console.log('=== localStorage → IndexedDB 마이그레이션 시작 ===');
+  logger.log('=== localStorage → IndexedDB 마이그레이션 시작 ===');
 
   // 1. 건축주 마이그레이션
   try {
@@ -356,11 +357,11 @@ export async function migrateAllData(): Promise<MigrationResult> {
   const endTime = performance.now();
   result.duration = endTime - startTime;
 
-  console.log('=== 마이그레이션 완료 ===');
-  console.log(`성공: ${result.migratedCollections.length}개`);
-  console.log(`실패: ${result.failedCollections.length}개`);
-  console.log(`소요 시간: ${result.duration.toFixed(2)}ms`);
-  console.log('통계:', result.stats);
+  logger.log('=== 마이그레이션 완료 ===');
+  logger.log(`성공: ${result.migratedCollections.length}개`);
+  logger.log(`실패: ${result.failedCollections.length}개`);
+  logger.log(`소요 시간: ${result.duration.toFixed(2)}ms`);
+  logger.log('통계:', result.stats);
 
   return result;
 }
@@ -394,7 +395,7 @@ export function restoreLocalStorage(backupJson: string): void {
     }
   });
 
-  console.log('✅ localStorage 백업 복원 완료');
+  logger.log('✅ localStorage 백업 복원 완료');
 }
 
 /**
@@ -407,18 +408,18 @@ export async function autoMigrate(): Promise<void> {
       return;
     }
 
-    console.log('⚠️ 자동 마이그레이션 시작...');
+    logger.log('⚠️ 자동 마이그레이션 시작...');
 
     // 백업 생성
     const backup = backupLocalStorage();
     sessionStorage.setItem('CMS_MIGRATION_BACKUP', backup);
-    console.log('✅ localStorage 백업 완료');
+    logger.log('✅ localStorage 백업 완료');
 
     // 마이그레이션 실행
     const result = await migrateAllData();
 
     if (result.success && result.failedCollections.length === 0) {
-      console.log('✅ 자동 마이그레이션 성공');
+      logger.log('✅ 자동 마이그레이션 성공');
 
       // 마이그레이션 완료 플래그 저장
       await db.setSetting('migration_completed', {
@@ -427,9 +428,9 @@ export async function autoMigrate(): Promise<void> {
         stats: result.stats,
       });
     } else {
-      console.error('⚠️ 마이그레이션 중 일부 오류 발생:', result);
+      logger.error('⚠️ 마이그레이션 중 일부 오류 발생:', result);
     }
   } catch (error) {
-    console.error('❌ 자동 마이그레이션 실패:', error);
+    logger.error('❌ 자동 마이그레이션 실패:', error);
   }
 }

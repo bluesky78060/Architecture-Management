@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { getSecureItem, setSecureItem, removeSecureItem, migrateSensitiveData } from '../utils/secureStorage';
+import { getSecureItem, setSecureItem, removeSecureItem, migrateSensitiveData } from '../utils/secureStorageAdapter';
 
 interface User {
   id: number;
