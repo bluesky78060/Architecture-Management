@@ -657,7 +657,7 @@ const Clients: React.FC = () => {
                   </div>
                 </td>
                 <td className="px-2 py-3 whitespace-nowrap text-xs font-medium">
-                  <div className="flex justify-center space-x-2">
+                  <div className="flex justify-center space-x-3">
                     <Tooltip label="상세보기">
                       <button 
                         onClick={() => viewClientDetails(client)}

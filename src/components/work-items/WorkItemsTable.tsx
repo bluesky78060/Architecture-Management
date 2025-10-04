@@ -90,7 +90,7 @@ export default function WorkItemsTable({ items, selection, format, getLaborCost,
                   <div className="text-sm text-gray-900">{item.date}</div>
                 </td>
                 <td className="px-3 py-3 whitespace-nowrap text-sm font-medium w-24">
-                  <div className="flex space-x-2">
+                  <div className="flex space-x-3">
                     <Tooltip label="편집">
                       <button onClick={() => onEdit(item)} className="text-blue-600 hover:text-blue-900" title="작업 항목 편집">✏️</button>
                     </Tooltip>
