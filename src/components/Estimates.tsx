@@ -3,7 +3,7 @@ import StatsCards from './estimates/StatsCards';
 import ConfirmDialog from './ConfirmDialog';
 import FilterBar from './estimates/FilterBar';
 import EstimatesTable from './estimates/EstimatesTable';
-import { Estimate, EstimateItem } from '../types/domain';
+import { Estimate, EstimateItem, EstimateStatus } from '../types/domain';
 import type { ID } from '../types/domain';
 import { useCalendar } from '../hooks/useCalendar';
 import { useApp } from '../contexts/AppContext';
@@ -389,7 +389,7 @@ const Estimates: React.FC = () => {
 
   const handlePrint = (estimate: Estimate) => {
     try {
-      const payload = { estimate, companyInfo } as any;
+      const payload = { estimate, companyInfo };
       try { localStorage.setItem('quotationPrintData', JSON.stringify(payload)); } catch (_) {}
       const estimateJson = JSON.stringify(payload);
       const base = process.env.PUBLIC_URL || '';
@@ -414,7 +414,7 @@ const Estimates: React.FC = () => {
     try {
       const importedEstimates = await importFromExcel.estimates(file);
       setEstimates(prev => {
-        const normalized = (importedEstimates || []).map((e: any, idx: number) => ({
+        const normalized = (importedEstimates || []).map((e: Partial<Estimate>, idx: number) => ({
           id: String(e?.id ?? `EST-IMP-${Date.now()}-${idx}`),
           clientId: Number(e?.clientId || 0),
           clientName: e?.clientName || '',
@@ -425,11 +425,11 @@ const Estimates: React.FC = () => {
           title: e?.title || e?.projectName || '견적',
           date: e?.date,
           validUntil: e?.validUntil,
-          status: (e?.status as any) || '임시저장',
+          status: (e?.status as EstimateStatus) || '임시저장',
           totalAmount: Number(e?.totalAmount || 0),
           notes: e?.notes || '',
           items: Array.isArray(e?.items)
-            ? e.items.map((it: any) => ({
+            ? e.items.map((it: Partial<EstimateItem>) => ({
                 category: it?.category,
                 name: String(it?.name || ''),
                 description: it?.description,

@@ -418,7 +418,7 @@ export default function WorkItems(): JSX.Element {
       const imported = await importFromExcel.workItems(file);
       setWorkItems(prev => {
         const currentMax = prev.length ? Math.max(...prev.map(i => Number(i.id) || 0)) : 0;
-        const remapped = (imported || []).map((it: any, idx: number) => ({
+        const remapped = (imported || []).map((it: Partial<WorkItem>, idx: number) => ({
           id: currentMax + idx + 1,
           clientId: Number(it?.clientId || 0),
           clientName: it?.clientName,
@@ -438,7 +438,7 @@ export default function WorkItems(): JSX.Element {
           laborUnitRate: it?.laborUnitRate ?? '',
           laborPersonsGeneral: it?.laborPersonsGeneral ?? '',
           laborUnitRateGeneral: it?.laborUnitRateGeneral ?? '',
-        } as any));
+        } as WorkItem));
         return [...prev, ...remapped];
       });
       alert(`${imported.length}개의 작업 항목을 가져왔습니다.`);

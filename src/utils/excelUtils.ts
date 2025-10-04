@@ -1,8 +1,9 @@
 import * as ExcelJS from 'exceljs';
-import { Client, WorkItem, Invoice, Estimate, ID, InvoiceStatus } from '../types/domain';
+import { Client, WorkItem, Invoice, Estimate, ID, InvoiceStatus, WorkStatus, EstimateStatus } from '../types/domain';
 
 // Helper types for Excel export
 interface ExportClient {
+  [key: string]: string | number;
   'ID': ID;
   '이름': string;
   '휴대폰': string;
@@ -16,6 +17,7 @@ interface ExportClient {
 }
 
 interface ExportWorkItem {
+  [key: string]: string | number;
   'ID': ID;
   '건축주': string;
   '작업장': string;
@@ -37,6 +39,7 @@ interface ExportWorkItem {
 }
 
 interface ExportInvoice {
+  [key: string]: string | number;
   '청구서번호': string;
   '건축주': string;
   '프로젝트': string;
@@ -48,6 +51,7 @@ interface ExportInvoice {
 }
 
 interface ExportEstimate {
+  [key: string]: string | number;
   '견적서번호': string;
   '건축주': string;
   '작업장': string;
@@ -64,7 +68,7 @@ const createWorkbook = (): ExcelJS.Workbook => {
   return new ExcelJS.Workbook();
 };
 
-const addJsonDataToSheet = (workbook: ExcelJS.Workbook, data: any[], sheetName: string, colWidths?: number[]): ExcelJS.Worksheet => {
+const addJsonDataToSheet = <T extends Record<string, string | number | boolean | null | undefined>>(workbook: ExcelJS.Workbook, data: T[], sheetName: string, colWidths?: number[]): ExcelJS.Worksheet => {
   const worksheet = workbook.addWorksheet(sheetName);
   
   if (data.length > 0) {
@@ -406,7 +410,7 @@ export const excelUtils = {
               if (rowNumber === 1) return; // Skip header row
               
               const client: Partial<Client> = {};
-              const values: any[] = [];
+              const values: unknown[] = [];
               
               row.eachCell((cell) => {
                 values.push(cell.value);
@@ -489,7 +493,7 @@ export const excelUtils = {
               if (rowNumber === 1) return; // Skip header row
               
               const workItem: Partial<WorkItem> = {};
-              const values: any[] = [];
+              const values: unknown[] = [];
               
               row.eachCell((cell) => {
                 values.push(cell.value);
@@ -528,7 +532,7 @@ export const excelUtils = {
                     workItem.quantity = Number(val) || 0;
                     break;
                   case '상태':
-                    workItem.status = val as any;
+                    workItem.status = val as WorkStatus;
                     break;
                   case '작업일':
                     workItem.date = val;
@@ -589,7 +593,7 @@ export const excelUtils = {
               if (rowNumber === 1) return; // Skip header row
               
               const estimate: Partial<Estimate> = {};
-              const values: any[] = [];
+              const values: unknown[] = [];
               
               row.eachCell((cell) => {
                 values.push(cell.value);
@@ -622,7 +626,7 @@ export const excelUtils = {
                     estimate.totalAmount = Number(val) || 0;
                     break;
                   case '상태':
-                    estimate.status = val as any;
+                    estimate.status = val as EstimateStatus;
                     break;
                   case '발행일':
                     estimate.date = val;

@@ -122,9 +122,9 @@ const Clients: React.FC = () => {
         const importedClients = await importFromExcel.clients(file);
         setClients(prev => {
           const baseMax = prev.length ? Math.max(...prev.map(c => Number(c.id) || 0)) : 0;
-          const normalized = (importedClients || []).map((c: any, idx: number) => {
+          const normalized = (importedClients || []).map((c: Partial<Client>, idx: number) => {
             const workplaces = Array.isArray(c?.workplaces)
-              ? c.workplaces.map((wp: any, i: number) => ({
+              ? c.workplaces.map((wp: Partial<Workplace>, i: number) => ({
                   id: Number(wp?.id ?? i + 1),
                   name: String(wp?.name || ''),
                   address: wp?.address || '',
@@ -141,7 +141,7 @@ const Clients: React.FC = () => {
               type: c?.type,
               business: c?.business,
               workplaces,
-              projects: Array.isArray(c?.projects) ? c.projects.map((p: any) => String(p || '').trim()).filter(Boolean) : [],
+              projects: Array.isArray(c?.projects) ? c.projects.map((p: unknown) => String(p || '').trim()).filter(Boolean) : [],
               totalBilled: Number(c?.totalBilled || 0),
               outstanding: Number(c?.outstanding || 0),
               notes: c?.notes || '',
@@ -633,24 +633,24 @@ const Clients: React.FC = () => {
                   </div>
                 </td>
                 <td className="px-2 py-3 whitespace-nowrap">
-                  <div className="text-xs text-gray-900">
+                  <div className="text-sm text-gray-900">
                     {client.phone && <div className="truncate">{client.phone}</div>}
                     {client.mobile && <div className="truncate">{client.mobile}</div>}
                   </div>
                 </td>
                 <td className="px-2 py-3">
-                  <div className="text-xs text-gray-900 truncate max-w-36" title={client.address}>{client.address}</div>
+                  <div className="text-sm text-gray-900 truncate max-w-36" title={client.address}>{client.address}</div>
                 </td>
                 <td className="px-2 py-3 whitespace-nowrap">
-                  <div className="text-xs text-gray-900 text-center">{(projectCountsByClientId.get(Number(client.id)) || 0)}개</div>
+                  <div className="text-sm text-gray-900 text-center">{(projectCountsByClientId.get(Number(client.id)) || 0)}개</div>
                 </td>
                 <td className="px-2 py-3 whitespace-nowrap text-right">
-                  <div className="text-xs font-medium text-gray-900">
+                  <div className="text-sm font-medium text-gray-900">
                     {(totalsByClientId.get(Number(client.id))?.total || 0).toLocaleString()}원
                   </div>
                 </td>
                 <td className="px-2 py-3 whitespace-nowrap text-right">
-                  <div className={`text-xs font-medium ${
+                  <div className={`text-sm font-medium ${
                     (totalsByClientId.get(Number(client.id))?.outstanding || 0) > 0 ? 'text-red-600' : 'text-green-600'
                   }`}>
                     {(totalsByClientId.get(Number(client.id))?.outstanding || 0).toLocaleString()}원
