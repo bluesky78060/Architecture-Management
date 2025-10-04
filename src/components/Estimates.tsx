@@ -392,10 +392,9 @@ const Estimates: React.FC = () => {
       const payload = { estimate, companyInfo } as any;
       try { localStorage.setItem('quotationPrintData', JSON.stringify(payload)); } catch (_) {}
       const estimateJson = JSON.stringify(payload);
-      const base = (process.env.PUBLIC_URL && process.env.PUBLIC_URL !== '.' && process.env.PUBLIC_URL !== './')
-        ? String(process.env.PUBLIC_URL).replace(/\/$/, '/')
-        : '/';
-      const quotationUrl = new URL(`${base}quotation-output.html?id=${estimate.id}&data=${encodeURIComponent(estimateJson)}`, window.location.origin).toString();
+      const base = process.env.PUBLIC_URL || '';
+      const baseUrl = base ? `${window.location.origin}${base}` : window.location.origin;
+      const quotationUrl = `${baseUrl}/quotation-output.html?id=${estimate.id}&data=${encodeURIComponent(estimateJson)}`;
       const printWindow = window.open(quotationUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
       if (!printWindow) { alert('팝업이 차단되었습니다. 브라우저 설정에서 팝업을 허용해주세요.'); return; }
       setTimeout(() => { try { printWindow.focus(); } catch (_) {} }, 500);

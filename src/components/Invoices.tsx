@@ -118,7 +118,8 @@ export default function Invoices(): JSX.Element {
       }
       
       // URL 구성
-      const baseUrl = window.location.origin;
+      const base = process.env.PUBLIC_URL || '';
+      const baseUrl = base ? `${window.location.origin}${base}` : window.location.origin;
       const printUrl = `${baseUrl}/invoice-detail-output.html`;
       
       
@@ -156,7 +157,8 @@ export default function Invoices(): JSX.Element {
       }
       
       // URL 구성 - 간단하게 수정
-      const baseUrl = window.location.origin;
+      const base = process.env.PUBLIC_URL || '';
+      const baseUrl = base ? `${window.location.origin}${base}` : window.location.origin;
       const printUrl = `${baseUrl}/invoice-output.html`;
       
       
