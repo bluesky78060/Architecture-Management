@@ -656,7 +656,7 @@ const Clients: React.FC = () => {
                     {(totalsByClientId.get(Number(client.id))?.outstanding || 0).toLocaleString()}원
                   </div>
                 </td>
-                <td className="px-2 py-3 whitespace-nowrap text-xs font-medium">
+                <td className="px-2 py-3 whitespace-nowrap text-sm font-medium">
                   <div className="flex justify-center space-x-3">
                     <Tooltip label="상세보기">
                       <button 
