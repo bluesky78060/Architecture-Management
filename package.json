@@ -33,6 +33,7 @@
     "electron": "^38.0.0",
     "electron-builder": "^26.0.12",
     "electron-is-dev": "^3.0.1",
+    "gh-pages": "^6.3.0",
     "playwright": "^1.55.1",
     "postcss": "^8.4.21",
     "pptxgenjs": "^3.12.0",
@@ -42,7 +43,7 @@
     "wait-on": "^8.0.4"
   },
   "main": "public/electron.js",
-  "homepage": "./",
+  "homepage": "https://bluesky78060.github.io/Architecture-Management",
   "scripts": {
     "start": "craco start",
     "build": "craco build",
@@ -54,7 +55,9 @@
     "dist": "npm run build && electron-builder --publish=never",
     "dist-win": "npm run build && electron-builder --win --publish=never",
     "dist-mac": "npm run build && electron-builder --mac --publish=never",
-    "dist-all": "npm run build && electron-builder --win --mac --publish=never"
+    "dist-all": "npm run build && electron-builder --win --mac --publish=never",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "browserslist": {
     "production": [
