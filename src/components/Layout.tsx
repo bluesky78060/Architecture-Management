@@ -65,8 +65,8 @@ export default function Layout({ children }: LayoutProps) {
           </div>
         </div>
         
-        <nav className="mt-8 px-4">
-          <ul className="space-y-3">
+        <nav className="mt-10 px-4">
+          <ul className="space-y-4">
             {navigation.map((item) => {
               const isActive = location.pathname === item.href;
               return (
@@ -74,7 +74,7 @@ export default function Layout({ children }: LayoutProps) {
                   <Link
                     to={item.href}
                     className={`
-                      flex items-center px-4 py-3 text-base font-medium rounded-xl transition-all duration-200
+                      flex items-center px-4 py-4 text-base font-medium rounded-xl transition-all duration-200
                       ${isActive 
                         ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white' 
                         : 'text-gray-700 hover:bg-gray-100'
