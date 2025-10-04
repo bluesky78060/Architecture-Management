@@ -95,15 +95,11 @@ export default function WorkItemsTable({ items, selection, format, getLaborCost,
                       <button onClick={() => onEdit(item)} className="text-blue-600 hover:text-blue-900" title="작업 항목 편집">✏️</button>
                     </Tooltip>
                     <Tooltip label="삭제">
-                      <button onClick={() => onDelete(item.id as number)} className="inline-flex items-center justify-center px-1.5 py-0.5 text-xs leading-none bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md transition-shadow duration-200 text-gray-700" title="작업 항목 삭제">
-                        <span className="text-red-600">🗑️</span>
-                      </button>
+                      <button onClick={() => onDelete(item.id as number)} className="text-red-600 hover:text-red-900" title="작업 항목 삭제">🗑️</button>
                     </Tooltip>
                     {item.status === '완료' && (
                       <Tooltip label="청구서 생성">
-                        <button onClick={() => onCreateInvoice(item)} className="inline-flex items-center justify-center px-1.5 py-0.5 text-xs leading-none bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md transition-shadow duration-200 text-gray-700" title="청구서 생성">
-                          <span className="text-green-600">🧾</span>
-                        </button>
+                        <button onClick={() => onCreateInvoice(item)} className="text-green-600 hover:text-green-900" title="청구서 생성">🧾</button>
                       </Tooltip>
                     )}
                   </div>
