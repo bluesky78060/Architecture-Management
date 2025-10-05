@@ -138,4 +138,5 @@ This document guides contributors working in this repository.
 
 ## Checkpoints Log
 
+- CHK-2025-10-05-02 — 2025-10-05 23:13 — 45 files (주요 ESLint/보안/라우팅/배경 이미지 수정)
 - CHK-2025-10-01-01 — 2025-10-01 11:28 — 2 files (src/components/WorkItems.js, AGENTS.md)

@@ -21,7 +21,7 @@ const Navbar: React.FC = () => {
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent): void => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+      if (menuRef.current !== null && !menuRef.current.contains(e.target as Node)) {
         setShowUserMenu(false);
       }
     };
@@ -149,7 +149,7 @@ const Navbar: React.FC = () => {
               ) : (
                 <>
                   <UserIcon className="h-5 w-5" aria-label="사용자" />
-                  <span>{currentUser?.name || currentUser?.username}</span>
+                  <span>{(currentUser?.name !== undefined && currentUser.name !== '') ? currentUser.name : currentUser?.username}</span>
                 </>
               )}
             </button>

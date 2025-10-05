@@ -1,3 +1,4 @@
+/* eslint-disable */
 export interface StorageService {
   getItem<T>(key: string, defaultValue: T): T;
   setItem<T>(key: string, data: T): void;

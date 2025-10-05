@@ -33,6 +33,10 @@ module.exports = {
       // TypeScript 파일용 규칙
       files: ['**/*.ts', '**/*.tsx'],
       parser: '@typescript-eslint/parser',
+      parserOptions: {
+        project: './tsconfig.json',
+        tsconfigRootDir: __dirname
+      },
       plugins: ['@typescript-eslint'],
       extends: [
         'react-app',
@@ -42,7 +46,18 @@ module.exports = {
         '@typescript-eslint/no-unused-vars': 'error',
         'no-unused-vars': 'off',
         '@typescript-eslint/explicit-function-return-type': 'off', // 너무 엄격하므로 비활성화
-        '@typescript-eslint/no-explicit-any': 'warn',
+        '@typescript-eslint/no-explicit-any': 'error', // warn → error
+        '@typescript-eslint/strict-boolean-expressions': ['error', {
+          allowString: false,
+          allowNumber: false,
+          allowNullableObject: false
+        }],
+        'no-magic-numbers': ['error', {
+          ignore: [0, 1, -1],
+          ignoreArrayIndexes: true,
+          enforceConst: true,
+          detectObjects: false
+        }],
         'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn'
       }
     }

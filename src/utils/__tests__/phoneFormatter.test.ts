@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { formatPhoneNumber, isValidPhoneNumber } from '../phoneFormatter';
 
 describe('formatPhoneNumber', () => {

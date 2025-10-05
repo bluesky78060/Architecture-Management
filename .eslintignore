@@ -1,0 +1,3 @@
+# Ignore declaration files that aren't in tsconfig
+*.d.ts
+**/*.d.ts

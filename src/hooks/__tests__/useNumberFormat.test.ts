@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useNumberFormat } from '../useNumberFormat';
 
 describe('useNumberFormat', () => {

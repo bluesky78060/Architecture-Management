@@ -15,9 +15,9 @@ import AdminPanel from './components/AdminPanel';
 function AppContent() {
   const { isLoggedIn } = useUser();
   const LOGIN_DISABLED = (process.env.REACT_APP_DISABLE_LOGIN === '1') ||
-    (typeof window !== 'undefined' && window.localStorage && window.localStorage.getItem('CMS_DISABLE_LOGIN') === '1');
+    (typeof window !== 'undefined' && window.localStorage !== null && window.localStorage.getItem('CMS_DISABLE_LOGIN') === '1');
 
-  if (!LOGIN_DISABLED && !isLoggedIn) {
+  if (LOGIN_DISABLED === false && isLoggedIn === false) {
     return <Login />;
   }
 

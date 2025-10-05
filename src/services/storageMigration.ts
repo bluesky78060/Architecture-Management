@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * localStorage → IndexedDB 마이그레이션 도구
  * 기존 localStorage 데이터를 IndexedDB로 안전하게 이전

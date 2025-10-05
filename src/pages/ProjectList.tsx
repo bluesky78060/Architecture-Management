@@ -1,6 +1,7 @@
 import { PlusIcon, PencilIcon, EyeIcon } from '@heroicons/react/24/outline';
 
 export default function ProjectList() {
+  const CURRENCY_DIVISOR_100M = 100000000;
   const mockProjects = [
     {
       project_id: 1,
@@ -21,7 +22,7 @@ export default function ProjectList() {
   ];
 
   const formatCurrency = (amount: number) => {
-    return `₩${(amount / 100000000).toFixed(1)}억`;
+    return `₩${(amount / CURRENCY_DIVISOR_100M).toFixed(1)}억`;
   };
 
   const getVATModeLabel = (mode: string) => {

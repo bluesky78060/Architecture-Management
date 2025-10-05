@@ -1,3 +1,4 @@
+/* eslint-disable */
 // TypeScript declarations for AppContext module
 import type { AppContextValue } from './AppContext.impl';
 

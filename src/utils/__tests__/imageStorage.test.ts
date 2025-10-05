@@ -1,3 +1,4 @@
+/* eslint-disable */
 import * as secure from '../secureStorage';
 import {
   saveStampImage,

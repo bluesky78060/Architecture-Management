@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { browserFs } from '../browserFs';
 
 // 테스트용 타입 확장

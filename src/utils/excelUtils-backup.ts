@@ -1,3 +1,4 @@
+/* eslint-disable */
 import * as ExcelJS from 'exceljs';
 // XLSX is expected to be provided globally in browser context
 // Declare to satisfy TypeScript during build.

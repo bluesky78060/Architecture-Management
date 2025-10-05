@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { storage } from '../storage';
 
 // Mock browserFs used inside storage

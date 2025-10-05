@@ -12,7 +12,7 @@ export default function InvoiceList() {
   const { invoices, setInvoices } = useApp();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
-  const allVisibleIds = useMemo(() => (invoices || []).map((i: Invoice) => i.id), [invoices]);
+  const allVisibleIds = useMemo(() => (invoices ?? []).map((i: Invoice) => i.id), [invoices]);
   const allSelected = selectedIds.length > 0 && selectedIds.length === allVisibleIds.length;
   const toggleSelectAll = (checked: boolean) => setSelectedIds(checked ? allVisibleIds : []);
   const toggleSelectOne = (id: string, checked: boolean) => setSelectedIds(prev => checked ? Array.from(new Set([...prev, id])) : prev.filter(x => x !== id));
@@ -110,7 +110,7 @@ export default function InvoiceList() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {(invoices || []).map((invoice: Invoice) => (
+              {(invoices ?? []).map((invoice: Invoice) => (
                 <tr key={invoice.id} className="hover:bg-gray-50">
                   <td className="px-3 py-3 whitespace-nowrap">
                     <input

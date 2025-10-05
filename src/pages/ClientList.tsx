@@ -7,7 +7,7 @@ export default function ClientList() {
   const { clients, setClients } = useApp();
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
-  const allVisibleIds = useMemo(() => (clients || []).map((c: Client) => c.id as number), [clients]);
+  const allVisibleIds = useMemo(() => (clients ?? []).map((c: Client) => c.id as number), [clients]);
   const allSelected = selectedIds.length > 0 && selectedIds.length === allVisibleIds.length;
   const toggleSelectAll = (checked: boolean) => setSelectedIds(checked ? allVisibleIds : []);
   const toggleSelectOne = (id: number, checked: boolean) => setSelectedIds(prev => checked ? Array.from(new Set([...prev, id])) : prev.filter(x => x !== id));
@@ -89,7 +89,7 @@ export default function ClientList() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {(clients || []).map((c: Client) => (
+              {(clients ?? []).map((c: Client) => (
                 <tr key={c.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <input
@@ -101,8 +101,8 @@ export default function ClientList() {
                     />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{c.name}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{c.phone || '-'}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{c.address || '-'}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{(c.phone !== undefined && c.phone !== '') ? c.phone : '-'}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{(c.address !== undefined && c.address !== '') ? c.address : '-'}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{Array.isArray(c.projects) ? c.projects.length : 0}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{Array.isArray(c.workplaces) ? c.workplaces.length : 0}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

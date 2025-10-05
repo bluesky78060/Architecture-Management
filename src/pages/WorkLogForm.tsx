@@ -108,20 +108,22 @@ export default function WorkLogForm() {
     }
   };
 
+  const PERCENTAGE_MULTIPLIER = 100;
+
   const fetchLaborRecommendation = async (index: number) => {
     const labor = laborEntries[index];
-    if (!labor.trade) {
+    if (labor.trade === '') {
       alert('먼저 직종을 선택하세요.');
       return;
     }
     try {
       const pidRaw = watch('project_id') as unknown as string | number | undefined;
-      const pid = pidRaw ? Number(pidRaw) : undefined;
+      const pid = (pidRaw !== undefined && pidRaw !== null && pidRaw !== '') ? Number(pidRaw) : undefined;
       const params: Record<string, string | number> = {
         trade: labor.trade,
         rate_type: labor.rate_type,
       };
-      if (pid && !Number.isNaN(pid)) params.project_id = pid;
+      if (pid !== undefined && !Number.isNaN(pid)) params.project_id = pid;
 
       const res = await api.get('/recommendations/labor', { params });
       const rec = res.data as LaborData['_rec'];
@@ -169,19 +171,19 @@ export default function WorkLogForm() {
                 <option value="1">아파트 신축공사 A동</option>
                 <option value="2">오피스텔 B동</option>
               </select>
-              {errors.project_id && <p className="mt-1 text-sm text-red-600">{errors.project_id.message}</p>}
+              {(errors.project_id !== undefined && errors.project_id !== null) && <p className="mt-1 text-sm text-red-600">{errors.project_id.message}</p>}
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 작업일자
               </label>
-              <input 
-                type="date" 
+              <input
+                type="date"
                 {...register('work_date', { required: '작업일자를 입력하세요' })}
                 className="input-field"
               />
-              {errors.work_date && <p className="mt-1 text-sm text-red-600">{errors.work_date.message}</p>}
+              {(errors.work_date !== undefined && errors.work_date !== null) && <p className="mt-1 text-sm text-red-600">{errors.work_date.message}</p>}
             </div>
 
             <div>
@@ -439,9 +441,9 @@ export default function WorkLogForm() {
                       추천 단가
                     </button>
                   </div>
-                  {labor._rec && (
+                  {(labor._rec !== undefined && labor._rec !== null) && (
                     <div className="mt-2 text-xs text-gray-600">
-                      추천: ₩{labor._rec.recommended_rate.toLocaleString()} ({labor._rec.rate_type === 'daily' ? '일당' : '시급'}) · 샘플 {labor._rec.sample_size}건 · 신뢰도 {(labor._rec.confidence * 100).toFixed(0)}%
+                      추천: ₩{labor._rec.recommended_rate.toLocaleString()} ({labor._rec.rate_type === 'daily' ? '일당' : '시급'}) · 샘플 {labor._rec.sample_size}건 · 신뢰도 {(labor._rec.confidence * PERCENTAGE_MULTIPLIER).toFixed(0)}%
                       {typeof labor._rec.standard_reference === 'number' && (
                         <>
                           {' '}· 표준 ₩{Number(labor._rec.standard_reference).toLocaleString()}

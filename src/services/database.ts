@@ -12,33 +12,9 @@ import type {
   Estimate,
   CompanyInfo,
   InvoiceStatus,
-  EstimateStatus,
-  WorkStatus,
+  SearchOptions,
+  PaginatedResult,
 } from '../types/domain';
-
-/**
- * 페이지네이션 결과
- */
-export interface PaginatedResult<T> {
-  data: T[];
-  total: number;
-  page: number;
-  pageSize: number;
-  hasMore: boolean;
-}
-
-/**
- * 검색 옵션
- */
-export interface SearchOptions {
-  query?: string;
-  status?: InvoiceStatus | EstimateStatus | WorkStatus;
-  clientId?: number;
-  dateFrom?: string;
-  dateTo?: string;
-  page?: number;
-  pageSize?: number;
-}
 
 /**
  * 건축 관리 시스템 데이터베이스 클래스
@@ -50,7 +26,10 @@ export class CMSDatabase extends Dexie {
   invoices!: Table<Invoice, string>;
   estimates!: Table<Estimate, string>;
   companyInfo!: Table<CompanyInfo & { id: number }, number>;
-  settings!: Table<{ key: string; value: any }, string>;
+  settings!: Table<{ key: string; value: unknown }, string>;
+
+  // 상수 (페이징 기본 크기: 20개)
+  private readonly DEFAULT_PAGE_SIZE = 20; // eslint-disable-line no-magic-numbers
 
   constructor() {
     super('CMSDatabase');
@@ -80,8 +59,9 @@ export class CMSDatabase extends Dexie {
       settings: 'key',
     });
 
+    const DATABASE_VERSION_2 = 2;
     // 버전 2: 복합 인덱스 추가 (성능 최적화)
-    this.version(2).stores({
+    this.version(DATABASE_VERSION_2).stores({
       clients: '++id, name, type, phone, email, createdAt, [type+name]',
       workItems: '++id, clientId, status, date, category, workplaceId, [clientId+status], [clientId+date]',
       invoices: 'id, clientId, status, date, client, [clientId+status], [clientId+date], [status+date]',
@@ -125,11 +105,11 @@ export class CMSDatabase extends Dexie {
   /**
    * 건축주 목록 조회 (페이지네이션)
    */
-  async getClientsPaged(page: number = 0, pageSize: number = 20, search?: string): Promise<PaginatedResult<Client>> {
+  async getClientsPaged(page = 0, pageSize = this.DEFAULT_PAGE_SIZE, search?: string): Promise<PaginatedResult<Client>> {
     let query = this.clients.orderBy('createdAt').reverse();
 
     // 검색 필터
-    if (search) {
+    if (search !== undefined && search !== '') {
       query = query.filter(
         (client) =>
           client.name.includes(search) ||
@@ -165,7 +145,7 @@ export class CMSDatabase extends Dexie {
     const now = new Date().toISOString().split('T')[0];
     return this.clients.add({
       ...client,
-      createdAt: client.createdAt || now,
+      createdAt: (client.createdAt !== undefined && client.createdAt !== '') ? client.createdAt : now,
       updatedAt: now,
     } as Client);
   }
@@ -209,29 +189,29 @@ export class CMSDatabase extends Dexie {
    * 작업 항목 목록 조회 (페이지네이션 + 필터)
    */
   async getWorkItemsPaged(options: SearchOptions = {}): Promise<PaginatedResult<WorkItem>> {
-    const { page = 0, pageSize = 20, query, status, clientId, dateFrom, dateTo } = options;
+    const { page = 0, pageSize = this.DEFAULT_PAGE_SIZE, query, status, clientId, dateFrom, dateTo } = options;
 
     let collection = this.workItems.orderBy('date').reverse();
 
     // 필터 적용
-    if (clientId) {
+    if (clientId !== undefined && clientId !== null) {
       collection = this.workItems.where('[clientId+status]').between([clientId, ''], [clientId, 'ￓ']);
     }
 
-    if (status) {
+    if (status !== undefined) {
       collection = collection.filter((item) => item.status === status);
     }
 
-    if (dateFrom || dateTo) {
+    if (dateFrom !== undefined || dateTo !== undefined) {
       collection = collection.filter((item) => {
-        if (!item.date) return false;
-        if (dateFrom && item.date < dateFrom) return false;
-        if (dateTo && item.date > dateTo) return false;
+        if (item.date === null || item.date === undefined) return false;
+        if (dateFrom !== undefined && item.date < dateFrom) return false;
+        if (dateTo !== undefined && item.date > dateTo) return false;
         return true;
       });
     }
 
-    if (query) {
+    if (query !== undefined && query !== '') {
       collection = collection.filter(
         (item) =>
           item.name.includes(query) ||
@@ -287,30 +267,30 @@ export class CMSDatabase extends Dexie {
    * 청구서 목록 조회 (페이지네이션 + 필터)
    */
   async getInvoicesPaged(options: SearchOptions = {}): Promise<PaginatedResult<Invoice>> {
-    const { page = 0, pageSize = 20, query, status, clientId, dateFrom, dateTo } = options;
+    const { page = 0, pageSize = this.DEFAULT_PAGE_SIZE, query, status, clientId, dateFrom, dateTo } = options;
 
     let collection = this.invoices.orderBy('date').reverse();
 
     // 복합 인덱스 활용
-    if (clientId && status) {
+    if (clientId !== undefined && clientId !== null && status !== undefined) {
       collection = this.invoices.where('[clientId+status]').equals([clientId, status]);
-    } else if (clientId) {
+    } else if (clientId !== undefined && clientId !== null) {
       collection = this.invoices.where('clientId').equals(clientId);
-    } else if (status) {
+    } else if (status !== undefined) {
       collection = this.invoices.where('status').equals(status);
     }
 
     // 날짜 필터
-    if (dateFrom || dateTo) {
+    if (dateFrom !== undefined || dateTo !== undefined) {
       collection = collection.filter((invoice) => {
-        if (dateFrom && invoice.date < dateFrom) return false;
-        if (dateTo && invoice.date > dateTo) return false;
+        if (dateFrom !== undefined && invoice.date < dateFrom) return false;
+        if (dateTo !== undefined && invoice.date > dateTo) return false;
         return true;
       });
     }
 
     // 검색 쿼리
-    if (query) {
+    if (query !== undefined && query !== '') {
       collection = collection.filter(
         (invoice) =>
           invoice.id.includes(query) ||
@@ -371,7 +351,7 @@ export class CMSDatabase extends Dexie {
    */
   async getInvoiceStats(): Promise<Record<InvoiceStatus, number>> {
     const statuses: InvoiceStatus[] = ['발송대기', '발송됨', '미결제', '결제완료'];
-    const stats: Record<InvoiceStatus, number> = {} as any;
+    const stats: Record<InvoiceStatus, number> = {} as Record<InvoiceStatus, number>;
 
     for (const status of statuses) {
       stats[status] = await this.invoices.where('status').equals(status).count();
@@ -386,31 +366,31 @@ export class CMSDatabase extends Dexie {
    * 견적서 목록 조회 (페이지네이션 + 필터)
    */
   async getEstimatesPaged(options: SearchOptions = {}): Promise<PaginatedResult<Estimate>> {
-    const { page = 0, pageSize = 20, query, status, clientId, dateFrom, dateTo } = options;
+    const { page = 0, pageSize = this.DEFAULT_PAGE_SIZE, query, status, clientId, dateFrom, dateTo } = options;
 
     let collection = this.estimates.orderBy('date').reverse();
 
     // 복합 인덱스 활용
-    if (clientId && status) {
+    if (clientId !== undefined && clientId !== null && status !== undefined) {
       collection = this.estimates.where('[clientId+status]').equals([clientId, status]);
-    } else if (clientId) {
+    } else if (clientId !== undefined && clientId !== null) {
       collection = this.estimates.where('clientId').equals(clientId);
-    } else if (status) {
+    } else if (status !== undefined) {
       collection = this.estimates.where('status').equals(status);
     }
 
     // 날짜 필터
-    if (dateFrom || dateTo) {
+    if (dateFrom !== undefined || dateTo !== undefined) {
       collection = collection.filter((estimate) => {
-        if (!estimate.date) return true;
-        if (dateFrom && estimate.date < dateFrom) return false;
-        if (dateTo && estimate.date > dateTo) return false;
+        if (estimate.date === null || estimate.date === undefined) return true;
+        if (dateFrom !== undefined && estimate.date < dateFrom) return false;
+        if (dateTo !== undefined && estimate.date > dateTo) return false;
         return true;
       });
     }
 
     // 검색 쿼리
-    if (query) {
+    if (query !== undefined && query !== '') {
       collection = collection.filter(
         (estimate) =>
           estimate.id.includes(query) ||
@@ -466,8 +446,9 @@ export class CMSDatabase extends Dexie {
    * 회사 정보 조회
    */
   async getCompanyInfo(): Promise<CompanyInfo> {
-    const info = await this.companyInfo.get(1);
-    if (!info) {
+    const COMPANY_INFO_ID = 1;
+    const info = await this.companyInfo.get(COMPANY_INFO_ID);
+    if (info === undefined || info === null) {
       throw new Error('회사 정보가 없습니다.');
     }
     const { id, ...companyInfo } = info;
@@ -486,15 +467,15 @@ export class CMSDatabase extends Dexie {
   /**
    * 설정 값 조회
    */
-  async getSetting<T = any>(key: string, defaultValue?: T): Promise<T | undefined> {
+  async getSetting<T = unknown>(key: string, defaultValue?: T): Promise<T | undefined> {
     const setting = await this.settings.get(key);
-    return setting ? setting.value : defaultValue;
+    return (setting !== undefined && setting !== null) ? (setting.value as T) : defaultValue;
   }
 
   /**
    * 설정 값 저장
    */
-  async setSetting(key: string, value: any): Promise<string> {
+  async setSetting(key: string, value: unknown): Promise<string> {
     return this.settings.put({ key, value });
   }
 
