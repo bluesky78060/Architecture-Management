@@ -110,14 +110,13 @@ const routes = createRoutesFromElements(
   </Route>
 );
 
-// Prefer HashRouter on GitHub Pages or file protocol (Electron/packaged)
+// Prefer HashRouter only on file protocol (Electron/packaged) or when explicitly enabled via env
 const useHash = ((): boolean => {
   const byEnv = process.env.REACT_APP_USE_HASH_ROUTER === '1';
   if (byEnv) return true;
   if (typeof window !== 'undefined') {
     const isFile = window.location.protocol === 'file:';
-    const isGhPages = /github\.io$/.test(window.location.hostname);
-    if (isFile || isGhPages) return true;
+    if (isFile) return true;
   }
   return false;
 })();
