@@ -1,0 +1,43 @@
+name: Deploy to gh-pages branch
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Configure app env (gh-pages)
+        run: |
+          echo "PUBLIC_URL=https://${GITHUB_ACTOR}.github.io/${GITHUB_REPOSITORY#*/}" >> $GITHUB_ENV
+          echo "REACT_APP_USE_HASH_ROUTER=1" >> $GITHUB_ENV
+          echo "REACT_APP_ASSET_VER=$(date +%s)" >> $GITHUB_ENV
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to gh-pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: build
+          clean: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
