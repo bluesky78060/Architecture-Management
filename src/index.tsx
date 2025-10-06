@@ -1,7 +1,7 @@
 // React import not required for new JSX transform
 import { lazy, Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, createHashRouter, RouterProvider, Route, createRoutesFromElements, Outlet } from 'react-router-dom';
+import { createBrowserRouter, createHashRouter, RouterProvider, Route, createRoutesFromElements, Outlet, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import './index.css';
 import { MS_IN_SECOND, SECONDS_IN_MINUTE } from './constants/units';
@@ -100,13 +100,14 @@ function AppGate() {
 
 const routes = createRoutesFromElements(
   <Route element={<AppGate />}>
-    <Route path="/" element={<Suspense fallback={<LoadingFallback />}><Dashboard /></Suspense>} />
-    <Route path="/estimates" element={<Suspense fallback={<LoadingFallback />}><EstimatesPage /></Suspense>} />
-    <Route path="/invoices" element={<Suspense fallback={<LoadingFallback />}><InvoicesPage /></Suspense>} />
-    <Route path="/clients" element={<Suspense fallback={<LoadingFallback />}><Clients /></Suspense>} />
-    <Route path="/work-items" element={<Suspense fallback={<LoadingFallback />}><WorkItemsPage /></Suspense>} />
-    <Route path="/company-info" element={<Suspense fallback={<LoadingFallback />}><CompanyInfo /></Suspense>} />
-    <Route path="/admin" element={<Suspense fallback={<LoadingFallback />}><AdminPanel /></Suspense>} />
+    <Route index element={<Suspense fallback={<LoadingFallback />}><Dashboard /></Suspense>} />
+    <Route path="estimates" element={<Suspense fallback={<LoadingFallback />}><EstimatesPage /></Suspense>} />
+    <Route path="invoices" element={<Suspense fallback={<LoadingFallback />}><InvoicesPage /></Suspense>} />
+    <Route path="clients" element={<Suspense fallback={<LoadingFallback />}><Clients /></Suspense>} />
+    <Route path="work-items" element={<Suspense fallback={<LoadingFallback />}><WorkItemsPage /></Suspense>} />
+    <Route path="company-info" element={<Suspense fallback={<LoadingFallback />}><CompanyInfo /></Suspense>} />
+    <Route path="admin" element={<Suspense fallback={<LoadingFallback />}><AdminPanel /></Suspense>} />
+    <Route path="*" element={<Navigate to="/" replace />} />
   </Route>
 );
 
