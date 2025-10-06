@@ -143,9 +143,9 @@ export default function Invoices(): JSX.Element {
 
       // 새 창 열기
       const printWindow = window.open(printUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-
       if (printWindow === null || printWindow === undefined) {
-        alert(`팝업이 차단되었습니다.\n브라우저 설정에서 팝업을 허용하거나, 아래 URL을 새 탭에서 열어주세요:\n\n${printUrl}`);
+        const go = window.confirm(`팝업이 차단되었습니다.\n같은 탭에서 출력 화면으로 이동할까요?`);
+        if (go) { window.location.assign(printUrl); }
         return;
       }
 
@@ -182,10 +182,9 @@ export default function Invoices(): JSX.Element {
 
       // 새 창 열기
       const printWindow = window.open(printUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-
       if (printWindow === null || printWindow === undefined) {
-        // 팝업이 차단된 경우
-        alert(`팝업이 차단되었습니다.\n브라우저 설정에서 팝업을 허용하거나, 아래 URL을 새 탭에서 열어주세요:\n\n${printUrl}`);
+        const go = window.confirm('팝업이 차단되었습니다.\n같은 탭에서 출력 화면으로 이동할까요?');
+        if (go) { window.location.assign(printUrl); }
         return;
       }
 
