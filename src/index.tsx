@@ -49,30 +49,40 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
-const basePath = ((): string => {
+// Hosting-aware basename resolution
+const resolveBasename = (useHash: boolean): string => {
   const normalize = (p: string): string => {
     let path = p.trim();
     try {
-      // If a full URL is provided (PUBLIC_URL), take pathname part
       const u = new URL(path, window.location.origin);
       path = u.pathname;
     } catch {
-      // Not a full URL, continue
+      // Not a full URL
     }
     if (!path.startsWith('/')) path = `/${path}`;
     if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
     return path;
   };
 
+  // If env explicitly sets it, honor it
   const fromEnv = process.env.REACT_APP_BASE_PATH;
-  if (typeof fromEnv === 'string' && fromEnv.trim().length > 0) return normalize(fromEnv);
+  if (typeof fromEnv === 'string' && fromEnv.trim() !== '') return normalize(fromEnv);
 
   const fromPublicUrl = process.env.PUBLIC_URL;
-  if (typeof fromPublicUrl === 'string' && fromPublicUrl.trim().length > 0) return normalize(fromPublicUrl);
+  if (typeof fromPublicUrl === 'string' && fromPublicUrl.trim() !== '') return normalize(fromPublicUrl);
 
-  // Fallbacks for dev or simple hosting
-  return window.location.pathname.startsWith('/cms') ? '/cms' : '/';
-})();
+  // Auto-detect GitHub Pages subpath, e.g., /Architecture-Management
+  const isGhPages = typeof window !== 'undefined' && /github\.io$/.test(window.location.hostname);
+  if (isGhPages) {
+    const seg = window.location.pathname.split('/').filter(Boolean)[0];
+    const ghBase = seg ? `/${seg}` : '/';
+    // For hash router, basename in hash is unnecessary; keep '/'
+    return useHash ? '/' : ghBase;
+  }
+
+  // Default
+  return '/';
+};
 
 function AppGate() {
   const { isLoggedIn } = useUser();
@@ -100,7 +110,18 @@ const routes = createRoutesFromElements(
   </Route>
 );
 
-const useHash = process.env.REACT_APP_USE_HASH_ROUTER === '1';
+// Prefer HashRouter on GitHub Pages or file protocol (Electron/packaged)
+const useHash = ((): boolean => {
+  const byEnv = process.env.REACT_APP_USE_HASH_ROUTER === '1';
+  if (byEnv) return true;
+  if (typeof window !== 'undefined') {
+    const isFile = window.location.protocol === 'file:';
+    const isGhPages = /github\.io$/.test(window.location.hostname);
+    if (isFile || isGhPages) return true;
+  }
+  return false;
+})();
+const basePath = resolveBasename(useHash);
 // React Router v7 future flags for forward compatibility
 const futureFlags: { v7_startTransition: boolean; v7_relativeSplatPath: boolean } = {
   v7_startTransition: true,
