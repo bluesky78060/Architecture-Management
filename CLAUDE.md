@@ -32,10 +32,20 @@
 - **자동 정리**: 3회차 이전 내용은 자동 삭제하여 파일 크기 관리
 
 ### 현재 생성된 체크포인트
-1. **checkpoint_20250930_153704_icon_conversion_complete**
-   - 생성일시: 2025년 9월 30일 15:37:04
-   - 설명: 아이콘 변환 작업 완료 시점
-   - 내용: 모든 관리 컴포넌트의 outline-style Heroicons 변환 완료
+1. **checkpoint_20251006_203522_tier2_table_tests_complete** ✨ 최신
+   - 생성일시: 2025년 10월 6일 20:35:22
+   - 설명: Tier 2 테이블 컴포넌트 테스트 완료
+   - 내용: WorkItemsTable, EstimatesTable, InvoiceDetailTable 테스트 63개 추가
+   - 테스트 커버리지: 20 test suites, 265 tests (264 passing, 99.6%)
+
+2. **checkpoint_20251006_195009_tier1_component_tests_complete**
+   - 생성일시: 2025년 10월 6일 19:50:09
+   - 설명: 모든 Tier 1 컴포넌트 테스트 완료
+   - 내용: Clients, WorkItems 테스트 42개 추가 (총 180개 테스트 통과)
+
+3. **checkpoint_20250930_205041_stamp_optimization_complete**
+   - 생성일시: 2025년 9월 30일 20:50:41
+   - 설명: 청구서 도장 시스템 최적화 완료
 
 ## 복원 방법
 

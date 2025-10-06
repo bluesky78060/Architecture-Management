@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import ReactDOM from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import { useFilters } from '../useFilters';

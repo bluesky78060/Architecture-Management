@@ -419,9 +419,24 @@ const Estimates: React.FC = () => {
       const payload = { estimate, companyInfo };
       try { localStorage.setItem('quotationPrintData', JSON.stringify(payload)); } catch (_) {}
       const estimateJson = JSON.stringify(payload);
-      const base = (process.env.PUBLIC_URL !== null && process.env.PUBLIC_URL !== undefined && process.env.PUBLIC_URL !== '') ? process.env.PUBLIC_URL : '';
-      const baseUrl = base !== '' ? `${window.location.origin}${base}` : window.location.origin;
-      const quotationUrl = `${baseUrl}/quotation-output.html?id=${estimate.id}&data=${encodeURIComponent(estimateJson)}`;
+      const resolveBaseUrl = (): string => {
+        const pub = process.env.PUBLIC_URL;
+        if (typeof pub === 'string' && pub.trim() !== '') {
+          try {
+            const u = new URL(pub, window.location.origin);
+            let path = u.pathname;
+            if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
+            return `${window.location.origin}${path}`;
+          } catch {
+            let path = pub.trim();
+            if (!path.startsWith('/')) path = `/${path}`;
+            if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
+            return `${window.location.origin}${path}`;
+          }
+        }
+        return window.location.origin;
+      };
+      const quotationUrl = `${resolveBaseUrl()}/quotation-output.html?id=${estimate.id}&data=${encodeURIComponent(estimateJson)}`;
       const printWindow = window.open(quotationUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
       const FOCUS_DELAY_MS = 500;
       if (printWindow === null || printWindow === undefined) { alert('팝업이 차단되었습니다. 브라우저 설정에서 팝업을 허용해주세요.'); return; }

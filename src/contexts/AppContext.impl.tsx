@@ -23,7 +23,21 @@ export interface AppContextValue {
   setStampImage: React.Dispatch<React.SetStateAction<string | null>>;
   getCompletedWorkItems: () => WorkItem[];
   getCompletedWorkItemsByClient: (clientId: number) => WorkItem[];
-  addWorkItemToInvoice: (workItem: WorkItem, quantity?: number | null, unitPrice?: number | null) => void;
+  addWorkItemToInvoice: (workItem: WorkItem, quantity?: number | null, unitPrice?: number | null) => {
+    name: string;
+    quantity: number;
+    unit: string;
+    unitPrice: number;
+    total: number;
+    laborPersons: number;
+    laborUnitRate: number;
+    laborPersonsGeneral: number;
+    laborUnitRateGeneral: number;
+    description: string;
+    category: string;
+    date: string;
+    notes: string;
+  };
   convertEstimateToWorkItems: (estimateId: string) => WorkItem[];
 }
 
@@ -185,10 +199,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const lrg = Number.isNaN(lrgParsed) ? 0 : lrgParsed;
     const laborCost = (lp * lr) + (lpg * lrg);
     return {
-      name: workItem.name, quantity: finalQuantity, unit: workItem.unit,
+      name: workItem.name, quantity: finalQuantity, unit: workItem.unit ?? '',
       unitPrice: finalUnitPrice, total: (finalQuantity * finalUnitPrice) + laborCost,
       laborPersons: lp, laborUnitRate: lr, laborPersonsGeneral: lpg, laborUnitRateGeneral: lrg,
-      description: workItem.description, category: workItem.category, date: workItem.date ?? '', notes: workItem.notes ?? ''
+      description: workItem.description ?? '', category: workItem.category ?? '', date: workItem.date ?? '', notes: workItem.notes ?? ''
     };
   };
 

@@ -63,10 +63,9 @@ function isModernEncryption(rawData: string): boolean {
 /**
  * 구버전 암호화 데이터를 신버전으로 마이그레이션
  * @param key - localStorage 키
- * @param masterPassword - 시스템 마스터 비밀번호
  * @returns 마이그레이션 성공 여부
  */
-async function migrateKey(key: string, masterPassword: string): Promise<boolean> {
+async function migrateKey(key: string): Promise<boolean> {
   try {
     if (typeof window === 'undefined' || window.localStorage == null) {
       throw new Error('localStorage를 사용할 수 없습니다.');
@@ -148,7 +147,7 @@ export async function migrateAllSensitiveData(
   // 각 키 마이그레이션
   for (const key of SENSITIVE_KEYS) {
     try {
-      const migrated = await migrateKey(key, masterPassword);
+      const migrated = await migrateKey(key);
 
       if (migrated) {
         // 데이터가 존재하고 마이그레이션 성공

@@ -1,5 +1,5 @@
 /* eslint-disable */
-import * as secure from '../secureStorage';
+import * as secure from '../secureStorageAdapter';
 import {
   saveStampImage,
   loadStampImage,

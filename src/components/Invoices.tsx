@@ -107,6 +107,24 @@ export default function Invoices(): JSX.Element {
   };
 
   const [detail, setDetail] = useState<Invoice | null>(null);
+  const resolveBaseUrl = (): string => {
+    const pub = process.env.PUBLIC_URL;
+    if (typeof pub === 'string' && pub.trim() !== '') {
+      try {
+        const u = new URL(pub, window.location.origin);
+        let path = u.pathname;
+        if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
+        return `${window.location.origin}${path}`;
+      } catch {
+        let path = pub.trim();
+        if (!path.startsWith('/')) path = `/${path}`;
+        if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
+        return `${window.location.origin}${path}`;
+      }
+    }
+    return window.location.origin;
+  };
+
   const handleOpenDetailPrint = () => {
     if (detail === null || detail === undefined) return;
     try {
@@ -120,9 +138,7 @@ export default function Invoices(): JSX.Element {
       }
 
       // URL 구성
-      const base = (process.env.PUBLIC_URL !== null && process.env.PUBLIC_URL !== undefined && process.env.PUBLIC_URL !== '') ? process.env.PUBLIC_URL : '';
-      const baseUrl = base !== '' ? `${window.location.origin}${base}` : window.location.origin;
-      const printUrl = `${baseUrl}/invoice-detail-output.html`;
+      const printUrl = `${resolveBaseUrl()}/invoice-detail-output.html`;
 
 
       // 새 창 열기
@@ -161,9 +177,7 @@ export default function Invoices(): JSX.Element {
       }
 
       // URL 구성 - 간단하게 수정
-      const base = (process.env.PUBLIC_URL !== null && process.env.PUBLIC_URL !== undefined && process.env.PUBLIC_URL !== '') ? process.env.PUBLIC_URL : '';
-      const baseUrl = base !== '' ? `${window.location.origin}${base}` : window.location.origin;
-      const printUrl = `${baseUrl}/invoice-output.html`;
+      const printUrl = `${resolveBaseUrl()}/invoice-output.html`;
 
 
       // 새 창 열기
