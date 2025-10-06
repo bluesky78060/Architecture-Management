@@ -75,7 +75,7 @@ const resolveBasename = (useHash: boolean): string => {
   const isGhPages = typeof window !== 'undefined' && /github\.io$/.test(window.location.hostname);
   if (isGhPages) {
     const seg = window.location.pathname.split('/').filter(Boolean)[0];
-    const ghBase = seg ? `/${seg}` : '/';
+    const ghBase = (typeof seg === 'string' && seg !== '') ? `/${seg}` : '/';
     // For hash router, basename in hash is unnecessary; keep '/'
     return useHash ? '/' : ghBase;
   }
