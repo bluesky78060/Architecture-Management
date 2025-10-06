@@ -20,7 +20,7 @@ export default function StatsCards({ filteredWorkItems, format, getLaborCost }: 
   }, 0);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-4">
       <div className="bg-blue-100 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100">
         <div className="flex items-center justify-between">
           <div className="flex-1">

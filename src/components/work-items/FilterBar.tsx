@@ -43,7 +43,7 @@ export default function FilterBar({
   const hasFilter = hasClient || hasProject;
   const hasSelection = isPositiveNumber(selectionCount);
   return (
-    <div className="bg-white rounded-md shadow-sm p-3 mb-6">
+    <div className="bg-white rounded-md shadow-sm p-2 mb-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3 flex-wrap">
           <span className="text-xs font-medium text-gray-500">필터:</span>
