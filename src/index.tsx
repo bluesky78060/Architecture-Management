@@ -1,4 +1,17 @@
 // React import not required for new JSX transform
+// Ensure dynamic chunks load from correct base path on GitHub Pages
+// by overriding webpack public path at runtime when hosted under a subpath.
+// This guards against stale caches serving an older main bundle.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+declare let __webpack_public_path__: any;
+try {
+  if (typeof window !== 'undefined' && /github\.io$/.test(window.location.hostname)) {
+    const seg = window.location.pathname.split('/').filter(Boolean)[0];
+    const base = (typeof seg === 'string' && seg !== '') ? `/${seg}` : '';
+    __webpack_public_path__ = `${window.location.origin}${base}/`;
+  }
+} catch {}
+
 import { lazy, Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, createHashRouter, RouterProvider, Route, createRoutesFromElements, Outlet, Navigate } from 'react-router-dom';
