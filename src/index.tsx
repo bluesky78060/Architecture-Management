@@ -75,10 +75,13 @@ const resolveBasename = (useHash: boolean): string => {
   // Auto-detect GitHub Pages subpath, e.g., /Architecture-Management
   const isGhPages = typeof window !== 'undefined' && /github\.io$/.test(window.location.hostname);
   if (isGhPages) {
+    // For hash router on GitHub Pages, always use '/' as basename
+    // The hash will handle internal routing
+    if (useHash) return '/';
+
+    // For BrowserRouter, use the repository name as basename
     const seg = window.location.pathname.split('/').filter(Boolean)[0];
-    const ghBase = (typeof seg === 'string' && seg !== '') ? `/${seg}` : '/';
-    // For hash router, basename in hash is unnecessary; keep '/'
-    return useHash ? '/' : ghBase;
+    return (typeof seg === 'string' && seg !== '') ? `/${seg}` : '/';
   }
 
   // Default
