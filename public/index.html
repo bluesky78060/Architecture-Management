@@ -29,6 +29,16 @@
       }(window.location))
     </script>
     <!-- End Single Page Apps for GitHub Pages -->
+    <!-- Set webpack public path for GitHub Pages chunk loading -->
+    <script type="text/javascript">
+      (function() {
+        if (/github\.io$/.test(window.location.hostname)) {
+          var pathSegments = window.location.pathname.split('/').filter(Boolean);
+          var repoName = pathSegments[0] || '';
+          window.__webpack_public_path__ = window.location.origin + '/' + repoName + '/';
+        }
+      })();
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

@@ -1,5 +1,4 @@
 // React import not required for new JSX transform
-import './set-public-path';
 import { lazy, Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, createHashRouter, RouterProvider, Route, createRoutesFromElements, Outlet, Navigate } from 'react-router-dom';
