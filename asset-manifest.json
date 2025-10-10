@@ -1,0 +1,43 @@
+{
+  "files": {
+    "main.css": "/Architecture-Management/static/css/main.fe255622.css",
+    "main.js": "/Architecture-Management/static/js/main.af2e7220.js",
+    "static/js/940.cab6dc9f.chunk.js": "/Architecture-Management/static/js/940.cab6dc9f.chunk.js",
+    "static/js/347.b0a40797.chunk.js": "/Architecture-Management/static/js/347.b0a40797.chunk.js",
+    "static/js/399.79a03f13.chunk.js": "/Architecture-Management/static/js/399.79a03f13.chunk.js",
+    "static/js/28.48c1f122.chunk.js": "/Architecture-Management/static/js/28.48c1f122.chunk.js",
+    "static/js/355.79f15684.chunk.js": "/Architecture-Management/static/js/355.79f15684.chunk.js",
+    "static/js/17.6a1a88d9.chunk.js": "/Architecture-Management/static/js/17.6a1a88d9.chunk.js",
+    "static/js/659.c98c0381.chunk.js": "/Architecture-Management/static/js/659.c98c0381.chunk.js",
+    "static/js/686.1d698c08.chunk.js": "/Architecture-Management/static/js/686.1d698c08.chunk.js",
+    "vendors.js": "/Architecture-Management/static/js/vendors.227e58d9.js",
+    "static/js/648.688cff53.chunk.js": "/Architecture-Management/static/js/648.688cff53.chunk.js",
+    "static/media/SCDream8.otf": "/Architecture-Management/static/media/SCDream8.64217e4da7638066e57a.otf",
+    "static/media/SCDream7.otf": "/Architecture-Management/static/media/SCDream7.a8d826f4cafb0e728051.otf",
+    "static/media/SCDream6.otf": "/Architecture-Management/static/media/SCDream6.4df12ee03e70b6326c25.otf",
+    "static/media/SCDream9.otf": "/Architecture-Management/static/media/SCDream9.c8e7afd869e076d5055d.otf",
+    "static/media/SCDream1.otf": "/Architecture-Management/static/media/SCDream1.3f28bc17ecb809862c69.otf",
+    "static/media/SCDream2.otf": "/Architecture-Management/static/media/SCDream2.f44c037d461a68f92e1e.otf",
+    "static/media/SCDream3.otf": "/Architecture-Management/static/media/SCDream3.1e55b77199a0afd0ed9a.otf",
+    "static/media/SCDream5.otf": "/Architecture-Management/static/media/SCDream5.ae5ee4933db75a3ccb04.otf",
+    "static/media/SCDream4.otf": "/Architecture-Management/static/media/SCDream4.64c9dc7c860af7a004ad.otf",
+    "index.html": "/Architecture-Management/index.html",
+    "main.fe255622.css.map": "/Architecture-Management/static/css/main.fe255622.css.map",
+    "main.af2e7220.js.map": "/Architecture-Management/static/js/main.af2e7220.js.map",
+    "940.cab6dc9f.chunk.js.map": "/Architecture-Management/static/js/940.cab6dc9f.chunk.js.map",
+    "347.b0a40797.chunk.js.map": "/Architecture-Management/static/js/347.b0a40797.chunk.js.map",
+    "399.79a03f13.chunk.js.map": "/Architecture-Management/static/js/399.79a03f13.chunk.js.map",
+    "28.48c1f122.chunk.js.map": "/Architecture-Management/static/js/28.48c1f122.chunk.js.map",
+    "355.79f15684.chunk.js.map": "/Architecture-Management/static/js/355.79f15684.chunk.js.map",
+    "17.6a1a88d9.chunk.js.map": "/Architecture-Management/static/js/17.6a1a88d9.chunk.js.map",
+    "659.c98c0381.chunk.js.map": "/Architecture-Management/static/js/659.c98c0381.chunk.js.map",
+    "686.1d698c08.chunk.js.map": "/Architecture-Management/static/js/686.1d698c08.chunk.js.map",
+    "vendors.227e58d9.js.map": "/Architecture-Management/static/js/vendors.227e58d9.js.map",
+    "648.688cff53.chunk.js.map": "/Architecture-Management/static/js/648.688cff53.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/js/vendors.227e58d9.js",
+    "static/css/main.fe255622.css",
+    "static/js/main.af2e7220.js"
+  ]
+}

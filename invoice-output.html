@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Construction Invoice</title>
+    <link rel="icon" href="./favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: { primary: '#2071f3', 'background-light': '#f5f7f8', 'background-dark': '#101722' },
+            fontFamily: { display: ['Inter'] },
+            borderRadius: { DEFAULT: '0.25rem', lg: '0.5rem', xl: '0.75rem', full: '9999px' }
+          }
+        }
+      };
+    </script>
+    <style>
+      body { font-family: 'Inter', sans-serif; }
+      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+      @media print {
+        /* 브라우저 머리글/바닥글(파일명/페이지 번호)은 
+           인쇄 대화상자에서 "머리글 및 바닥글" 옵션을 끄셔야 완전히 제거됩니다. */
+        /* 여백 더 축소: 상 4mm, 좌우 5mm, 하 6mm */
+        @page { size: A4; margin: 4mm 5mm 6mm 5mm; }
+        html, body { margin: 0 !important; padding: 0 !important; }
+        .no-print { display: none !important; }
+        /* 메인 카드 여백/그림자 최소화 + 바닥 정렬 레이아웃 */
+        /* 컨테이너 좌우 패딩도 축소 */
+        .print-tight {
+          padding: 6mm 4mm 6mm 4mm !important;
+          box-shadow: none !important;
+          border: none !important;
+          display: flex;
+          flex-direction: column;
+          min-height: calc(297mm - 4mm - 6mm) !important; /* 페이지 높이 - 상/하 여백 */
+        }
+        /* 서명 블록은 같은 페이지에 묶어 처리하고, 위 영역은 자유 분할 허용 */
+        .signature-section,
+        .signature-footer {
+          break-inside: avoid-page !important;
+          break-before: avoid-page !important;
+          break-after: avoid-page !important;
+          page-break-inside: avoid !important;
+          page-break-before: auto !important;
+          page-break-after: auto !important;
+          -webkit-region-break-inside: avoid !important;
+          -webkit-column-break-inside: avoid !important;
+          display: block !important;
+        }
+        .rounded-xl, .rounded-lg { border-radius: 0 !important; }
+        .shadow, .shadow-md, .shadow-lg, .shadow-xl { box-shadow: none !important; }
+        /* 장식 배경 제거 및 폭 맞춤 */
+        .invoice-hero { display: none !important; }
+        .bg-background-light, .dark\:bg-background-dark { background: #fff !important; }
+        .bg-primary\/10, .dark\:bg-primary\/20 { background: transparent !important; }
+        /* 가용 폭 활용을 위해 최대폭 확대 */
+        .max-w-4xl { max-width: 198mm !important; width: 100% !important; }
+        #totalsCard { width: 300px !important; }
+        .min-h-screen { min-height: auto !important; }
+
+        /* 표 셀 패딩 축소 */
+        table th, table td { padding: 4px 6px !important; }
+        /* 가변형 비율 레이아웃 */
+        #invoiceTable { table-layout: fixed; width: 100% !important; }
+        #invoiceTable th, #invoiceTable td { min-width: 0 !important; max-width: none !important; width: auto !important; }
+        #invoiceTable .col-no { width: 7% !important; }
+        #invoiceTable .col-date { width: 15% !important; }
+        #invoiceTable .col-name { width: 34% !important; }
+        #invoiceTable .col-amount { width: 18% !important; }
+        #invoiceTable .col-notes { width: 26% !important; }
+        #invoiceTable td { overflow-wrap: anywhere; word-break: break-word; white-space: normal !important; }
+
+        /* 테이블을 제외한 텍스트 크기를 각 클래스 기준으로 1pt씩만 축소 */
+        .print-tight :not(#invoiceTable):not(#invoiceTable *) .text-4xl,
+        .print-tight > .text-4xl { font-size: calc(2.25rem - 1pt) !important; }
+        .print-tight :not(#invoiceTable):not(#invoiceTable *) .text-3xl,
+        .print-tight > .text-3xl { font-size: calc(1.875rem - 1pt) !important; }
+        .print-tight :not(#invoiceTable):not(#invoiceTable *) .text-2xl,
+        .print-tight > .text-2xl { font-size: calc(1.5rem - 1pt) !important; }
+        .print-tight :not(#invoiceTable):not(#invoiceTable *) .text-xl,
+        .print-tight > .text-xl { font-size: calc(1.25rem - 1pt) !important; }
+        .print-tight :not(#invoiceTable):not(#invoiceTable *) .text-lg,
+        .print-tight > .text-lg { font-size: calc(1.125rem - 1pt) !important; }
+        .print-tight :not(#invoiceTable):not(#invoiceTable *) .text-base,
+        .print-tight > .text-base { font-size: calc(1rem - 1pt) !important; }
+        .print-tight :not(#invoiceTable):not(#invoiceTable *) .text-sm,
+        .print-tight > .text-sm { font-size: calc(0.875rem - 1pt) !important; }
+        .print-tight :not(#invoiceTable):not(#invoiceTable *) .text-xs,
+        .print-tight > .text-xs { font-size: calc(0.75rem - 1pt) !important; }
+
+        /* 서명 블록: 자연스러운 위치 + 페이지 분할 방지 + Chrome/WebKit 호환성 강화 */
+        .signature-footer {
+          page-break-inside: avoid !important;
+          break-inside: avoid !important;
+          -webkit-region-break-inside: avoid !important;
+          page-break-before: auto !important;
+          page-break-after: auto !important;
+          display: table !important;
+          width: 100% !important;
+          table-layout: fixed !important;
+          float: none !important;
+          margin: 20px 0 !important;
+        }
+        .signature-footer td {
+          page-break-inside: avoid !important;
+          break-inside: avoid !important;
+          -webkit-region-break-inside: avoid !important;
+          display: block !important;
+          margin: 4px 0 !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-background-light dark:bg-background-dark font-display">
+    <div class="no-print fixed top-2 right-2 flex gap-2 z-10">
+      <button onclick="window.print()" class="px-3 py-1.5 rounded-md bg-primary text-white shadow flex items-center gap-1.5" aria-label="인쇄">
+        <span class="material-symbols-outlined text-white text-base">print</span>
+        <span>인쇄</span>
+      </button>
+      <button onclick="window.close()" class="px-3 py-1.5 rounded-md bg-white shadow border flex items-center gap-1.5" aria-label="닫기">
+        <span class="material-symbols-outlined text-gray-700 text-base">close</span>
+        <span>닫기</span>
+      </button>
+    </div>
+
+    <div class="relative min-h-screen w-full flex flex-col items-center py-8 px-4">
+      <div class="absolute top-0 left-0 w-full h-96 bg-primary/10 dark:bg-primary/20 -z-10 invoice-hero" style="clip-path: polygon(0 0, 100% 0, 100% 70%, 0% 100%);"></div>
+      <div class="w-full max-w-4xl bg-white dark:bg-background-dark/50 p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700/50 print-tight">
+        <header class="flex justify-between items-start pb-5 border-b border-gray-200 dark:border-gray-700">
+          <div>
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-primary text-4xl">receipt_long</span>
+              <h1 class="text-4xl font-extrabold text-gray-800 dark:text-white tracking-tight">청구서 (Invoice)</h1>
+            </div>
+            <p class="text-gray-500 dark:text-gray-400 mt-2">Invoice <span id="invNo">#INV-000</span></p>
+            <p class="text-gray-500 dark:text-gray-400">Date: <span id="invDate"></span></p>
+          </div>
+          <div class="text-right">
+            <div class="flex items-center gap-2 text-gray-800 dark:text-white">
+              <span class="material-symbols-outlined text-2xl text-primary">business</span>
+              <h2 id="companyName" class="text-2xl font-bold">Company</h2>
+            </div>
+            <p id="companyAddress" class="text-gray-500 dark:text-gray-400"></p>
+          </div>
+        </header>
+
+        <section class="grid grid-cols-2 gap-5 mt-5">
+          <div class="bg-background-light dark:bg-background-dark p-4 rounded-lg">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white flex items-center gap-2"><span class="material-symbols-outlined text-primary">person</span>발주자 정보 (Client)</h3>
+            <div class="mt-4 space-y-2 text-gray-600 dark:text-gray-300" id="clientBox"></div>
+          </div>
+          <div class="bg-background-light dark:bg-background-dark p-4 rounded-lg">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white flex items-center gap-2"><span class="material-symbols-outlined text-primary">construction</span>시공업체 정보 (Contractor)</h3>
+            <div class="mt-4 space-y-2 text-gray-600 dark:text-gray-300" id="contractorBox"></div>
+          </div>
+        </section>
+
+        <section class="mt-5">
+          <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">청구 내역 (Work Items)</h3>
+          <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+            <table id="invoiceTable" class="w-full text-left text-gray-700 dark:text-gray-300">
+              <thead class="bg-gray-50 dark:bg-gray-700/70">
+                <tr class="border-b border-gray-200 dark:border-gray-600">
+                  <th class="px-2 py-1.5 font-semibold text-[15px] text-[#0f172a] text-center col-no" style="width:47px">연번</th>
+                  <th class="px-2 py-1.5 font-semibold text-[15px] text-[#0f172a] text-center col-date" style="width:115px">일&nbsp;&nbsp;&nbsp;&nbsp;자</th>
+                  <th class="px-2 py-1.5 font-semibold text-[15px] text-[#0f172a] text-center col-name" style="width:179px">내&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;용</th>
+                  <th class="px-2 py-1.5 font-semibold text-[15px] text-[#0f172a] text-center col-amount" style="width:7rem">공&nbsp;급&nbsp;가&nbsp;액</th>
+                  <th class="px-2 py-1.5 font-semibold text-[15px] text-[#0f172a] text-center col-notes" style="width:calc(10rem - 3px)">비&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;고</th>
+                </tr>
+              </thead>
+              <tbody id="itemsBody"></tbody>
+            </table>
+          </div>
+          <div class="mt-2 text-xs text-gray-500 dark:text-gray-400">※ 세부 작업 내역은 별도 첨부됩니다.</div>
+        </section>
+
+        <div class="mt-5 pt-5 border-t border-gray-200 dark:border-gray-700 flex justify-between items-start">
+          <div class="w-1/2">
+            <div class="bg-primary/10 dark:bg-primary/20 p-4 rounded-lg">
+              <h3 class="text-lg font-semibold text-gray-800 dark:text-white flex items-center gap-2"><span class="material-symbols-outlined text-primary">credit_card</span>결제 정보 (Payment Info)</h3>
+              <div class="mt-4 space-y-2 text-gray-600 dark:text-gray-300" id="paymentBox"></div>
+            </div>
+          </div>
+          <div class="text-right">
+            <div id="totalsCard" class="space-y-2 bg-white dark:bg-gray-900 p-4 rounded-lg shadow-md text-sm ml-auto" style="width:300px">
+              <div class="flex justify-between items-center">
+                <span class="text-gray-600 dark:text-gray-300">소계</span>
+                <span id="subtotal" class="text-gray-800 dark:text-white font-medium"></span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-gray-600 dark:text-gray-300">부가세 (10%)</span>
+                <span id="vat" class="text-gray-800 dark:text-white font-medium"></span>
+              </div>
+              <div class="border-t border-gray-300 dark:border-gray-600 my-2"></div>
+              <div class="flex justify-between items-center font-bold text-lg text-primary">
+                <span>총 청구금액</span>
+                <span id="grandTotal" class="font-mono text-lg"></span>
+              </div>
+              <p id="grandTotalKorean" class="text-base text-gray-500 dark:text-gray-400 text-right mt-1"></p>
+            </div>
+          </div>
+        </div>
+
+        <table id="signatureFooter" class="signature-footer mt-4" style="width: 100%; border-collapse: collapse;">
+          <tbody>
+            <tr>
+              <td style="page-break-inside: avoid !important; break-inside: avoid !important; -webkit-region-break-inside: avoid !important; padding: 0; vertical-align: top;">
+                <div style="margin: 4px 0;">
+                  <div class="pl-2.5 text-left">
+                    <div id="signatureCompany" class="text-base font-semibold leading-tight text-gray-700 dark:text-gray-300"></div>
+                    <div class="mt-1 text-base leading-tight text-gray-700 dark:text-gray-300 relative">
+                      대표자 : <span id="signatureRep"></span><span class="relative inline-block" style="min-width: 60px; min-height: 60px; display: inline-flex; align-items: center; justify-content: center;">
+                        (인)
+                        <img id="stampImage" src="" alt="도장" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 42px; height: 42px; object-fit: contain; z-index: 10;" />
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      // 숫자를 한글 금액으로 변환 (원 단위)
+      function numberToKoreanFullAmount(num) {
+        const units = ['', '십', '백', '천', '만', '십만', '백만', '천만', '억', '십억', '백억', '천억', '조'];
+        const numbers = ['', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
+        num = Number(num) || 0;
+        if (num === 0) return '(영원정)';
+        let result = '';
+        let unitIndex = 0;
+        while (num > 0) {
+          const digit = num % 10;
+          if (digit !== 0) {
+            if (unitIndex === 4 && digit === 1) {
+              result = units[unitIndex] + result; // 만의 자리 1 생략
+            } else if (digit === 1 && unitIndex > 0 && unitIndex < 4) {
+              result = units[unitIndex] + result; // 십/백/천의 자리 1 생략
+            } else {
+              result = numbers[digit] + units[unitIndex] + result;
+            }
+          }
+          num = Math.floor(num / 10);
+          unitIndex++;
+        }
+        return '(' + result + '원정)';
+      }
+      function formatKRW(n){return '₩' + (Number(n)||0).toLocaleString() + '원'}
+      function parsePayload(){
+        // localStorage에서 데이터 읽기 (URL 방식 대신)
+        const raw = localStorage.getItem('invoicePrintData');
+        if(!raw) return null;
+        try{ 
+          return JSON.parse(raw); 
+        }catch(e){ 
+          console.error('청구서 데이터 파싱 오류:', e);
+          return null;
+        }
+      }
+      function fill(){
+        const payload=parsePayload(); if(!payload){ console.error('no data'); return; }
+        const inv=payload.invoice||{}; const company=payload.companyInfo||{};
+        document.getElementById('invNo').textContent = inv.id || '#INV-000';
+        document.getElementById('invDate').textContent = inv.date || '';
+        document.getElementById('companyName').textContent = company.name || '회사명';
+        document.getElementById('companyAddress').textContent = company.address || '';
+
+        const clientBox=document.getElementById('clientBox');
+        clientBox.innerHTML = `
+          <p><strong>건축주명:</strong> ${inv.client || '-'}</p>
+          <p><strong>프로젝트명:</strong> ${inv.project || '-'}</p>
+          <p><strong>작업장 주소:</strong> ${inv.workplaceAddress || '-'}</p>`;
+
+        const contractorBox=document.getElementById('contractorBox');
+        contractorBox.innerHTML = `
+          <p><strong>업체명:</strong> ${company.name || '-'}</p>
+          ${company.representative ? `<p><strong>대표자:</strong> ${company.representative}</p>`: ''}
+          ${company.phone ? `<p><strong>연락처:</strong> ${company.phone}</p>`: ''}
+          ${company.businessNumber ? `<p><strong>사업자등록번호:</strong> ${company.businessNumber}</p>`: ''}`;
+
+        // 서명란: 시공업체명, 대표자 성명(인)
+        const sigCo = document.getElementById('signatureCompany');
+        if (sigCo) sigCo.textContent = company.name || '';
+        const sigRep = document.getElementById('signatureRep');
+        if (sigRep) {
+          const rawName = (company.representative || '').replace(/\s+/g, '');
+          const spaced = rawName.split('').join(' ');
+          sigRep.textContent = spaced;
+        }
+        
+        // 도장 이미지 처리
+        const stampImg = document.getElementById('stampImage');
+        if (stampImg && payload.stampImage) {
+          stampImg.src = payload.stampImage;
+          stampImg.style.display = 'block';
+        }
+
+        const payBox=document.getElementById('paymentBox');
+        payBox.innerHTML = `
+          ${company.bankAccount ? `<p><strong>은행:</strong> ${company.bankAccount}</p>`:''}
+          ${company.accountHolder ? `<p><strong>예금주:</strong> ${company.accountHolder}</p>`:''}`;
+
+        const tbody=document.getElementById('itemsBody');
+        tbody.innerHTML='';
+        (inv.workItems||[]).forEach((item,idx)=>{
+          const tr=document.createElement('tr'); tr.className=(idx%2? 'bg-gray-50/40 ' : 'bg-white ') + 'border-b dark:bg-background-dark/70 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600/30';
+          const qty=Number(item.quantity)||0; const up=Number(item.unitPrice)||0; const total=Number(item.total!=null?item.total:qty*up)||0;
+          const upV=Math.round(up); const totalV=Math.round(total);
+          tr.innerHTML=`
+            <td class="px-2 py-1.5 text-[13px] text-center col-no" style="width:47px;min-width:47px;max-width:47px">${idx+1}</td>
+            <td class="px-2 py-1.5 text-[13px] text-center col-date" style="width:115px;min-width:115px;max-width:115px">${item.date||''}</td>
+            <td class="px-2 py-1.5 text-[13px] font-medium text-gray-900 dark:text-white text-center col-name" data-shrink="1" style="width:179px;min-width:179px;max-width:179px;word-break:break-word;white-space:normal">${item.name||''}</td>
+            <td class="px-2 py-1.5 text-[13px] text-right font-semibold text-gray-900 dark:text-white col-amount" style="width:7rem;min-width:7rem;max-width:7rem">${totalV.toLocaleString()}원</td>
+            <td class="px-2 py-1.5 text-[13px] text-slate-600 col-notes" data-shrink="1" style="width:calc(10rem - 3px);min-width:calc(10rem - 3px);max-width:calc(10rem - 3px);word-break:break-word;white-space:normal">${item.notes||''}</td>`;
+          tbody.appendChild(tr);
+          // Shrink-to-fit for content/notes with min 10px while allowing wrapping
+          const shrinkCells = tr.querySelectorAll('td[data-shrink="1"]');
+          shrinkCells.forEach((el)=>{
+            (function shrinkToFitWrap(el, min=10, max=13, step=0.5){
+              const prevWhite = el.style.whiteSpace;
+              // measure without wrapping to detect overflow potential
+              el.style.whiteSpace = 'nowrap';
+              let size = max; el.style.fontSize = size + 'px';
+              const maxWidth = el.clientWidth || el.getBoundingClientRect().width;
+              while (size > min && el.scrollWidth > maxWidth) {
+                size -= step; el.style.fontSize = size + 'px';
+              }
+              // restore wrapping for multi-line display
+              el.style.whiteSpace = 'normal';
+              el.style.wordBreak = 'break-word';
+            })(el);
+          });
+        });
+
+        const total=Number(inv.amount)||0; const subtotal=Math.round(total/1.1); const vat=total-subtotal;
+        document.getElementById('subtotal').textContent = formatKRW(subtotal);
+        document.getElementById('vat').textContent = formatKRW(vat);
+        document.getElementById('grandTotal').textContent = formatKRW(total);
+        const koreanEl = document.getElementById('grandTotalKorean');
+        if (koreanEl) koreanEl.textContent = numberToKoreanFullAmount(total);
+        document.title = '청구서_' + (inv.id||'INV');
+      }
+      // 인쇄 시 서명 블록을 페이지 하단에 정렬하기 위한 보정
+      function mmToPx(mm){ return mm * 96 / 25.4; }
+      function ensureSignatureNotSplit() {
+        const container = document.querySelector('.print-tight') || document.querySelector('.w-full.max-w-4xl');
+        const sig = document.getElementById('signatureFooter');
+        if (!container || !sig) return;
+        // reset
+        sig.style.breakBefore = 'auto';
+        sig.style.pageBreakBefore = 'auto';
+
+        const PAGE_HEIGHT = mmToPx(297); // A4 px
+        const SAFE_PADDING = mmToPx(12); // 여유 12mm
+
+        const rectContainerTop = container.getBoundingClientRect().top + window.scrollY;
+        const rectSigTop = sig.getBoundingClientRect().top + window.scrollY;
+        const used = rectSigTop - rectContainerTop;
+        const sigH = sig.getBoundingClientRect().height;
+        const usedWithinPage = (used % PAGE_HEIGHT) + sigH + SAFE_PADDING;
+
+        if (usedWithinPage > PAGE_HEIGHT) {
+          sig.style.breakBefore = 'page'; // modern
+          sig.style.pageBreakBefore = 'always'; // legacy
+        }
+      }
+      function setupPrintGuards(){
+        if ('onbeforeprint' in window) {
+          window.onbeforeprint = ensureSignatureNotSplit;
+          window.onafterprint = function(){
+            const sig = document.getElementById('signatureFooter');
+            if (sig) { sig.style.breakBefore = 'auto'; sig.style.pageBreakBefore = 'auto'; }
+          };
+        } else {
+          const mql = window.matchMedia('print');
+          if (mql && mql.addListener) {
+            mql.addListener(e => { if (e.matches) ensureSignatureNotSplit(); });
+          }
+        }
+        setTimeout(ensureSignatureNotSplit, 60);
+      }
+      document.addEventListener('DOMContentLoaded', setupPrintGuards);
+      fill();
+    </script>
+  </body>
+  </html>

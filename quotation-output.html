@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>견적서 출력 - 건설관리시스템</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1e71f6",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#101722",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .print-break {
+                page-break-before: always;
+            }
+            
+            /* 인쇄 시 페이지 설정 */
+            @page {
+                size: A4;
+                /* 상:4mm, 우/하/좌:8mm */
+                margin: 4mm 8mm 8mm 8mm;
+            }
+            /* 헤더 상단 패딩을 더 줄여 상단 여백 최소화 */
+            #q-header { padding-top: 6mm !important; }
+            
+            /* 인쇄 시 배경색 표시 */
+            body {
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            /* 인쇄 시 그림자 제거 */
+            .shadow-xl, .shadow-lg, .shadow-md {
+                box-shadow: none !important;
+            }
+            
+            /* 인쇄 시 여백 조정 */
+            .max-w-4xl {
+                max-width: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            /* 인쇄 시 둥근 모서리 제거 */
+            .rounded-xl, .rounded-lg {
+                border-radius: 0 !important;
+            }
+            
+            /* 테이블 페이지 분할 방지 */
+            table, tr, td, th {
+                page-break-inside: avoid;
+            }
+        }
+        
+        /* 인쇄 버튼 스타일 개선 */
+        .print-button {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .print-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .print-button:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-200">
+    <!-- 인쇄/닫기 버튼 -->
+    <div class="no-print max-w-4xl mx-auto p-4 flex justify-end items-center gap-3">
+        <button onclick="handlePrint()" class="print-button bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors">
+            🖨️ 인쇄하기
+        </button>
+        <button onclick="window.close()" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors">
+            ✕ 닫기
+        </button>
+    </div>
+
+    <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
+        <div class="bg-white dark:bg-gray-900 shadow-xl rounded-xl">
+            <!-- 헤더 -->
+            <header id="q-header" class="p-6 border-b border-gray-200 dark:border-gray-700/50 relative overflow-hidden">
+                <div class="absolute -top-16 -left-16 w-48 h-48 bg-primary/10 dark:bg-primary/20 rounded-full"></div>
+                <div class="absolute -bottom-24 -right-12 w-48 h-48 bg-primary/10 dark:bg-primary/20 rounded-full transform rotate-45"></div>
+                <div class="relative z-10 flex justify-between items-start">
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
+                                <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h6m-6 4h6m-6 4h6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                                </svg>
+                            </div>
+                            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Buildify</h1>
+                        </div>
+                        <h2 class="mt-4 text-4xl sm:text-5xl font-extrabold text-primary tracking-tight">견적서 (Quotation)</h2>
+                        <p class="mt-2 text-gray-500 dark:text-gray-400">Quotation ID: <span id="quotationId">#Q2025-00123</span></p>
+                        <p class="text-gray-500 dark:text-gray-400">Date: <span id="issueDate">2025년 9월 28일</span></p>
+                    </div>
+                </div>
+            </header>
+
+            <section class="grid md:grid-cols-2 gap-3 p-4">
+                <div class="bg-background-light dark:bg-background-dark p-4 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3 border-b-2 border-primary pb-1">발주처 정보 (Client Information)</h3>
+                    <div class="space-y-1.5 text-sm leading-5">
+                        <p><strong>건축주명:</strong> <span id="clientCompany">김철수</span></p>
+                        <p><strong>프로젝트명:</strong> <span id="clientProject">프로젝트</span></p>
+                        <p><strong>작업장 주소:</strong> <span id="clientWorkplaceAddress">서울특별시 ...</span></p>
+                    </div>
+                </div>
+                <div class="bg-background-light dark:bg-background-dark p-4 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3 border-b-2 border-primary pb-1">시공업체 정보 (Contractor Information)</h3>
+                    <div class="space-y-1.5 text-sm leading-5">
+                        <p><strong>업체명:</strong> <span id="contractorCompany">한국건설(주)</span></p>
+                        <p><strong>대표자:</strong> <span id="contractorContact">홍길동</span></p>
+                        <p><strong>이메일:</strong> <span id="contractorEmail">hong@hanbuilding.com</span></p>
+                        <p><strong>연락처:</strong> <span id="contractorPhone">02-1234-5678</span></p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="p-6">
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">견적 내역 (Quotation Details)</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left table-fixed">
+                        <thead class="bg-gray-100 dark:bg-gray-800 text-sm">
+                            <tr>
+                                <th class="w-16 p-2 font-semibold text-gray-700 dark:text-gray-300 text-center">순번</th>
+                                <th class="w-20 p-2 font-semibold text-gray-700 dark:text-gray-300 text-center">구분</th>
+                                <th class="w-1/2 p-2 font-semibold text-gray-700 dark:text-gray-300 text-center">내&nbsp;&nbsp;&nbsp;&nbsp;용</th>
+                                <th class="w-16 p-2 font-semibold text-gray-700 dark:text-gray-300 text-center">수량</th>
+                                <th class="w-16 p-2 font-semibold text-gray-700 dark:text-gray-300 text-center">단위</th>
+                                <th class="w-24 p-2 font-semibold text-gray-700 dark:text-gray-300 text-right">단가 (천원)</th>
+                                <th class="w-24 p-2 font-semibold text-gray-700 dark:text-gray-300 text-right">금액 (천원)</th>
+                                <th class="w-20 p-2 font-semibold text-gray-700 dark:text-gray-300 text-center">비고</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700/50 text-sm" id="quotationItems">
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                                <td class="p-2 text-center">1</td>
+                                <td class="p-2 text-center font-medium">토목공사</td>
+                                <td class="p-2">터파기 및 지반 작업</td>
+                                <td class="p-2 text-center">1</td>
+                                <td class="p-2 text-center">식</td>
+                                <td class="p-2 text-right font-mono">30,000</td>
+                                <td class="p-2 text-right font-mono font-medium text-primary">30,000</td>
+                                <td class="p-2 text-center text-xs text-gray-500 dark:text-gray-400">콘크리트 강도 확인 필요</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                                <td class="p-2 text-center">2</td>
+                                <td class="p-2 text-center font-medium">구조공사</td>
+                                <td class="p-2">철골 및 철근콘크리트 골조 작업</td>
+                                <td class="p-2 text-center">1</td>
+                                <td class="p-2 text-center">식</td>
+                                <td class="p-2 text-right font-mono">40,000</td>
+                                <td class="p-2 text-right font-mono font-medium text-primary">40,000</td>
+                                <td class="p-2 text-center text-xs text-gray-500 dark:text-gray-400">철근 간격 적정성 검토 필요</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                                <td class="p-2 text-center">3</td>
+                                <td class="p-2 text-center font-medium">마감공사</td>
+                                <td class="p-2">내부 및 외부 마감재 시공</td>
+                                <td class="p-2 text-center">1</td>
+                                <td class="p-2 text-center">식</td>
+                                <td class="p-2 text-right font-mono">15,000</td>
+                                <td class="p-2 text-right font-mono font-medium text-primary">15,000</td>
+                                <td class="p-2 text-center text-xs text-gray-500 dark:text-gray-400">고급 마감재 적용</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="p-6 grid md:grid-cols-2 gap-4 bg-gray-50 dark:bg-gray-800/50">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">특이사항 및 조건</h3>
+                    
+                    
+                    <div id="specialConditions" class="text-xs text-gray-600 dark:text-gray-300 space-y-1">
+                        <!-- 특이사항 내용이 동적으로 로드됩니다 -->
+                    </div>
+                </div>
+                <div class="flex flex-col items-end">
+                    <div class="w-full max-w-sm space-y-2 bg-white dark:bg-gray-900 p-4 rounded-lg shadow-md text-sm">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600 dark:text-gray-300">소계</span>
+                            <span id="subtotal" class="font-mono font-medium">₩0원</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600 dark:text-gray-300">부가세 (10%)</span>
+                            <span id="vat" class="font-mono font-medium">₩0원</span>
+                        </div>
+                        <div class="border-t border-gray-300 dark:border-gray-600 my-2"></div>
+                        <div class="flex justify-between items-center font-bold text-lg text-primary">
+                            <span>총 견적금액</span>
+                            <span id="totalAmount" class="font-mono">₩0원</span>
+                        </div>
+                        <p class="text-base text-gray-500 dark:text-gray-400 text-right mt-2">
+                            (구천삼백오십만원정)
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="p-6 text-center text-sm text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700/50">
+                <p>감사합니다.</p>
+                <p id="footerCompany">회사명 © <span id="footerYear"></span></p>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        function parseFromLocalStorage(){
+          try{
+            const raw = localStorage.getItem('quotationPrintData');
+            if(!raw) return null;
+            return JSON.parse(raw);
+          }catch(e){ console.warn('로컬스토리지 견적 데이터 파싱 실패', e); return null; }
+        }
+        // URL 파라미터에서 견적 데이터 로드
+        function loadQuotationFromUrl() {
+          const urlParams = new URLSearchParams(window.location.search);
+          const estimateData = urlParams.get('data');
+            
+            console.log('=== 견적서 출력 페이지 로드 시작 ===');
+            console.log('URL 전체:', window.location.href);
+            console.log('URL 파라미터 전체:', window.location.search);
+            console.log('estimateData (인코딩됨):', estimateData);
+            
+            if (estimateData) {
+                try {
+                    // 먼저 JSON 파싱을 직접 시도
+                    let estimate;
+                    try {
+                        console.log('JSON 직접 파싱 시도');
+                        estimate = JSON.parse(estimateData);
+                        console.log('JSON 직접 파싱 성공');
+                    } catch (directParseError) {
+                        console.log('JSON 직접 파싱 실패, 디코딩 후 재시도');
+                        const decodedData = decodeURIComponent(estimateData);
+                        console.log('estimateData (디코딩됨):', decodedData);
+                        estimate = JSON.parse(decodedData);
+                        console.log('디코딩 후 파싱 성공');
+                    }
+                    
+                    console.log('파싱된 견적 데이터:', estimate);
+                    loadQuotationData(estimate);
+                } catch (error) {
+                    console.error('견적 데이터 파싱 오류:', error);
+                    console.error('원본 데이터:', estimateData);
+                }
+            } else {
+                console.log('견적 데이터가 URL 파라미터에 없습니다. localStorage에서 로드 시도');
+                const ls = parseFromLocalStorage();
+                if (ls) { loadQuotationData(ls); }
+            }
+        }
+        
+        // 견적서 데이터를 동적으로 로드하는 함수
+        function loadQuotationData(payload) {
+            if (!payload) return;
+            const estimate = payload.estimate || payload;
+            const company = payload.companyInfo || {};
+            
+            // 디버깅: 전달받은 견적 데이터 확인
+            console.log('견적 데이터:', estimate);
+            console.log('특이사항 및 조건 (notes):', estimate.notes);
+            
+            // 헤더 정보
+            const currentDate = new Date();
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth() + 1;
+            const day = currentDate.getDate();
+            const koreanDate = `${year}년 ${month}월 ${day}일`;
+            
+            document.getElementById('quotationId').textContent = estimate.id || `#Q${year}-00123`;
+            document.getElementById('issueDate').textContent = estimate.date || koreanDate;
+            // 푸터 회사명/연도
+            const footerName = (company && company.name) ? company.name : (estimate.companyName || '');
+            if (document.getElementById('footerCompany')) {
+                document.getElementById('footerCompany').textContent = (footerName || '회사명') + ' © ' + year;
+            }
+            if (document.getElementById('footerYear')) {
+                document.getElementById('footerYear').textContent = String(year);
+            }
+            
+            // 발주처 정보
+            document.getElementById('clientCompany').textContent = estimate.clientName || 'Acme Corp';
+            if (document.getElementById('clientProject')) {
+                document.getElementById('clientProject').textContent = estimate.projectName || estimate.project || '';
+            }
+            if (document.getElementById('clientWorkplaceAddress')) {
+                document.getElementById('clientWorkplaceAddress').textContent = estimate.workplaceAddress || '';
+            }
+            
+            // 시공업체 정보 (회사 정보 사용)
+            document.getElementById('contractorCompany').textContent = company.name || '';
+            if (document.getElementById('contractorContact')) document.getElementById('contractorContact').textContent = company.representative || '';
+            if (document.getElementById('contractorEmail')) document.getElementById('contractorEmail').textContent = company.email || '';
+            if (document.getElementById('contractorPhone')) document.getElementById('contractorPhone').textContent = company.phone || '';
+            
+            // 견적 항목
+            if (estimate.items && Array.isArray(estimate.items)) {
+                const tbody = document.getElementById('quotationItems');
+                tbody.innerHTML = '';
+                
+                estimate.items.forEach((item, index) => {
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-gray-50 dark:hover:bg-gray-800/50';
+                    const unitPriceInThousands = Math.round((item.unitPrice || 0) / 1000);
+                    const totalInThousands = Math.round((item.total || item.quantity * item.unitPrice || 0) / 1000);
+                    row.innerHTML = `
+                        <td class="p-2 text-center">${index + 1}</td>
+                        <td class="p-2 text-center font-medium">${item.category || '기타공사'}</td>
+                        <td class="p-2">${item.description || ''}</td>
+                        <td class="p-2 text-center">${item.quantity || 1}</td>
+                        <td class="p-2 text-center">${item.unit || '식'}</td>
+                        <td class="p-2 text-right font-mono">${unitPriceInThousands.toLocaleString()}</td>
+                        <td class="p-2 text-right font-mono font-medium text-primary">${totalInThousands.toLocaleString()}</td>
+                        <td class="p-2 text-center text-xs text-gray-500 dark:text-gray-400">${item.notes || ''}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+            
+            // 금액 정보 (천원 단위로 변환)
+            const totalAmount = estimate.totalAmount || 93500000;
+            const subtotal = Math.round(totalAmount / 1.1);
+            const vat = totalAmount - subtotal;
+            
+            // 천원 단위로 변환
+            // 표시는 원 단위(₩ … 원)
+            const fmt = (n) => '₩' + n.toLocaleString() + '원';
+            document.getElementById('subtotal').textContent = fmt(subtotal);
+            document.getElementById('vat').textContent = fmt(vat);
+            document.getElementById('totalAmount').textContent = fmt(totalAmount);
+            
+            // 한글 금액 표기 업데이트 (실제 금액 기준)
+            const koreanAmount = numberToKoreanFullAmount(totalAmount);
+            const koreanAmountElement = document.querySelector('.text-base.text-gray-500.dark\\:text-gray-400.text-right.mt-2');
+            if (koreanAmountElement) {
+                koreanAmountElement.textContent = koreanAmount;
+            }
+            
+            // 특이사항 및 조건 업데이트 (실제 입력된 내용 사용)
+            const specialConditionsElement = document.getElementById('specialConditions');
+            
+            console.log('specialConditionsElement:', specialConditionsElement);
+            console.log('estimate.notes 존재 여부:', !!estimate.notes);
+            console.log('estimate.notes 내용:', estimate.notes);
+            
+            if (specialConditionsElement) {
+                if (estimate.notes && estimate.notes.trim() !== '') {
+                    console.log('사용자 입력 특이사항 내용을 업데이트합니다');
+                    
+                    // 실제 견적서 작성 시 입력한 특이사항 및 조건 사용
+                    const conditions = estimate.notes.trim();
+                    
+                    // 줄바꿈으로 분리하여 리스트로 변환
+                    const conditionsList = conditions.split('\n').filter(item => item.trim() !== '');
+                    console.log('분리된 조건들:', conditionsList);
+                    
+                    if (conditionsList.length > 0) {
+                        let conditionsHTML = '<ul class="list-disc list-inside space-y-1">';
+                        conditionsList.forEach(condition => {
+                            const trimmedCondition = condition.trim();
+                            if (trimmedCondition.startsWith('-')) {
+                                // 이미 "-"로 시작하는 경우 그대로 사용하되 리스트 스타일 적용
+                                conditionsHTML += `<li>${trimmedCondition.substring(1).trim()}</li>`;
+                            } else {
+                                // 일반 텍스트는 그대로 리스트 아이템으로 사용
+                                conditionsHTML += `<li>${trimmedCondition}</li>`;
+                            }
+                        });
+                        conditionsHTML += '</ul>';
+                        console.log('생성된 사용자 조건 HTML:', conditionsHTML);
+                        specialConditionsElement.innerHTML = conditionsHTML;
+                    } else {
+                        // 입력된 내용이 있지만 줄바꿈이 없으면 그대로 텍스트로 표시
+                        specialConditionsElement.innerHTML = `<p>${conditions}</p>`;
+                    }
+                } else {
+                    console.log('사용자 입력 특이사항이 없어 기본 조건을 표시합니다');
+                    
+                    // 입력된 특이사항이 없으면 기본 조건들을 표시
+                    const defaultConditions = `
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>상기 금액은 부가세가 포함된 금액입니다</li>
+                            <li>본 견적서의 유효기간은 견적일로부터 30일입니다</li>
+                            <li>계약조건: 계약금 30%, 중도금 40%, 잔금 30%</li>
+                            <li>공사 중 설계변경 시 별도 협의하여 정산합니다</li>
+                            <li>자재비 급등 시(10% 이상) 실비 정산 원칙</li>
+                            <li>천재지변 및 불가항력으로 인한 공기지연 시 협의조정</li>
+                            <li>관련 인허가 및 신고업무는 발주처에서 처리</li>
+                            <li>폐기물 처리비 및 청소비는 견적금액에 포함</li>
+                            <li>하자담보책임: 건축법령에 의거하여 2년간</li>
+                            <li>기타 명시되지 않은 사항은 건설산업기본법을 따름</li>
+                        </ul>
+                    `;
+                    specialConditionsElement.innerHTML = defaultConditions;
+                }
+            }
+        }
+        
+        // 페이지 로딩 시 URL 파라미터에서 데이터 로드
+        document.addEventListener('DOMContentLoaded', function() {
+            loadQuotationFromUrl();
+        });
+        
+        // 숫자 포맷팅 함수
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+        
+        // 숫자를 한글로 변환하는 함수 (천원 단위)
+        function numberToKorean(num) {
+            const units = ['', '십', '백', '천', '만', '십만', '백만', '천만', '억'];
+            const numbers = ['', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
+            
+            if (num === 0) return '영원정';
+            
+            let result = '';
+            let unitIndex = 0;
+            
+            while (num > 0) {
+                const digit = num % 10;
+                if (digit !== 0) {
+                    if (unitIndex === 4 && digit === 1) { // 만의 자리에서 1은 생략
+                        result = units[unitIndex] + result;
+                    } else if (digit === 1 && unitIndex > 0 && unitIndex < 4) { // 십, 백, 천의 자리에서 1은 생략
+                        result = units[unitIndex] + result;
+                    } else {
+                        result = numbers[digit] + units[unitIndex] + result;
+                    }
+                }
+                num = Math.floor(num / 10);
+                unitIndex++;
+            }
+            
+            return '(' + result + '원정)';
+        }
+        
+        // 실제 원 금액을 한글로 변환하는 함수
+        function numberToKoreanFullAmount(num) {
+            const units = ['', '십', '백', '천', '만', '십만', '백만', '천만', '억', '십억', '백억', '천억', '조'];
+            const numbers = ['', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
+            
+            if (num === 0) return '(영원정)';
+            
+            let result = '';
+            let unitIndex = 0;
+            
+            while (num > 0) {
+                const digit = num % 10;
+                if (digit !== 0) {
+                    if (unitIndex === 4 && digit === 1) { // 만의 자리에서 1은 생략
+                        result = units[unitIndex] + result;
+                    } else if (digit === 1 && unitIndex > 0 && unitIndex < 4) { // 십, 백, 천의 자리에서 1은 생략
+                        result = units[unitIndex] + result;
+                    } else {
+                        result = numbers[digit] + units[unitIndex] + result;
+                    }
+                }
+                num = Math.floor(num / 10);
+                unitIndex++;
+            }
+            
+            return '(' + result + '원정)';
+        }
+        
+        // 개선된 인쇄 함수
+        function handlePrint() {
+            // 인쇄 전 페이지 최적화
+            const originalTitle = document.title;
+            document.title = '견적서_' + (document.getElementById('quotationId')?.textContent || 'Q2024-00123');
+            
+            // 인쇄 실행
+            window.print();
+            
+            // 인쇄 후 원래 제목 복원
+            setTimeout(() => {
+                document.title = originalTitle;
+            }, 1000);
+        }
+        
+        // 키보드 단축키 지원 (Ctrl+P)
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                e.preventDefault();
+                handlePrint();
+            }
+        });
+        
+        // 인쇄 전후 이벤트 처리
+        window.addEventListener('beforeprint', function() {
+            document.body.classList.add('print-mode');
+            console.log('인쇄 시작');
+        });
+        
+        window.addEventListener('afterprint', function() {
+            document.body.classList.remove('print-mode');
+            console.log('인쇄 완료');
+        });
+    </script>
+</body>
+</html>
