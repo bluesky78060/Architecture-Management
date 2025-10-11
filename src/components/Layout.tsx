@@ -66,7 +66,7 @@ export default function Layout({ children }: LayoutProps) {
         </div>
         
         <nav className="mt-10 px-4">
-          <ul className="space-y-4">
+          <ul className="space-y-6">
             {navigation.map((item) => {
               const isActive = location.pathname === item.href;
               return (
