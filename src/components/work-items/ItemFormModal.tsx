@@ -166,7 +166,7 @@ export default function ItemFormModal({ open, editingItem, newItem, clients, uni
                   <label className="block text-sm font-medium text-gray-700">단가</label>
                   <input type="text" name="defaultPrice" value={(() => {
                     const val = newItem.defaultPrice;
-                    if (val === '' || val === null || val === undefined) return '';
+                    if (val === null || val === undefined) return '';
                     const num = Number(val);
                     return Number.isFinite(num) ? format(num) : String(val);
                   })()} onChange={(e) => onChangeField(e.target.name, e.target.value)} placeholder="예: 200,000" className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
