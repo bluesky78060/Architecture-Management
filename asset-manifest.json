@@ -1,9 +1,9 @@
 {
   "files": {
-    "main.css": "/Architecture-Management/static/css/main.8f5fcd4f.css",
-    "main.js": "/Architecture-Management/static/js/main.2209ca51.js",
+    "main.css": "/Architecture-Management/static/css/main.4778ad1d.css",
+    "main.js": "/Architecture-Management/static/js/main.d605b152.js",
     "static/js/940.cab6dc9f.chunk.js": "/Architecture-Management/static/js/940.cab6dc9f.chunk.js",
-    "static/js/347.b0a40797.chunk.js": "/Architecture-Management/static/js/347.b0a40797.chunk.js",
+    "static/js/347.7df1a8a1.chunk.js": "/Architecture-Management/static/js/347.7df1a8a1.chunk.js",
     "static/js/399.79a03f13.chunk.js": "/Architecture-Management/static/js/399.79a03f13.chunk.js",
     "static/js/28.48c1f122.chunk.js": "/Architecture-Management/static/js/28.48c1f122.chunk.js",
     "static/js/355.8c4d8ec2.chunk.js": "/Architecture-Management/static/js/355.8c4d8ec2.chunk.js",
@@ -23,10 +23,10 @@
     "static/media/SCDream5.otf": "/Architecture-Management/static/media/SCDream5.ae5ee4933db75a3ccb04.otf",
     "static/media/SCDream4.otf": "/Architecture-Management/static/media/SCDream4.64c9dc7c860af7a004ad.otf",
     "index.html": "/Architecture-Management/index.html",
-    "main.8f5fcd4f.css.map": "/Architecture-Management/static/css/main.8f5fcd4f.css.map",
-    "main.2209ca51.js.map": "/Architecture-Management/static/js/main.2209ca51.js.map",
+    "main.4778ad1d.css.map": "/Architecture-Management/static/css/main.4778ad1d.css.map",
+    "main.d605b152.js.map": "/Architecture-Management/static/js/main.d605b152.js.map",
     "940.cab6dc9f.chunk.js.map": "/Architecture-Management/static/js/940.cab6dc9f.chunk.js.map",
-    "347.b0a40797.chunk.js.map": "/Architecture-Management/static/js/347.b0a40797.chunk.js.map",
+    "347.7df1a8a1.chunk.js.map": "/Architecture-Management/static/js/347.7df1a8a1.chunk.js.map",
     "399.79a03f13.chunk.js.map": "/Architecture-Management/static/js/399.79a03f13.chunk.js.map",
     "28.48c1f122.chunk.js.map": "/Architecture-Management/static/js/28.48c1f122.chunk.js.map",
     "355.8c4d8ec2.chunk.js.map": "/Architecture-Management/static/js/355.8c4d8ec2.chunk.js.map",
@@ -39,7 +39,7 @@
   },
   "entrypoints": [
     "static/js/vendors.227e58d9.js",
-    "static/css/main.8f5fcd4f.css",
-    "static/js/main.2209ca51.js"
+    "static/css/main.4778ad1d.css",
+    "static/js/main.d605b152.js"
   ]
 }
