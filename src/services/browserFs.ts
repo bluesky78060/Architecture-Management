@@ -138,6 +138,22 @@ async function writeKeyDirect(key: string, value: unknown): Promise<boolean> {
   return await writeKey(dir, key, value);
 }
 
+async function writeImageFile(filename: string, blob: Blob): Promise<boolean> {
+  try {
+    const dirHandle = await getSavedDirectoryHandle();
+    if (dirHandle == null) return false;
+    if (!(await verifyPermission(dirHandle, 'readwrite'))) return false;
+
+    const fileHandle = await dirHandle.getFileHandle(filename, { create: true });
+    const writable = await fileHandle.createWritable();
+    await writable.write(blob);
+    await writable.close();
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 export const browserFs = {
   isSupported,
   getSavedDirectoryHandle,
@@ -146,4 +162,5 @@ export const browserFs = {
   readKey,
   writeKey,
   writeKeyDirect,
+  writeImageFile,
 };
