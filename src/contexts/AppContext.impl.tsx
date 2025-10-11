@@ -181,7 +181,21 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [estimates, setEstimates] = useState<Estimate[]>(() => loadFromStorage(STORAGE_KEYS.ESTIMATES, [] as Estimate[]));
   const [units, setUnits] = useState<UnitName[]>(() => loadFromStorage(STORAGE_KEYS.UNITS, ['식', '㎡', '개', '톤', 'm', 'kg', '회', '일']));
   const [categories, setCategories] = useState<CategoryName[]>(() => loadFromStorage(STORAGE_KEYS.CATEGORIES, ['토목공사', '구조공사', '철거공사', '마감공사', '설비공사', '내부공사', '기타']));
-  const [stampImage, setStampImage] = useState<string | null>(() => loadFromStorage(STORAGE_KEYS.STAMP_IMAGE, null));
+  // stampImage는 useEffect에서 암호화된 저장소로부터 비동기 로드
+  const [stampImage, setStampImage] = useState<string | null>(null);
+
+  // 초기 로딩: 암호화된 도장 이미지 불러오기
+  useEffect(() => {
+    (async () => {
+      try {
+        const { loadStampImage } = await import('../utils/imageStorage');
+        const loadedImage = loadStampImage();
+        setStampImage(loadedImage);
+      } catch (error) {
+        // 로딩 실패 시 null 유지
+      }
+    })();
+  }, []);
 
   const getCompletedWorkItems = (): WorkItem[] => workItems.filter(i => i.status === '완료');
   const getCompletedWorkItemsByClient = (clientId: number): WorkItem[] => workItems.filter(i => i.clientId === clientId && i.status === '완료');
@@ -224,7 +238,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   useEffect(() => { saveToStorage(STORAGE_KEYS.ESTIMATES, estimates); }, [estimates]);
   useEffect(() => { saveToStorage(STORAGE_KEYS.UNITS, units); }, [units]);
   useEffect(() => { saveToStorage(STORAGE_KEYS.CATEGORIES, categories); }, [categories]);
-  useEffect(() => { saveToStorage(STORAGE_KEYS.STAMP_IMAGE, stampImage); }, [stampImage]);
+  // stampImage는 imageStorage.ts의 saveStampImage를 통해 암호화되어 저장됨
   useEffect(() => {
     const snapshot = { companyInfo, clients, workItems, invoices, estimates, units, categories };
     scheduleMirror(snapshot, 1 * MS_IN_SECOND);

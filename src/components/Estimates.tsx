@@ -499,6 +499,12 @@ const Estimates: React.FC = () => {
     createTemplate.estimates();
   };
 
+  const handleStatusChange = (id: ID, newStatus: string) => {
+    setEstimates(prev => prev.map(est =>
+      est.id === id ? { ...est, status: newStatus as EstimateStatus } : est
+    ));
+  };
+
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
       '검토중': 'bg-yellow-100 text-yellow-800',
@@ -582,7 +588,9 @@ const Estimates: React.FC = () => {
         onPrint={handlePrint}
         onDelete={handleDelete}
         onConvert={handleConvertToWorkItems}
+        onStatusChange={handleStatusChange}
         selectedIds={uiState.selectedIds}
+        statuses={statuses}
       />
 
       {modals.isOpen('confirmDelete') && (

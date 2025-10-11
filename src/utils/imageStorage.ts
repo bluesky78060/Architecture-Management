@@ -1,5 +1,4 @@
-// 도장 이미지 저장을 위한 유틸리티 (보안 강화)
-import { setSecureItem, getSecureItem, removeSecureItem } from './secureStorageAdapter';
+// 도장 이미지 저장을 위한 유틸리티
 import { KIB } from '../constants/units';
 
 const STAMP_IMAGE_KEY = 'constructionApp_stampImage';
@@ -10,40 +9,39 @@ interface StorageInfo {
   stampImageSize: string;
 }
 
-// 암호화된 localStorage에 이미지 저장
+// localStorage에 이미지 저장 (암호화 없이 base64 그대로 저장)
 export const saveStampImage = (imageDataUrl: string): boolean => {
   try {
     // localStorage 용량 확인
-    const ENCRYPTION_OVERHEAD_FACTOR = 2; // 암호화로 인한 크기 증가 고려
-    const estimatedSize = imageDataUrl.length * ENCRYPTION_OVERHEAD_FACTOR;
+    const estimatedSize = imageDataUrl.length;
     const MAX_STAMP_IMAGE_MIB = 5; // 5 MiB
     const maxSize = MAX_STAMP_IMAGE_MIB * KIB * KIB;
-    
+
     if (estimatedSize > maxSize) {
       return false;
     }
-    
-    setSecureItem(STAMP_IMAGE_KEY, imageDataUrl);
+
+    localStorage.setItem(STAMP_IMAGE_KEY, imageDataUrl);
     return true;
   } catch (error) {
     return false;
   }
 };
 
-// 암호화된 localStorage에서 이미지 불러오기
+// localStorage에서 이미지 불러오기
 export const loadStampImage = (): string | null => {
   try {
-    const imageData = getSecureItem(STAMP_IMAGE_KEY);
+    const imageData = localStorage.getItem(STAMP_IMAGE_KEY);
     return imageData;
   } catch (error) {
     return null;
   }
 };
 
-// 암호화된 localStorage에서 이미지 삭제
+// localStorage에서 이미지 삭제
 export const removeStampImage = (): boolean => {
   try {
-    removeSecureItem(STAMP_IMAGE_KEY);
+    localStorage.removeItem(STAMP_IMAGE_KEY);
     return true;
   } catch (error) {
     return false;
@@ -79,7 +77,7 @@ export const imageToBase64 = (file: File): Promise<string> => {
   });
 };
 
-// localStorage 사용량 확인 (개발용) - 보안 강화
+// localStorage 사용량 확인 (개발용)
 export const getStorageInfo = (): StorageInfo => {
   let total = 0;
   for (const key in localStorage) {
@@ -87,13 +85,13 @@ export const getStorageInfo = (): StorageInfo => {
       total += localStorage[key].length + key.length;
     }
   }
-  
-  // 암호화된 도장 이미지 크기 확인
-  const stampData = getSecureItem(STAMP_IMAGE_KEY);
-  const stampImageSize = stampData !== null 
+
+  // 도장 이미지 크기 확인
+  const stampData = localStorage.getItem(STAMP_IMAGE_KEY);
+  const stampImageSize = stampData !== null
     ? Math.round(stampData.length / KIB) + ' KB'
     : '0 KB';
-  
+
   return {
     used: Math.round(total / KIB) + ' KB',
     stampImageSize: stampImageSize

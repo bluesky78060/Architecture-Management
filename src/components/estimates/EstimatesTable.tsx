@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from 'react';
 import Tooltip from '../Tooltip';
 import type { Estimate, ID } from '../../types/domain';
 
@@ -12,10 +13,35 @@ type Props = {
   onPrint: (e: Estimate) => void;
   onDelete: (id: ID) => void;
   onConvert: (id: ID) => void;
+  onStatusChange: (id: ID, status: string) => void;
   selectedIds: ID[];
+  statuses: string[];
 };
 
-export default function EstimatesTable({ items, allSelected, onToggleAll, onToggleOne, format, getStatusColor, onEdit, onPrint, onDelete, onConvert, selectedIds }: Props) {
+export default function EstimatesTable({ items, allSelected, onToggleAll, onToggleOne, format, getStatusColor, onEdit, onPrint, onDelete, onConvert, onStatusChange, selectedIds, statuses }: Props) {
+  const [openDropdown, setOpenDropdown] = useState<ID | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // 드롭다운 외부 클릭 시 닫기
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current !== null && dropdownRef.current !== undefined && !dropdownRef.current.contains(event.target as Node)) {
+        setOpenDropdown(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleStatusClick = (estimateId: ID) => {
+    setOpenDropdown(openDropdown === estimateId ? null : estimateId);
+  };
+
+  const handleStatusSelect = (estimateId: ID, newStatus: string) => {
+    onStatusChange(estimateId, newStatus);
+    setOpenDropdown(null);
+  };
+
   return (
     <div className="bg-white rounded-lg shadow overflow-hidden">
       <table className="min-w-full divide-y divide-gray-200">
@@ -61,7 +87,34 @@ export default function EstimatesTable({ items, allSelected, onToggleAll, onTogg
               <td className="px-3 py-2 text-sm text-gray-900">{estimate.projectName}</td>
               <td className="px-3 py-2 text-sm text-gray-900">{estimate.workplaceName}</td>
               <td className="px-3 py-2 text-sm text-gray-900 text-center">{format(estimate.totalAmount)}원</td>
-              <td className="px-3 py-2 text-sm"><span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(estimate.status)}`}>{estimate.status}</span></td>
+              <td className="px-3 py-2 text-sm">
+                <div className="relative" ref={openDropdown === estimate.id ? dropdownRef : null}>
+                  <button
+                    onClick={() => handleStatusClick(estimate.id)}
+                    className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(estimate.status)} hover:opacity-80 transition-opacity cursor-pointer`}
+                    title="상태 변경"
+                  >
+                    {estimate.status} ▼
+                  </button>
+                  {openDropdown === estimate.id && (
+                    <div className="absolute z-10 mt-1 w-36 bg-white border border-gray-200 rounded-md shadow-lg">
+                      {statuses.map((status) => (
+                        <button
+                          key={status}
+                          onClick={() => handleStatusSelect(estimate.id, status)}
+                          className={`block w-full text-left px-3 py-2 text-sm hover:bg-gray-100 ${
+                            status === estimate.status ? 'bg-gray-50 font-semibold' : ''
+                          }`}
+                        >
+                          <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(status)}`}>
+                            {status}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </td>
               <td className="px-3 py-2 text-sm text-gray-900">{estimate.validUntil ?? '-'}</td>
               <td className="px-3 py-2 text-center text-sm font-medium">
                 <div className="flex items-center justify-center space-x-4">
