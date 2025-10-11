@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/Architecture-Management/static/css/main.04ee1a8a.css",
-    "main.js": "/Architecture-Management/static/js/main.795d766a.js",
+    "main.js": "/Architecture-Management/static/js/main.9a9951ad.js",
     "static/js/940.cab6dc9f.chunk.js": "/Architecture-Management/static/js/940.cab6dc9f.chunk.js",
     "static/js/347.3b0f14f9.chunk.js": "/Architecture-Management/static/js/347.3b0f14f9.chunk.js",
     "static/js/399.79a03f13.chunk.js": "/Architecture-Management/static/js/399.79a03f13.chunk.js",
     "static/js/28.48c1f122.chunk.js": "/Architecture-Management/static/js/28.48c1f122.chunk.js",
     "static/js/355.8c4d8ec2.chunk.js": "/Architecture-Management/static/js/355.8c4d8ec2.chunk.js",
-    "static/js/217.c0767f1f.chunk.js": "/Architecture-Management/static/js/217.c0767f1f.chunk.js",
+    "static/js/217.f6db13e1.chunk.js": "/Architecture-Management/static/js/217.f6db13e1.chunk.js",
     "static/js/659.80551014.chunk.js": "/Architecture-Management/static/js/659.80551014.chunk.js",
     "static/js/686.1d698c08.chunk.js": "/Architecture-Management/static/js/686.1d698c08.chunk.js",
-    "static/js/621.96378293.chunk.js": "/Architecture-Management/static/js/621.96378293.chunk.js",
+    "static/js/621.1c08de3a.chunk.js": "/Architecture-Management/static/js/621.1c08de3a.chunk.js",
     "vendors.js": "/Architecture-Management/static/js/vendors.227e58d9.js",
     "static/js/648.688cff53.chunk.js": "/Architecture-Management/static/js/648.688cff53.chunk.js",
     "static/media/SCDream8.otf": "/Architecture-Management/static/media/SCDream8.64217e4da7638066e57a.otf",
@@ -24,22 +24,22 @@
     "static/media/SCDream4.otf": "/Architecture-Management/static/media/SCDream4.64c9dc7c860af7a004ad.otf",
     "index.html": "/Architecture-Management/index.html",
     "main.04ee1a8a.css.map": "/Architecture-Management/static/css/main.04ee1a8a.css.map",
-    "main.795d766a.js.map": "/Architecture-Management/static/js/main.795d766a.js.map",
+    "main.9a9951ad.js.map": "/Architecture-Management/static/js/main.9a9951ad.js.map",
     "940.cab6dc9f.chunk.js.map": "/Architecture-Management/static/js/940.cab6dc9f.chunk.js.map",
     "347.3b0f14f9.chunk.js.map": "/Architecture-Management/static/js/347.3b0f14f9.chunk.js.map",
     "399.79a03f13.chunk.js.map": "/Architecture-Management/static/js/399.79a03f13.chunk.js.map",
     "28.48c1f122.chunk.js.map": "/Architecture-Management/static/js/28.48c1f122.chunk.js.map",
     "355.8c4d8ec2.chunk.js.map": "/Architecture-Management/static/js/355.8c4d8ec2.chunk.js.map",
-    "217.c0767f1f.chunk.js.map": "/Architecture-Management/static/js/217.c0767f1f.chunk.js.map",
+    "217.f6db13e1.chunk.js.map": "/Architecture-Management/static/js/217.f6db13e1.chunk.js.map",
     "659.80551014.chunk.js.map": "/Architecture-Management/static/js/659.80551014.chunk.js.map",
     "686.1d698c08.chunk.js.map": "/Architecture-Management/static/js/686.1d698c08.chunk.js.map",
-    "621.96378293.chunk.js.map": "/Architecture-Management/static/js/621.96378293.chunk.js.map",
+    "621.1c08de3a.chunk.js.map": "/Architecture-Management/static/js/621.1c08de3a.chunk.js.map",
     "vendors.227e58d9.js.map": "/Architecture-Management/static/js/vendors.227e58d9.js.map",
     "648.688cff53.chunk.js.map": "/Architecture-Management/static/js/648.688cff53.chunk.js.map"
   },
   "entrypoints": [
     "static/js/vendors.227e58d9.js",
     "static/css/main.04ee1a8a.css",
-    "static/js/main.795d766a.js"
+    "static/js/main.9a9951ad.js"
   ]
 }
