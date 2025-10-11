@@ -5,8 +5,11 @@
     <title>건설 청구서 관리 시스템</title>
     <script type="text/javascript">
       // Single Page Apps for GitHub Pages
-      var pathSegmentsToKeep = 1;
+      // GitHub Pages serves from /Architecture-Management/, so we need to preserve that segment
       var l = window.location;
+      var isGitHubPages = /github\.io$/.test(l.hostname);
+      var pathSegmentsToKeep = isGitHubPages ? 1 : 0;
+
       l.replace(
         l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
         l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
