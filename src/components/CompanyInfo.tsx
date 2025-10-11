@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { useApp } from '../contexts/AppContext';
-import { checkStorageAvailable, getStorageInfo, imageToBase64, saveStampImage, removeStampImage } from '../utils/imageStorage';
+import { checkStorageAvailable, getStorageInfo, imageToBase64, saveStampImage, removeStampImage, selectStampFolder } from '../utils/imageStorage';
 import { storage } from '../services/storage';
 import type { CompanyInfo as CompanyInfoType } from '../types/domain';
 import ConfirmDialog from './ConfirmDialog';
 
-type StorageInfo = { used: string; stampImageSize: string };
+type StorageInfo = { used: string; stampImageSize: string; folderPath?: string };
 
 export default function CompanyInfo(): JSX.Element {
   const { companyInfo, setCompanyInfo, units, setUnits, categories, setCategories, stampImage, setStampImage } = useApp();
@@ -160,6 +160,18 @@ export default function CompanyInfo(): JSX.Element {
       alert('이미지 삭제 중 오류가 발생했습니다.');
     }
     setShowConfirmRemoveStamp(false);
+  };
+
+  const handleSelectFolder = async () => {
+    const folderHandle = await selectStampFolder();
+    if (folderHandle !== null) {
+      alert(`저장 폴더가 선택되었습니다: ${folderHandle.name}\n\n이제 도장 이미지가 이 폴더에 "company-stamp.png" 파일로 저장됩니다.`);
+      // 저장소 정보 업데이트
+      if (checkStorageAvailable()) {
+        const info = await getStorageInfo();
+        setStorageInfoState(info);
+      }
+    }
   };
 
   return (
@@ -368,8 +380,32 @@ export default function CompanyInfo(): JSX.Element {
             </div>
 
             {/* 저장소 정보 및 디렉토리 설정 */}
-            <div className="space-y-2">
+            <div className="space-y-3">
               <div className="text-xs text-gray-600">저장소 사용량: {storageInfo.used} | 도장 이미지: {storageInfo.stampImageSize}</div>
+
+              {/* 로컬 폴더 선택 (웹 브라우저) */}
+              <div className="space-y-2 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-blue-900">📁 로컬 폴더에 저장</p>
+                    <p className="text-xs text-blue-700 mt-1">
+                      {storageInfo.folderPath !== undefined
+                        ? `현재 폴더: ${storageInfo.folderPath}`
+                        : '폴더를 선택하면 도장 이미지 파일이 저장됩니다'}
+                    </p>
+                  </div>
+                  <button
+                    onClick={handleSelectFolder}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-medium whitespace-nowrap"
+                  >
+                    {storageInfo.folderPath !== undefined ? '폴더 변경' : '폴더 선택'}
+                  </button>
+                </div>
+                <p className="text-xs text-blue-600">
+                  ℹ️ Chrome, Edge 브라우저에서 지원됩니다. 선택한 폴더에 "company-stamp.png" 파일로 저장됩니다.
+                </p>
+              </div>
+
               <div className="space-y-1">
                 {dataDir.length > 0 ? (
                   <div className="space-y-2">
