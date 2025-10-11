@@ -50,7 +50,7 @@ const root = ReactDOM.createRoot(
 );
 
 // Hosting-aware basename resolution
-const resolveBasename = (useHash: boolean): string => {
+const resolveBasename = (): string => {
   const normalize = (p: string): string => {
     let path = p.trim();
     try {
@@ -74,11 +74,7 @@ const resolveBasename = (useHash: boolean): string => {
   // Auto-detect GitHub Pages subpath, e.g., /Architecture-Management
   const isGhPages = typeof window !== 'undefined' && /github\.io$/.test(window.location.hostname);
   if (isGhPages) {
-    // For hash router on GitHub Pages, always use '/' as basename
-    // The hash will handle internal routing
-    if (useHash) return '/';
-
-    // For BrowserRouter, use the repository name as basename
+    // For BrowserRouter on GitHub Pages, use the repository name as basename
     const seg = window.location.pathname.split('/').filter(Boolean)[0];
     return (typeof seg === 'string' && seg !== '') ? `/${seg}` : '/';
   }
@@ -114,17 +110,10 @@ const routes = createRoutesFromElements(
   </Route>
 );
 
-// Prefer HashRouter only on file protocol (Electron/packaged) or when explicitly enabled via env
-const useHash = ((): boolean => {
-  const byEnv = process.env.REACT_APP_USE_HASH_ROUTER === '1';
-  if (byEnv) return true;
-  if (typeof window !== 'undefined') {
-    const isFile = window.location.protocol === 'file:';
-    if (isFile) return true;
-  }
-  return false;
-})();
-const basePath = resolveBasename(useHash);
+// Always use BrowserRouter for better GitHub Pages compatibility
+// HashRouter was causing routing issues on GitHub Pages
+const useHash = false;
+const basePath = resolveBasename();
 // React Router v7 future flags for forward compatibility
 const futureFlags: { v7_startTransition: boolean; v7_relativeSplatPath: boolean } = {
   v7_startTransition: true,
