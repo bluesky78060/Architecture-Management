@@ -104,8 +104,8 @@ export default function WorkItems(): JSX.Element {
     const skilledRate = parseInt(String(item?.laborUnitRate ?? 0), 10);
     const generalPersons = parseInt(String(item?.laborPersonsGeneral ?? 0), 10);
     const generalRate = parseInt(String(item?.laborUnitRateGeneral ?? 0), 10);
-    const skilledCost = (skilledPersons !== 0) ? skilledPersons * skilledRate : 0;
-    const generalCost = (generalPersons !== 0) ? generalPersons * generalRate : 0;
+    const skilledCost = (Number.isFinite(skilledPersons) && skilledPersons !== 0) ? skilledPersons * skilledRate : 0;
+    const generalCost = (Number.isFinite(generalPersons) && generalPersons !== 0) ? generalPersons * generalRate : 0;
     return skilledCost + generalCost;
   };
 
@@ -573,6 +573,7 @@ export default function WorkItems(): JSX.Element {
         open={showBulkModal}
         clients={clients}
         categories={categories}
+        units={units}
         bulkItems={bulkItems}
         bulkBaseInfo={bulkBaseInfo}
         showBulkCustomProject={showBulkCustomProject}
@@ -583,6 +584,7 @@ export default function WorkItems(): JSX.Element {
         onRemoveItem={onBulkRemoveItem}
         onCancel={() => { setShowBulkModal(false); }}
         onSubmit={onBulkSubmit}
+        getLaborCost={getLaborCost}
       />
 
       <ConfirmDialog

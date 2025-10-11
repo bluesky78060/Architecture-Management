@@ -164,17 +164,26 @@ export default function ItemFormModal({ open, editingItem, newItem, clients, uni
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">단가</label>
-                  <input type="text" name="defaultPrice" value={typeof newItem.defaultPrice === 'number' ? format(newItem.defaultPrice) : ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} placeholder="예: 200,000" className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+                  <input type="text" name="defaultPrice" value={(() => {
+                    const val = newItem.defaultPrice;
+                    if (val === '' || val === null || val === undefined) return '';
+                    const num = Number(val);
+                    return Number.isFinite(num) ? format(num) : String(val);
+                  })()} onChange={(e) => onChangeField(e.target.name, e.target.value)} placeholder="예: 200,000" className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">합계</label>
                   <div className="mt-1 w-full bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm">{
                     (() => {
-                      const pRaw = Number(newItem.defaultPrice);
-                      const qRaw = Number(newItem.quantity);
-                      const p = Number.isFinite(pRaw) ? pRaw : 0;
-                      const q = Number.isFinite(qRaw) ? qRaw : 1;
-                      return `${format(p * q + getLaborCost(newItem))}원`;
+                      const pRaw = newItem.defaultPrice;
+                      const qRaw = newItem.quantity;
+                      const pNum = Number(pRaw);
+                      const qNum = Number(qRaw);
+                      const p = Number.isFinite(pNum) ? pNum : 0;
+                      const q = Number.isFinite(qNum) ? qNum : 1;
+                      const laborCost = getLaborCost(newItem);
+                      const total = (p * q) + laborCost;
+                      return `${format(total)}원`;
                     })()
                   }</div>
                 </div>
