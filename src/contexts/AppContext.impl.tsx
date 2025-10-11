@@ -189,7 +189,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     (async () => {
       try {
         const { loadStampImage } = await import('../utils/imageStorage');
-        const loadedImage = loadStampImage();
+        const loadedImage = await loadStampImage();
         setStampImage(loadedImage);
       } catch (error) {
         // 로딩 실패 시 null 유지

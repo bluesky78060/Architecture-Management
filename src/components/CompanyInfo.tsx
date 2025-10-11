@@ -23,10 +23,14 @@ export default function CompanyInfo(): JSX.Element {
   const [showConfirmRemoveStamp, setShowConfirmRemoveStamp] = useState<boolean>(false);
 
   useEffect(() => {
-    if (checkStorageAvailable()) {
-      setStorageInfoState(getStorageInfo());
-    }
     (async () => {
+      // 저장소 정보 업데이트
+      if (checkStorageAvailable()) {
+        const info = await getStorageInfo();
+        setStorageInfoState(info);
+      }
+
+      // 데이터 디렉토리 정보
       try {
         if (window.cms !== undefined && typeof window.cms.getBaseDir === 'function') {
           const dir = await window.cms.getBaseDir();
@@ -126,12 +130,13 @@ export default function CompanyInfo(): JSX.Element {
 
       const imageDataUrl = await imageToBase64(file);
 
-      const saved = saveStampImage(imageDataUrl);
+      const saved = await saveStampImage(imageDataUrl);
       if (saved) {
         setStampImage(imageDataUrl);
         // 저장소 정보 업데이트
         if (checkStorageAvailable()) {
-          setStorageInfoState(getStorageInfo());
+          const info = await getStorageInfo();
+          setStorageInfoState(info);
         }
         alert('도장 이미지가 성공적으로 저장되었습니다.');
       } else {
@@ -145,8 +150,8 @@ export default function CompanyInfo(): JSX.Element {
   };
 
   const requestRemoveStampImage = () => setShowConfirmRemoveStamp(true);
-  const confirmRemoveStampImage = () => {
-    const removed = removeStampImage();
+  const confirmRemoveStampImage = async () => {
+    const removed = await removeStampImage();
     if (removed) {
       setStampImage(null);
       if (fileInputRef.current !== null) fileInputRef.current.value = '';
