@@ -525,6 +525,16 @@ const Estimates: React.FC = () => {
             <p className="text-gray-600">건축주별 견적서를 관리하고 작업 항목으로 변환하세요</p>
           </div>
           <div className="flex space-x-2">
+            {uiState.selectedIds.length > 0 && (
+              <button
+                onClick={() => modals.open('confirmDelete')}
+                className="flex items-center justify-center px-4 py-2.5 bg-white border border-red-200 rounded-full shadow-sm hover:shadow-md transition-shadow duration-300 text-gray-700 font-medium"
+              >
+                <span className="text-red-600 mr-2">🗑️</span>
+                <span className="text-xs font-semibold">삭제 ({uiState.selectedIds.length})</span>
+              </button>
+            )}
+
             <button
               onClick={handleDownloadTemplate}
               className="flex items-center justify-center px-4 py-2.5 bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md transition-shadow duration-300 text-gray-700 font-medium"
@@ -532,7 +542,7 @@ const Estimates: React.FC = () => {
               <span className="text-gray-500 mr-2">📁</span>
               <span className="text-xs font-semibold">템플릿 다운로드</span>
             </button>
-            
+
             <button
               onClick={handleExportToExcel}
               className="flex items-center justify-center px-4 py-2.5 bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md transition-shadow duration-300 text-gray-700 font-medium"
@@ -540,7 +550,7 @@ const Estimates: React.FC = () => {
               <span className="text-green-500 mr-2">📥</span>
               <span className="text-xs font-semibold">Excel 내보내기</span>
             </button>
-            
+
             <label className="flex items-center justify-center px-4 py-2.5 bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md transition-shadow duration-300 text-gray-700 font-medium cursor-pointer">
               <span className="text-blue-500 mr-2">📤</span>
               <span className="text-xs font-semibold">Excel 가져오기</span>
@@ -551,7 +561,7 @@ const Estimates: React.FC = () => {
                 className="hidden"
               />
             </label>
-            
+
             <button
               onClick={() => { setModalState(prev => ({ ...prev, editingEstimate: null })); modals.open('estimateForm'); }}
               className="flex items-center justify-center px-4 py-2.5 bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700 transition-colors duration-300 font-bold"
@@ -572,11 +582,9 @@ const Estimates: React.FC = () => {
         selectedStatus={filters.selectedStatus}
         filteredCount={filteredEstimates.length}
         totalCount={estimates.length}
-        selectionCount={uiState.selectedIds.length}
         onChangeClient={(val) => filters.setSelectedClient(val)}
         onChangeStatus={(val) => filters.setSelectedStatus(val)}
         onReset={() => { filters.reset(); setUiState({ selectedIds: [] }); }}
-        onBulkDelete={() => modals.open('confirmDelete')}
       />
 
       <EstimatesTable
