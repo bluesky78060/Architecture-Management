@@ -572,9 +572,11 @@ const Estimates: React.FC = () => {
         selectedStatus={filters.selectedStatus}
         filteredCount={filteredEstimates.length}
         totalCount={estimates.length}
+        selectionCount={uiState.selectedIds.length}
         onChangeClient={(val) => filters.setSelectedClient(val)}
         onChangeStatus={(val) => filters.setSelectedStatus(val)}
         onReset={() => { filters.reset(); setUiState({ selectedIds: [] }); }}
+        onBulkDelete={() => modals.open('confirmDelete')}
       />
 
       <EstimatesTable
