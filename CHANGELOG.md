@@ -4,6 +4,69 @@
 
 ---
 
+## [2.1.0] - 2025-10-13
+
+### 🌐 클라우드 데이터베이스 지원
+
+#### Google Cloud SQL 통합
+- **Cloud SQL 연결 서비스**: @google-cloud/cloud-sql-connector 기반 안전한 연결
+  - TLS 1.3 암호화
+  - IAM 인증 지원
+  - Public/Private IP 선택
+  - 자동 연결 풀 관리
+
+- **멀티 백엔드 아키텍처**: SQLite와 Cloud SQL 중 선택 가능
+  - 환경 변수로 백엔드 전환 (`DATABASE_BACKEND`)
+  - 로컬 개발: SQLite (Electron)
+  - 클라우드 배포: Cloud SQL (웹)
+  - 동일한 인터페이스로 투명한 전환
+
+- **새로운 서비스**:
+  - `src/services/cloudSql.ts` - Cloud SQL 연결 관리
+  - `src/services/database.cloud.ts` - Cloud SQL 기반 데이터베이스 서비스
+  - `src/config/database.config.ts` - 통합 데이터베이스 설정
+
+#### 배포 도구 및 문서
+- **연결 테스트 스크립트**: `scripts/test-cloud-sql.js`
+  - 설정 검증
+  - 연결 테스트
+  - 스키마 생성 테스트
+  - 성능 측정
+
+- **환경 설정**: `.env.cloud.example`
+  - Cloud SQL 연결 설정 템플릿
+  - 보안 best practices 가이드
+  - IAM 및 PASSWORD 인증 예제
+
+- **배포 가이드**: `docs/CLOUD_SQL_DEPLOYMENT.md` (30+ 페이지)
+  - 인스턴스 생성 단계별 가이드
+  - 보안 설정 및 네트워크 구성
+  - Cloud Run / App Engine 배포 절차
+  - 모니터링 및 문제 해결
+  - 비용 최적화 팁
+
+#### 기술 스펙
+- **패키지 추가**:
+  - `@google-cloud/cloud-sql-connector@1.8.4`
+  - `mysql2@3.15.2`
+
+- **지원 인증**:
+  - PASSWORD: 기본 비밀번호 인증
+  - IAM: Google Cloud IAM 통합 인증
+
+- **MySQL 스키마**: UTF8MB4, InnoDB 엔진
+  - 자동 타임스탬프
+  - 외래 키 제약조건
+  - 복합 인덱스 지원
+
+### 📊 통계
+- **새 파일**: 5개
+- **코드**: ~800 줄 (서비스 + 설정)
+- **문서**: ~1,200 줄 (배포 가이드)
+- **테스트 스크립트**: ~400 줄
+
+---
+
 ## [2.0.0] - 2025-01-10
 
 ### 🎉 주요 기능
