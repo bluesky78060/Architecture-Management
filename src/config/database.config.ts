@@ -2,27 +2,31 @@
  * 데이터베이스 설정 관리
  *
  * 환경 변수를 기반으로 데이터베이스 설정을 관리합니다.
- * SQLite (로컬) 또는 Cloud SQL (클라우드) 백엔드를 선택할 수 있습니다.
+ * SQLite (로컬), Cloud SQL (클라우드), Supabase (클라우드) 백엔드를 선택할 수 있습니다.
  */
 
-import { CloudSqlConfig } from '../services/cloudSql';
+import { SupabaseConfig } from '../services/supabase';
 
-export type DatabaseBackend = 'sqlite' | 'cloud';
+export type DatabaseBackend = 'sqlite' | 'supabase';
 
 export interface DatabaseConfig {
   backend: DatabaseBackend;
   sqlite?: {
     path?: string;
   };
-  cloud?: CloudSqlConfig;
+  supabase?: SupabaseConfig;
 }
 
 /**
  * 환경 변수에서 데이터베이스 설정 로드
  */
 export function loadDatabaseConfig(): DatabaseConfig {
-  // 백엔드 타입 결정
-  const backend = (process.env.DATABASE_BACKEND || 'sqlite') as DatabaseBackend;
+  // 백엔드 타입 결정 (React 앱 환경 변수 또는 Node.js 환경 변수)
+  const backend = (
+    process.env.REACT_APP_DATABASE_BACKEND ||
+    process.env.DATABASE_BACKEND ||
+    'sqlite'
+  ) as DatabaseBackend;
 
   const config: DatabaseConfig = {
     backend,
@@ -33,26 +37,22 @@ export function loadDatabaseConfig(): DatabaseConfig {
     config.sqlite = {
       path: process.env.SQLITE_PATH,
     };
-  } else if (backend === 'cloud') {
-    // Cloud SQL 설정
-    const instanceConnectionName = process.env.CLOUD_SQL_INSTANCE_CONNECTION_NAME;
-    const database = process.env.CLOUD_SQL_DATABASE;
-    const user = process.env.CLOUD_SQL_USER;
-    const password = process.env.CLOUD_SQL_PASSWORD;
+  } else if (backend === 'supabase') {
+    // Supabase 설정 (React 앱 환경 변수 우선)
+    const url = process.env.REACT_APP_SUPABASE_URL || process.env.SUPABASE_URL;
+    const anonKey = process.env.REACT_APP_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    if (!instanceConnectionName || !database || !user) {
+    if (!url || !anonKey) {
       throw new Error(
-        'Cloud SQL configuration incomplete. Required: CLOUD_SQL_INSTANCE_CONNECTION_NAME, CLOUD_SQL_DATABASE, CLOUD_SQL_USER'
+        'Supabase configuration incomplete. Required: SUPABASE_URL, SUPABASE_ANON_KEY'
       );
     }
 
-    config.cloud = {
-      instanceConnectionName,
-      database,
-      user,
-      password,
-      authType: process.env.CLOUD_SQL_AUTH_TYPE as any,
-      ipType: (process.env.CLOUD_SQL_IP_TYPE as 'PUBLIC' | 'PRIVATE' | 'PSC') || 'PUBLIC',
+    config.supabase = {
+      url,
+      anonKey,
+      serviceRoleKey,
     };
   }
 
@@ -63,32 +63,21 @@ export function loadDatabaseConfig(): DatabaseConfig {
  * 설정 검증
  */
 export function validateDatabaseConfig(config: DatabaseConfig): void {
-  if (config.backend === 'cloud') {
-    if (!config.cloud) {
-      throw new Error('Cloud SQL configuration is missing');
+  if (config.backend === 'supabase') {
+    if (!config.supabase) {
+      throw new Error('Supabase configuration is missing');
     }
 
-    const { instanceConnectionName, database, user, authType } = config.cloud;
+    const { url, anonKey } = config.supabase;
 
-    // 인스턴스 연결 이름 형식 확인
-    const connectionNameParts = instanceConnectionName.split(':');
-    if (connectionNameParts.length !== 3) {
-      throw new Error(
-        'Invalid instance connection name format. Expected: project:region:instance'
-      );
+    // URL 형식 확인
+    if (!url.startsWith('https://')) {
+      throw new Error('Invalid Supabase URL format. Expected: https://xxx.supabase.co');
     }
 
-    // 비밀번호 인증인 경우 비밀번호 확인
-    if (authType === 'PASSWORD' && !config.cloud.password) {
-      throw new Error('Password is required for PASSWORD authentication');
-    }
-
-    console.log('✅ Cloud SQL configuration validated');
-    console.log(`   Instance: ${instanceConnectionName}`);
-    console.log(`   Database: ${database}`);
-    console.log(`   User: ${user}`);
-    console.log(`   Auth: ${authType}`);
-    console.log(`   IP Type: ${config.cloud.ipType}`);
+    console.log('✅ Supabase configuration validated');
+    console.log(`   URL: ${url}`);
+    console.log(`   Anon Key: ${anonKey.substring(0, 20)}...`);
   } else {
     console.log('✅ SQLite configuration validated');
   }
@@ -98,14 +87,18 @@ export function validateDatabaseConfig(config: DatabaseConfig): void {
  * 현재 데이터베이스 백엔드 확인
  */
 export function getCurrentBackend(): DatabaseBackend {
-  return (process.env.DATABASE_BACKEND || 'sqlite') as DatabaseBackend;
+  return (
+    process.env.REACT_APP_DATABASE_BACKEND ||
+    process.env.DATABASE_BACKEND ||
+    'sqlite'
+  ) as DatabaseBackend;
 }
 
 /**
- * Cloud SQL 사용 여부 확인
+ * Supabase 사용 여부 확인
  */
-export function isCloudSqlEnabled(): boolean {
-  return getCurrentBackend() === 'cloud';
+export function isSupabaseEnabled(): boolean {
+  return getCurrentBackend() === 'supabase';
 }
 
 /**
@@ -124,13 +117,10 @@ export function printDatabaseConfig(config: DatabaseConfig): void {
 
   if (config.backend === 'sqlite') {
     console.log('  Path:', config.sqlite?.path || 'default (userData/cms.db)');
-  } else if (config.backend === 'cloud' && config.cloud) {
-    console.log('  Instance:', config.cloud.instanceConnectionName);
-    console.log('  Database:', config.cloud.database);
-    console.log('  User:', config.cloud.user);
-    console.log('  Auth Type:', config.cloud.authType);
-    console.log('  IP Type:', config.cloud.ipType);
-    console.log('  Password:', config.cloud.password ? '********' : 'not set');
+  } else if (config.backend === 'supabase' && config.supabase) {
+    console.log('  URL:', config.supabase.url);
+    console.log('  Anon Key:', config.supabase.anonKey.substring(0, 20) + '...');
+    console.log('  Service Role Key:', config.supabase.serviceRoleKey ? '********' : 'not set');
   }
   console.log('');
 }
@@ -140,7 +130,7 @@ export default {
   loadDatabaseConfig,
   validateDatabaseConfig,
   getCurrentBackend,
-  isCloudSqlEnabled,
+  isSupabaseEnabled,
   isSqliteEnabled,
   printDatabaseConfig,
 };

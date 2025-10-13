@@ -135,16 +135,28 @@ export interface SearchFilters {
   dateTo?: string;
   page?: number;
   pageSize?: number;
+  // Supabase용 추가 필드
+  searchTerm?: string;
+  type?: 'PERSON' | 'BUSINESS';
+  startDate?: string;
+  endDate?: string;
 }
 
 // 통계 결과 타입
 export interface Statistics {
-  total_count: number;
-  total_amount: number;
+  total_count?: number;
+  total_amount?: number;
   paid_count?: number;
   paid_amount?: number;
   pending_count?: number;
   pending_amount?: number;
   overdue_count?: number;
   overdue_amount?: number;
+  // Supabase용 추가 필드
+  totalClients?: number;
+  totalEstimates?: number;
+  totalInvoices?: number;
+  totalWorkItems?: number;
+  totalRevenue?: number;
+  totalOutstanding?: number;
 }
