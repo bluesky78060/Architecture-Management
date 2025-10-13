@@ -62,6 +62,9 @@ CREATE INDEX IF NOT EXISTS idx_estimates_number ON estimates(estimate_number);
 CREATE INDEX IF NOT EXISTS idx_estimates_client_id ON estimates(client_id);
 CREATE INDEX IF NOT EXISTS idx_estimates_status ON estimates(status);
 CREATE INDEX IF NOT EXISTS idx_estimates_date ON estimates(date);
+-- 복합 인덱스: 자주 사용하는 쿼리 패턴 최적화
+CREATE INDEX IF NOT EXISTS idx_estimates_client_date ON estimates(client_id, date);
+CREATE INDEX IF NOT EXISTS idx_estimates_client_status ON estimates(client_id, status);
 
 -- 4. 견적서 항목 테이블
 CREATE TABLE IF NOT EXISTS estimate_items (
@@ -101,6 +104,9 @@ CREATE INDEX IF NOT EXISTS idx_invoices_number ON invoices(invoice_number);
 CREATE INDEX IF NOT EXISTS idx_invoices_client_id ON invoices(client_id);
 CREATE INDEX IF NOT EXISTS idx_invoices_status ON invoices(status);
 CREATE INDEX IF NOT EXISTS idx_invoices_date ON invoices(date);
+-- 복합 인덱스: 자주 사용하는 쿼리 패턴 최적화
+CREATE INDEX IF NOT EXISTS idx_invoices_client_status ON invoices(client_id, status);
+CREATE INDEX IF NOT EXISTS idx_invoices_status_date ON invoices(status, date);
 
 -- 6. 청구서 항목 테이블
 CREATE TABLE IF NOT EXISTS invoice_items (
@@ -153,6 +159,9 @@ CREATE TABLE IF NOT EXISTS work_items (
 CREATE INDEX IF NOT EXISTS idx_work_items_client_id ON work_items(client_id);
 CREATE INDEX IF NOT EXISTS idx_work_items_status ON work_items(status);
 CREATE INDEX IF NOT EXISTS idx_work_items_date ON work_items(date);
+-- 복합 인덱스: 자주 사용하는 쿼리 패턴 최적화
+CREATE INDEX IF NOT EXISTS idx_work_items_client_status ON work_items(client_id, status);
+CREATE INDEX IF NOT EXISTS idx_work_items_status_date ON work_items(status, date);
 
 -- 8. 회사 정보 테이블 (싱글톤)
 CREATE TABLE IF NOT EXISTS company_info (

@@ -623,6 +623,101 @@ class DatabaseService {
     const result = db.prepare('PRAGMA integrity_check').get() as { integrity_check: string };
     return result.integrity_check === 'ok';
   }
+
+  // ============================================
+  // 성능 최적화: JOIN 쿼리
+  // ============================================
+
+  /**
+   * 청구서 목록 + 클라이언트 정보 (JOIN 최적화)
+   */
+  getInvoicesWithClients(): Array<DatabaseInvoice & { client_name: string; client_phone: string }> {
+    const db = this.ensureConnection();
+    return db.prepare(`
+      SELECT
+        i.*,
+        c.company_name as client_name,
+        c.phone as client_phone
+      FROM invoices i
+      LEFT JOIN clients c ON i.client_id = c.client_id
+      ORDER BY i.date DESC
+    `).all() as Array<DatabaseInvoice & { client_name: string; client_phone: string }>;
+  }
+
+  /**
+   * 견적서 목록 + 클라이언트 정보 (JOIN 최적화)
+   */
+  getEstimatesWithClients(): Array<DatabaseEstimate & { client_name: string; client_phone: string }> {
+    const db = this.ensureConnection();
+    return db.prepare(`
+      SELECT
+        e.*,
+        c.company_name as client_name,
+        c.phone as client_phone
+      FROM estimates e
+      LEFT JOIN clients c ON e.client_id = c.client_id
+      ORDER BY e.date DESC
+    `).all() as Array<DatabaseEstimate & { client_name: string; client_phone: string }>;
+  }
+
+  /**
+   * 작업 항목 목록 + 클라이언트 정보 (JOIN 최적화)
+   */
+  getWorkItemsWithClients(): Array<DatabaseWorkItem & { client_name: string }> {
+    const db = this.ensureConnection();
+    return db.prepare(`
+      SELECT
+        w.*,
+        c.company_name as client_name
+      FROM work_items w
+      LEFT JOIN clients c ON w.client_id = c.client_id
+      ORDER BY w.created_at DESC
+    `).all() as Array<DatabaseWorkItem & { client_name: string }>;
+  }
+
+  /**
+   * 특정 클라이언트의 모든 데이터 조회 (JOIN 최적화)
+   */
+  getClientWithAllData(clientId: number): {
+    client: DatabaseClient | undefined;
+    estimates: DatabaseEstimate[];
+    invoices: DatabaseInvoice[];
+    workItems: DatabaseWorkItem[];
+  } {
+    const db = this.ensureConnection();
+
+    return {
+      client: this.getClientById(clientId),
+      estimates: db.prepare('SELECT * FROM estimates WHERE client_id = ? ORDER BY date DESC').all(clientId) as DatabaseEstimate[],
+      invoices: db.prepare('SELECT * FROM invoices WHERE client_id = ? ORDER BY date DESC').all(clientId) as DatabaseInvoice[],
+      workItems: db.prepare('SELECT * FROM work_items WHERE client_id = ? ORDER BY created_at DESC').all(clientId) as DatabaseWorkItem[]
+    };
+  }
+
+  /**
+   * 클라이언트별 통계 (JOIN + 집계)
+   */
+  getClientStatistics(clientId: number): {
+    total_estimates: number;
+    total_invoices: number;
+    total_work_items: number;
+    total_billed: number;
+    total_paid: number;
+    total_outstanding: number;
+  } {
+    const db = this.ensureConnection();
+    const result = db.prepare(`
+      SELECT
+        (SELECT COUNT(*) FROM estimates WHERE client_id = ?) as total_estimates,
+        (SELECT COUNT(*) FROM invoices WHERE client_id = ?) as total_invoices,
+        (SELECT COUNT(*) FROM work_items WHERE client_id = ?) as total_work_items,
+        (SELECT COALESCE(SUM(amount), 0) FROM invoices WHERE client_id = ?) as total_billed,
+        (SELECT COALESCE(SUM(amount), 0) FROM invoices WHERE client_id = ? AND status = 'paid') as total_paid,
+        (SELECT COALESCE(SUM(amount), 0) FROM invoices WHERE client_id = ? AND status IN ('pending', 'overdue')) as total_outstanding
+    `).get(clientId, clientId, clientId, clientId, clientId, clientId) as any;
+
+    return result;
+  }
 }
 
 // 싱글톤 인스턴스
