@@ -4,7 +4,7 @@
  * 기존 localStorage 데이터를 IndexedDB로 안전하게 이전
  */
 
-import { db } from './database';
+import { db } from './database.legacy';
 import { logger } from '../utils/logger';
 import type { Client, WorkItem, Invoice, Estimate, CompanyInfo } from '../types/domain';
 
