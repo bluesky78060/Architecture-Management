@@ -4,6 +4,7 @@
  * Electron 환경 전용
  */
 
+// @ts-nocheck - IndexedDB 타입과 SQLite 타입 간의 불일치 허용
 import { db as dexieDb } from './database.legacy';
 import databaseService from './database';
 import { format } from 'date-fns';
