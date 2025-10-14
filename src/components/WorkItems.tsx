@@ -157,19 +157,29 @@ export default function WorkItems(): JSX.Element {
     const DEFAULT_QUANTITY = 1;
     const qty = (typeof wi.quantity === 'number' && wi.quantity > 0) ? wi.quantity : DEFAULT_QUANTITY;
     const unitPrice = typeof wi.defaultPrice === 'number' ? wi.defaultPrice : 0;
-    const lp = parseInt(String(wi.laborPersons ?? 0), 10);
-    const lr = parseInt(String(wi.laborUnitRate ?? 0), 10);
+
+    // 통합 인부임 계산 (laborPersons * laborUnitRate)
+    const persons = parseInt(String(wi.laborPersons ?? 0), 10);
+    const rate = parseInt(String(wi.laborUnitRate ?? 0), 10);
+    const personsNum = Number.isFinite(persons) && !isNaN(persons) ? persons : 0;
+    const rateNum = Number.isFinite(rate) && !isNaN(rate) ? rate : 0;
+    const laborCost = personsNum * rateNum;
+
+    // 레거시 필드도 읽어서 포함 (기존 데이터 호환성)
     const lpg = parseInt(String(wi.laborPersonsGeneral ?? 0), 10);
     const lrg = parseInt(String(wi.laborUnitRateGeneral ?? 0), 10);
-    const skilledCost = (lp !== 0) ? lp * lr : 0;
-    const generalCost = (lpg !== 0) ? lpg * lrg : 0;
-    const laborCost = skilledCost + generalCost;
+    const lpgNum = Number.isFinite(lpg) && !isNaN(lpg) ? lpg : 0;
+    const lrgNum = Number.isFinite(lrg) && !isNaN(lrg) ? lrg : 0;
+    const legacyLaborCost = lpgNum * lrgNum;
+
+    const totalLaborCost = laborCost + legacyLaborCost;
+
     return {
       name: wi.name,
       quantity: qty,
       unit: wi.unit,
       unitPrice,
-      total: (qty * unitPrice) + laborCost,
+      total: (qty * unitPrice) + totalLaborCost,
       notes: wi.notes ?? '',
       date: wi.date ?? '',
       // 상세/인부임 정보 보전
