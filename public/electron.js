@@ -3,6 +3,10 @@ const path = require('path');
 const isDev = require('electron-is-dev');
 const fs = require('fs');
 
+// ✨ SQLite Database Service
+let databaseService = null;
+let dbInitialized = false;
+
 // Base data directory (can be overridden later)
 let baseDataDir = path.join(app.getPath('userData'), 'cms-data');
 
@@ -181,8 +185,30 @@ function createMenu() {
   Menu.setApplicationMenu(menu);
 }
 
-// 앱이 준비되면 윈도우 생성
-app.whenReady().then(createWindow);
+// ✨ 데이터베이스 초기화
+async function initializeDatabase() {
+  try {
+    // TypeScript 모듈 동적 import
+    const dbModule = await import('../src/services/database.ts');
+    databaseService = dbModule.databaseService;
+
+    // 데이터베이스 초기화
+    const userDataPath = app.getPath('userData');
+    databaseService.initialize(userDataPath);
+
+    dbInitialized = true;
+    console.log('✅ SQLite Database initialized in Electron');
+  } catch (error) {
+    console.error('❌ Database initialization failed:', error);
+    dbInitialized = false;
+  }
+}
+
+// 앱이 준비되면 윈도우 생성 및 DB 초기화
+app.whenReady().then(async () => {
+  await initializeDatabase();
+  createWindow();
+});
 
 // 모든 윈도우가 닫혔을 때
 app.on('window-all-closed', () => {
@@ -238,4 +264,157 @@ ipcMain.handle('cms:xlsx-write', async (_evt, filename, uint8) => {
     try { /* cleanup tmp if exists */ } catch (_) {}
     return false;
   }
+});
+
+// ============================================
+// ✨ SQLite Database IPC Handlers
+// ============================================
+
+// Helper function to wrap database operations
+function wrapDbOperation(operation) {
+  return async (...args) => {
+    try {
+      if (!dbInitialized || !databaseService) {
+        return { success: false, error: 'Database not initialized' };
+      }
+      const result = await operation(...args);
+      return { success: true, data: result };
+    } catch (error) {
+      console.error('Database operation error:', error);
+      return { success: false, error: error.message };
+    }
+  };
+}
+
+// Clients
+ipcMain.handle('db:get-all-clients', wrapDbOperation(() => {
+  return databaseService.getAllClients();
+}));
+
+ipcMain.handle('db:get-client-by-id', wrapDbOperation((event, id) => {
+  return databaseService.getClientById(id);
+}));
+
+ipcMain.handle('db:create-client', wrapDbOperation((event, data) => {
+  return databaseService.createClient(data);
+}));
+
+ipcMain.handle('db:update-client', wrapDbOperation((event, id, data) => {
+  databaseService.updateClient(id, data);
+  return true;
+}));
+
+ipcMain.handle('db:delete-client', wrapDbOperation((event, id) => {
+  databaseService.deleteClient(id);
+  return true;
+}));
+
+ipcMain.handle('db:search-clients', wrapDbOperation((event, query) => {
+  return databaseService.searchClients(query);
+}));
+
+// Estimates
+ipcMain.handle('db:get-all-estimates', wrapDbOperation(() => {
+  return databaseService.getAllEstimates();
+}));
+
+ipcMain.handle('db:get-estimate-with-items', wrapDbOperation((event, id) => {
+  return databaseService.getEstimateWithItems(id);
+}));
+
+ipcMain.handle('db:create-estimate', wrapDbOperation((event, estimate, items) => {
+  return databaseService.createEstimate(estimate, items);
+}));
+
+ipcMain.handle('db:update-estimate', wrapDbOperation((event, id, data) => {
+  databaseService.updateEstimate(id, data);
+  return true;
+}));
+
+ipcMain.handle('db:delete-estimate', wrapDbOperation((event, id) => {
+  databaseService.deleteEstimate(id);
+  return true;
+}));
+
+ipcMain.handle('db:search-estimates', wrapDbOperation((event, filters) => {
+  return databaseService.searchEstimates(filters);
+}));
+
+// Invoices
+ipcMain.handle('db:get-all-invoices', wrapDbOperation(() => {
+  return databaseService.getAllInvoices();
+}));
+
+ipcMain.handle('db:get-invoice-with-items', wrapDbOperation((event, id) => {
+  return databaseService.getInvoiceWithItems(id);
+}));
+
+ipcMain.handle('db:create-invoice', wrapDbOperation((event, invoice, items) => {
+  return databaseService.createInvoice(invoice, items);
+}));
+
+ipcMain.handle('db:update-invoice', wrapDbOperation((event, id, data) => {
+  databaseService.updateInvoice(id, data);
+  return true;
+}));
+
+ipcMain.handle('db:delete-invoice', wrapDbOperation((event, id) => {
+  databaseService.deleteInvoice(id);
+  return true;
+}));
+
+ipcMain.handle('db:search-invoices', wrapDbOperation((event, filters) => {
+  return databaseService.searchInvoices(filters);
+}));
+
+// WorkItems
+ipcMain.handle('db:get-all-work-items', wrapDbOperation(() => {
+  return databaseService.getAllWorkItems();
+}));
+
+ipcMain.handle('db:create-work-item', wrapDbOperation((event, data) => {
+  return databaseService.createWorkItem(data);
+}));
+
+ipcMain.handle('db:update-work-item', wrapDbOperation((event, id, data) => {
+  databaseService.updateWorkItem(id, data);
+  return true;
+}));
+
+ipcMain.handle('db:delete-work-item', wrapDbOperation((event, id) => {
+  databaseService.deleteWorkItem(id);
+  return true;
+}));
+
+// Company Info
+ipcMain.handle('db:get-company-info', wrapDbOperation(() => {
+  return databaseService.getCompanyInfo();
+}));
+
+ipcMain.handle('db:update-company-info', wrapDbOperation((event, data) => {
+  databaseService.updateCompanyInfo(data);
+  return true;
+}));
+
+// Statistics
+ipcMain.handle('db:get-invoice-statistics', wrapDbOperation(() => {
+  return databaseService.getInvoiceStatistics();
+}));
+
+ipcMain.handle('db:get-estimate-statistics', wrapDbOperation(() => {
+  return databaseService.getEstimateStatistics();
+}));
+
+// Utilities
+ipcMain.handle('db:backup', wrapDbOperation((event, backupPath) => {
+  databaseService.backup(backupPath);
+  return true;
+}));
+
+ipcMain.handle('db:check-integrity', wrapDbOperation(() => {
+  return databaseService.checkIntegrity();
+}));
+
+ipcMain.handle('db:is-initialized', async () => {
+  return { success: true, data: dbInitialized };
 });

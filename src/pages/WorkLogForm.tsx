@@ -2,7 +2,7 @@ import { logger } from '../utils/logger';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
-import api from '../services/api';
+import api from '../services/api.http';
 
 interface WorkLogData {
   project_id: number;

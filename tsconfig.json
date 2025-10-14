@@ -8,9 +8,11 @@
     "strict": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
+    "types": ["better-sqlite3"],
     
     // JavaScript/TypeScript 혼재 지원 (전환 완료 후 제거 예정)
     "allowJs": true,

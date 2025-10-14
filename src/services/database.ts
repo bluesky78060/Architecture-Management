@@ -1,546 +1,725 @@
-/**
- * IndexedDB 기반 고성능 데이터베이스
- * Dexie.js를 사용한 건축 관리 시스템 데이터베이스
- */
+import Database from 'better-sqlite3';
+import * as fs from 'fs';
+import * as path from 'path';
+import {
+  DatabaseClient,
+  DatabaseEstimate,
+  DatabaseEstimateItem,
+  DatabaseInvoice,
+  DatabaseInvoiceItem,
+  DatabaseWorkItem,
+  DatabaseCompanyInfo,
+  SearchFilters,
+  Statistics
+} from '../types/database';
 
-import { logger } from '../utils/logger';
-import Dexie, { Table } from 'dexie';
-import type {
-  Client,
-  WorkItem,
-  Invoice,
-  Estimate,
-  CompanyInfo,
-  InvoiceStatus,
-  SearchOptions,
-  PaginatedResult,
-} from '../types/domain';
-
-/**
- * 건축 관리 시스템 데이터베이스 클래스
- */
-export class CMSDatabase extends Dexie {
-  // 테이블 정의
-  clients!: Table<Client, number>;
-  workItems!: Table<WorkItem, number | string>;
-  invoices!: Table<Invoice, string>;
-  estimates!: Table<Estimate, string>;
-  companyInfo!: Table<CompanyInfo & { id: number }, number>;
-  settings!: Table<{ key: string; value: unknown }, string>;
-
-  // 상수 (페이징 기본 크기: 20개)
-  private readonly DEFAULT_PAGE_SIZE = 20; // eslint-disable-line no-magic-numbers
-
-  constructor() {
-    super('CMSDatabase');
-
-    // 버전 1: 초기 스키마
-    this.version(1).stores({
-      // 건축주 (Clients)
-      // 인덱스: id(PK), name, type, createdAt
-      clients: '++id, name, type, phone, email, createdAt',
-
-      // 작업 항목 (WorkItems)
-      // 인덱스: id(PK), clientId, status, date, category
-      workItems: '++id, clientId, status, date, category, workplaceId',
-
-      // 청구서 (Invoices)
-      // 인덱스: id(PK), clientId, status, date
-      invoices: 'id, clientId, status, date, client',
-
-      // 견적서 (Estimates)
-      // 인덱스: id(PK), clientId, status, date
-      estimates: 'id, clientId, status, date, clientName',
-
-      // 회사 정보 (단일 레코드)
-      companyInfo: 'id',
-
-      // 설정 (Key-Value Store)
-      settings: 'key',
-    });
-
-    const DATABASE_VERSION_2 = 2;
-    // 버전 2: 복합 인덱스 추가 (성능 최적화)
-    this.version(DATABASE_VERSION_2).stores({
-      clients: '++id, name, type, phone, email, createdAt, [type+name]',
-      workItems: '++id, clientId, status, date, category, workplaceId, [clientId+status], [clientId+date]',
-      invoices: 'id, clientId, status, date, client, [clientId+status], [clientId+date], [status+date]',
-      estimates: 'id, clientId, status, date, clientName, [clientId+status], [clientId+date], [status+date]',
-      companyInfo: 'id',
-      settings: 'key',
-    });
-  }
+class DatabaseService {
+  private db: Database.Database | null = null;
+  private dbPath: string = '';
 
   /**
    * 데이터베이스 초기화
+   * @param userDataPath - Electron app.getPath('userData') 또는 사용자 정의 경로
    */
-  async initialize(): Promise<void> {
+  initialize(userDataPath: string): void {
     try {
-      // 회사 정보 초기 데이터 확인
-      const companyCount = await this.companyInfo.count();
-      if (companyCount === 0) {
-        await this.companyInfo.add({
-          id: 1,
-          name: '회사명을 입력하세요',
-          representative: '',
-          phone: '',
-          email: '',
-          address: '',
-          businessNumber: '',
-          stampUrl: '',
-          bankAccount: '',
-          accountHolder: '',
-        });
+      this.dbPath = path.join(userDataPath, 'cms.db');
+      console.log('📂 Database path:', this.dbPath);
+
+      // 디렉토리 생성
+      const dir = path.dirname(this.dbPath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
       }
 
-      logger.log('✅ Database initialized successfully');
+      // 데이터베이스 연결
+      this.db = new Database(this.dbPath);
+      this.db.pragma('journal_mode = WAL'); // 성능 향상
+      this.db.pragma('foreign_keys = ON');  // 외래키 활성화
+
+      // 스키마 초기화
+      this.initializeSchema();
+
+      console.log('✅ Database initialized successfully');
     } catch (error) {
-      logger.error('❌ Database initialization failed:', error);
+      console.error('❌ Database initialization failed:', error);
       throw error;
     }
   }
 
-  // ==================== Clients (건축주) ====================
-
   /**
-   * 건축주 목록 조회 (페이지네이션)
+   * 스키마 초기화 (schema.sql 파일 실행)
    */
-  async getClientsPaged(page = 0, pageSize = this.DEFAULT_PAGE_SIZE, search?: string): Promise<PaginatedResult<Client>> {
-    let query = this.clients.orderBy('createdAt').reverse();
+  private initializeSchema(): void {
+    if (!this.db) throw new Error('Database not initialized');
 
-    // 검색 필터
-    if (search !== undefined && search !== '') {
-      query = query.filter(
-        (client) =>
-          client.name.includes(search) ||
-          (client.phone?.includes(search) ?? false) ||
-          (client.email?.includes(search) ?? false) ||
-          (client.address?.includes(search) ?? false)
-      );
+    try {
+      const schemaPath = path.join(__dirname, 'schema.sql');
+      const schema = fs.readFileSync(schemaPath, 'utf-8');
+      this.db.exec(schema);
+      console.log('✅ Schema initialized');
+    } catch (error) {
+      console.error('❌ Schema initialization failed:', error);
+      throw error;
     }
-
-    const total = await query.count();
-    const data = await query.offset(page * pageSize).limit(pageSize).toArray();
-
-    return {
-      data,
-      total,
-      page,
-      pageSize,
-      hasMore: (page + 1) * pageSize < total,
-    };
   }
 
   /**
-   * 건축주 ID로 조회
+   * 데이터베이스 연결 확인
    */
-  async getClient(id: number): Promise<Client | undefined> {
-    return this.clients.get(id);
+  private ensureConnection(): Database.Database {
+    if (!this.db) {
+      throw new Error('Database not initialized. Call initialize() first.');
+    }
+    return this.db;
   }
 
-  /**
-   * 건축주 추가
-   */
-  async addClient(client: Omit<Client, 'id'>): Promise<number> {
-    const now = new Date().toISOString().split('T')[0];
-    return this.clients.add({
-      ...client,
-      createdAt: (client.createdAt !== undefined && client.createdAt !== '') ? client.createdAt : now,
-      updatedAt: now,
-    } as Client);
+  // ============================================
+  // 건축주(Clients) CRUD
+  // ============================================
+
+  getAllClients(): DatabaseClient[] {
+    const db = this.ensureConnection();
+    return db.prepare('SELECT * FROM clients ORDER BY created_at DESC').all() as DatabaseClient[];
   }
 
-  /**
-   * 건축주 수정
-   */
-  async updateClient(id: number, updates: Partial<Client>): Promise<number> {
-    const now = new Date().toISOString().split('T')[0];
-    return this.clients.update(id, {
-      ...updates,
-      updatedAt: now,
+  getClientById(id: number): DatabaseClient | undefined {
+    const db = this.ensureConnection();
+    return db.prepare('SELECT * FROM clients WHERE client_id = ?').get(id) as DatabaseClient | undefined;
+  }
+
+  createClient(data: Omit<DatabaseClient, 'client_id' | 'created_at' | 'updated_at'>): number {
+    const db = this.ensureConnection();
+    const stmt = db.prepare(`
+      INSERT INTO clients (
+        company_name, representative, business_number, address,
+        email, phone, contact_person, type, notes,
+        total_billed, outstanding
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+
+    const result = stmt.run(
+      data.company_name,
+      data.representative || null,
+      data.business_number || null,
+      data.address || null,
+      data.email || null,
+      data.phone || null,
+      data.contact_person || null,
+      data.type || 'PERSON',
+      data.notes || null,
+      data.total_billed || 0,
+      data.outstanding || 0
+    );
+
+    return result.lastInsertRowid as number;
+  }
+
+  updateClient(id: number, data: Partial<DatabaseClient>): void {
+    const db = this.ensureConnection();
+    const fields: string[] = [];
+    const values: any[] = [];
+
+    // 동적 UPDATE 쿼리 생성
+    Object.entries(data).forEach(([key, value]) => {
+      if (key !== 'client_id' && key !== 'created_at' && key !== 'updated_at') {
+        fields.push(`${key} = ?`);
+        values.push(value);
+      }
     });
+
+    if (fields.length === 0) return;
+
+    values.push(id);
+    const stmt = db.prepare(`UPDATE clients SET ${fields.join(', ')} WHERE client_id = ?`);
+    stmt.run(...values);
   }
 
-  /**
-   * 건축주 삭제
-   */
-  async deleteClient(id: number): Promise<void> {
-    await this.clients.delete(id);
+  deleteClient(id: number): void {
+    const db = this.ensureConnection();
+    db.prepare('DELETE FROM clients WHERE client_id = ?').run(id);
   }
 
-  /**
-   * 건축주 검색
-   */
-  async searchClients(query: string): Promise<Client[]> {
-    return this.clients
-      .filter(
-        (client) =>
-          client.name.includes(query) ||
-          (client.phone?.includes(query) ?? false) ||
-          (client.email?.includes(query) ?? false) ||
-          (client.address?.includes(query) ?? false)
-      )
-      .toArray();
+  searchClients(query: string): DatabaseClient[] {
+    const db = this.ensureConnection();
+    const searchPattern = `%${query}%`;
+    return db.prepare(`
+      SELECT * FROM clients
+      WHERE company_name LIKE ? OR representative LIKE ? OR phone LIKE ?
+      ORDER BY created_at DESC
+    `).all(searchPattern, searchPattern, searchPattern) as DatabaseClient[];
   }
 
-  // ==================== WorkItems (작업 항목) ====================
+  // ============================================
+  // 견적서(Estimates) CRUD
+  // ============================================
 
-  /**
-   * 작업 항목 목록 조회 (페이지네이션 + 필터)
-   */
-  async getWorkItemsPaged(options: SearchOptions = {}): Promise<PaginatedResult<WorkItem>> {
-    const { page = 0, pageSize = this.DEFAULT_PAGE_SIZE, query, status, clientId, dateFrom, dateTo } = options;
+  getAllEstimates(): DatabaseEstimate[] {
+    const db = this.ensureConnection();
+    return db.prepare('SELECT * FROM estimates ORDER BY date DESC').all() as DatabaseEstimate[];
+  }
 
-    let collection = this.workItems.orderBy('date').reverse();
+  getEstimateById(id: number): DatabaseEstimate | undefined {
+    const db = this.ensureConnection();
+    return db.prepare('SELECT * FROM estimates WHERE estimate_id = ?').get(id) as DatabaseEstimate | undefined;
+  }
 
-    // 필터 적용
-    if (clientId !== undefined && clientId !== null) {
-      collection = this.workItems.where('[clientId+status]').between([clientId, ''], [clientId, 'ￓ']);
-    }
+  getEstimateWithItems(id: number): { estimate: DatabaseEstimate; items: DatabaseEstimateItem[] } | null {
+    const db = this.ensureConnection();
+    const estimate = this.getEstimateById(id);
+    if (!estimate) return null;
 
-    if (status !== undefined) {
-      collection = collection.filter((item) => item.status === status);
-    }
+    const items = db.prepare(
+      'SELECT * FROM estimate_items WHERE estimate_id = ? ORDER BY sort_order'
+    ).all(id) as DatabaseEstimateItem[];
 
-    if (dateFrom !== undefined || dateTo !== undefined) {
-      collection = collection.filter((item) => {
-        if (item.date === null || item.date === undefined) return false;
-        if (dateFrom !== undefined && item.date < dateFrom) return false;
-        if (dateTo !== undefined && item.date > dateTo) return false;
-        return true;
-      });
-    }
+    return { estimate, items };
+  }
 
-    if (query !== undefined && query !== '') {
-      collection = collection.filter(
-        (item) =>
-          item.name.includes(query) ||
-          (item.clientName?.includes(query) ?? false) ||
-          (item.projectName?.includes(query) ?? false) ||
-          (item.description?.includes(query) ?? false)
+  createEstimate(
+    estimate: Omit<DatabaseEstimate, 'estimate_id' | 'created_at' | 'updated_at'>,
+    items: Omit<DatabaseEstimateItem, 'item_id' | 'estimate_id'>[]
+  ): number {
+    const db = this.ensureConnection();
+
+    // 트랜잭션 시작
+    const transaction = db.transaction(() => {
+      // 견적서 생성
+      const estStmt = db.prepare(`
+        INSERT INTO estimates (
+          estimate_number, client_id, workplace_id, project_name,
+          title, date, valid_until, status, total_amount, notes
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `);
+
+      const estResult = estStmt.run(
+        estimate.estimate_number,
+        estimate.client_id,
+        estimate.workplace_id || null,
+        estimate.project_name || null,
+        estimate.title,
+        estimate.date || null,
+        estimate.valid_until || null,
+        estimate.status || 'draft',
+        estimate.total_amount || 0,
+        estimate.notes || null
       );
-    }
 
-    const total = await collection.count();
-    const data = await collection.offset(page * pageSize).limit(pageSize).toArray();
+      const estimateId = estResult.lastInsertRowid as number;
 
-    return {
-      data,
-      total,
-      page,
-      pageSize,
-      hasMore: (page + 1) * pageSize < total,
-    };
-  }
+      // 견적 항목들 생성
+      const itemStmt = db.prepare(`
+        INSERT INTO estimate_items (
+          estimate_id, category, name, description, quantity,
+          unit, unit_price, notes, sort_order
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `);
 
-  /**
-   * 작업 항목 추가
-   */
-  async addWorkItem(workItem: Omit<WorkItem, 'id'>): Promise<number | string> {
-    return this.workItems.add(workItem as WorkItem);
-  }
-
-  /**
-   * 작업 항목 수정
-   */
-  async updateWorkItem(id: number | string, updates: Partial<WorkItem>): Promise<number> {
-    return this.workItems.update(id, updates);
-  }
-
-  /**
-   * 작업 항목 삭제
-   */
-  async deleteWorkItem(id: number | string): Promise<void> {
-    await this.workItems.delete(id);
-  }
-
-  /**
-   * 건축주별 작업 항목 조회
-   */
-  async getWorkItemsByClient(clientId: number): Promise<WorkItem[]> {
-    return this.workItems.where('clientId').equals(clientId).sortBy('date');
-  }
-
-  // ==================== Invoices (청구서) ====================
-
-  /**
-   * 청구서 목록 조회 (페이지네이션 + 필터)
-   */
-  async getInvoicesPaged(options: SearchOptions = {}): Promise<PaginatedResult<Invoice>> {
-    const { page = 0, pageSize = this.DEFAULT_PAGE_SIZE, query, status, clientId, dateFrom, dateTo } = options;
-
-    let collection = this.invoices.orderBy('date').reverse();
-
-    // 복합 인덱스 활용
-    if (clientId !== undefined && clientId !== null && status !== undefined) {
-      collection = this.invoices.where('[clientId+status]').equals([clientId, status]);
-    } else if (clientId !== undefined && clientId !== null) {
-      collection = this.invoices.where('clientId').equals(clientId);
-    } else if (status !== undefined) {
-      collection = this.invoices.where('status').equals(status);
-    }
-
-    // 날짜 필터
-    if (dateFrom !== undefined || dateTo !== undefined) {
-      collection = collection.filter((invoice) => {
-        if (dateFrom !== undefined && invoice.date < dateFrom) return false;
-        if (dateTo !== undefined && invoice.date > dateTo) return false;
-        return true;
+      items.forEach((item, index) => {
+        itemStmt.run(
+          estimateId,
+          item.category || null,
+          item.name,
+          item.description || null,
+          item.quantity || 0,
+          item.unit || null,
+          item.unit_price || 0,
+          item.notes || null,
+          item.sort_order || index
+        );
       });
-    }
 
-    // 검색 쿼리
-    if (query !== undefined && query !== '') {
-      collection = collection.filter(
-        (invoice) =>
-          invoice.id.includes(query) ||
-          invoice.client.includes(query) ||
-          (invoice.project?.includes(query) ?? false)
-      );
-    }
-
-    const total = await collection.count();
-    const data = await collection.offset(page * pageSize).limit(pageSize).toArray();
-
-    return {
-      data,
-      total,
-      page,
-      pageSize,
-      hasMore: (page + 1) * pageSize < total,
-    };
-  }
-
-  /**
-   * 청구서 추가
-   */
-  async addInvoice(invoice: Invoice): Promise<string> {
-    return this.invoices.add(invoice);
-  }
-
-  /**
-   * 청구서 수정
-   */
-  async updateInvoice(id: string, updates: Partial<Invoice>): Promise<number> {
-    return this.invoices.update(id, updates);
-  }
-
-  /**
-   * 청구서 삭제
-   */
-  async deleteInvoice(id: string): Promise<void> {
-    await this.invoices.delete(id);
-  }
-
-  /**
-   * 청구서 ID로 조회
-   */
-  async getInvoice(id: string): Promise<Invoice | undefined> {
-    return this.invoices.get(id);
-  }
-
-  /**
-   * 건축주별 청구서 조회
-   */
-  async getInvoicesByClient(clientId: number): Promise<Invoice[]> {
-    return this.invoices.where('clientId').equals(clientId).reverse().sortBy('date');
-  }
-
-  /**
-   * 상태별 청구서 통계
-   */
-  async getInvoiceStats(): Promise<Record<InvoiceStatus, number>> {
-    const statuses: InvoiceStatus[] = ['발송대기', '발송됨', '미결제', '결제완료'];
-    const stats: Record<InvoiceStatus, number> = {} as Record<InvoiceStatus, number>;
-
-    for (const status of statuses) {
-      stats[status] = await this.invoices.where('status').equals(status).count();
-    }
-
-    return stats;
-  }
-
-  // ==================== Estimates (견적서) ====================
-
-  /**
-   * 견적서 목록 조회 (페이지네이션 + 필터)
-   */
-  async getEstimatesPaged(options: SearchOptions = {}): Promise<PaginatedResult<Estimate>> {
-    const { page = 0, pageSize = this.DEFAULT_PAGE_SIZE, query, status, clientId, dateFrom, dateTo } = options;
-
-    let collection = this.estimates.orderBy('date').reverse();
-
-    // 복합 인덱스 활용
-    if (clientId !== undefined && clientId !== null && status !== undefined) {
-      collection = this.estimates.where('[clientId+status]').equals([clientId, status]);
-    } else if (clientId !== undefined && clientId !== null) {
-      collection = this.estimates.where('clientId').equals(clientId);
-    } else if (status !== undefined) {
-      collection = this.estimates.where('status').equals(status);
-    }
-
-    // 날짜 필터
-    if (dateFrom !== undefined || dateTo !== undefined) {
-      collection = collection.filter((estimate) => {
-        if (estimate.date === null || estimate.date === undefined) return true;
-        if (dateFrom !== undefined && estimate.date < dateFrom) return false;
-        if (dateTo !== undefined && estimate.date > dateTo) return false;
-        return true;
-      });
-    }
-
-    // 검색 쿼리
-    if (query !== undefined && query !== '') {
-      collection = collection.filter(
-        (estimate) =>
-          estimate.id.includes(query) ||
-          (estimate.clientName?.includes(query) ?? false) ||
-          estimate.title.includes(query) ||
-          (estimate.projectName?.includes(query) ?? false)
-      );
-    }
-
-    const total = await collection.count();
-    const data = await collection.offset(page * pageSize).limit(pageSize).toArray();
-
-    return {
-      data,
-      total,
-      page,
-      pageSize,
-      hasMore: (page + 1) * pageSize < total,
-    };
-  }
-
-  /**
-   * 견적서 추가
-   */
-  async addEstimate(estimate: Estimate): Promise<string> {
-    return this.estimates.add(estimate);
-  }
-
-  /**
-   * 견적서 수정
-   */
-  async updateEstimate(id: string, updates: Partial<Estimate>): Promise<number> {
-    return this.estimates.update(id, updates);
-  }
-
-  /**
-   * 견적서 삭제
-   */
-  async deleteEstimate(id: string): Promise<void> {
-    await this.estimates.delete(id);
-  }
-
-  /**
-   * 견적서 ID로 조회
-   */
-  async getEstimate(id: string): Promise<Estimate | undefined> {
-    return this.estimates.get(id);
-  }
-
-  // ==================== CompanyInfo (회사 정보) ====================
-
-  /**
-   * 회사 정보 조회
-   */
-  async getCompanyInfo(): Promise<CompanyInfo> {
-    const COMPANY_INFO_ID = 1;
-    const info = await this.companyInfo.get(COMPANY_INFO_ID);
-    if (info === undefined || info === null) {
-      throw new Error('회사 정보가 없습니다.');
-    }
-    const { id, ...companyInfo } = info;
-    return companyInfo;
-  }
-
-  /**
-   * 회사 정보 수정
-   */
-  async updateCompanyInfo(updates: Partial<CompanyInfo>): Promise<number> {
-    return this.companyInfo.update(1, updates);
-  }
-
-  // ==================== Settings (설정) ====================
-
-  /**
-   * 설정 값 조회
-   */
-  async getSetting<T = unknown>(key: string, defaultValue?: T): Promise<T | undefined> {
-    const setting = await this.settings.get(key);
-    return (setting !== undefined && setting !== null) ? (setting.value as T) : defaultValue;
-  }
-
-  /**
-   * 설정 값 저장
-   */
-  async setSetting(key: string, value: unknown): Promise<string> {
-    return this.settings.put({ key, value });
-  }
-
-  /**
-   * 설정 삭제
-   */
-  async deleteSetting(key: string): Promise<void> {
-    await this.settings.delete(key);
-  }
-
-  // ==================== 유틸리티 ====================
-
-  /**
-   * 전체 데이터베이스 초기화 (개발용)
-   */
-  async clearAll(): Promise<void> {
-    await this.transaction('rw', this.clients, this.workItems, this.invoices, this.estimates, async () => {
-      await this.clients.clear();
-      await this.workItems.clear();
-      await this.invoices.clear();
-      await this.estimates.clear();
+      return estimateId;
     });
-    logger.log('✅ All data cleared');
+
+    return transaction();
+  }
+
+  updateEstimate(id: number, data: Partial<DatabaseEstimate>): void {
+    const db = this.ensureConnection();
+    const fields: string[] = [];
+    const values: any[] = [];
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (key !== 'estimate_id' && key !== 'created_at' && key !== 'updated_at') {
+        fields.push(`${key} = ?`);
+        values.push(value);
+      }
+    });
+
+    if (fields.length === 0) return;
+
+    values.push(id);
+    const stmt = db.prepare(`UPDATE estimates SET ${fields.join(', ')} WHERE estimate_id = ?`);
+    stmt.run(...values);
+  }
+
+  deleteEstimate(id: number): void {
+    const db = this.ensureConnection();
+    // CASCADE로 estimate_items도 자동 삭제됨
+    db.prepare('DELETE FROM estimates WHERE estimate_id = ?').run(id);
+  }
+
+  searchEstimates(filters: SearchFilters): DatabaseEstimate[] {
+    const db = this.ensureConnection();
+    let query = 'SELECT * FROM estimates WHERE 1=1';
+    const params: any[] = [];
+
+    if (filters.status) {
+      query += ' AND status = ?';
+      params.push(filters.status);
+    }
+
+    if (filters.clientId) {
+      query += ' AND client_id = ?';
+      params.push(filters.clientId);
+    }
+
+    if (filters.dateFrom) {
+      query += ' AND date >= ?';
+      params.push(filters.dateFrom);
+    }
+
+    if (filters.dateTo) {
+      query += ' AND date <= ?';
+      params.push(filters.dateTo);
+    }
+
+    if (filters.query) {
+      query += ' AND (estimate_number LIKE ? OR title LIKE ?)';
+      const searchPattern = `%${filters.query}%`;
+      params.push(searchPattern, searchPattern);
+    }
+
+    query += ' ORDER BY date DESC';
+
+    if (filters.pageSize && filters.page !== undefined) {
+      query += ' LIMIT ? OFFSET ?';
+      params.push(filters.pageSize, filters.page * filters.pageSize);
+    }
+
+    return db.prepare(query).all(...params) as DatabaseEstimate[];
+  }
+
+  // ============================================
+  // 청구서(Invoices) CRUD
+  // ============================================
+
+  getAllInvoices(): DatabaseInvoice[] {
+    const db = this.ensureConnection();
+    return db.prepare('SELECT * FROM invoices ORDER BY date DESC').all() as DatabaseInvoice[];
+  }
+
+  getInvoiceById(id: number): DatabaseInvoice | undefined {
+    const db = this.ensureConnection();
+    return db.prepare('SELECT * FROM invoices WHERE invoice_id = ?').get(id) as DatabaseInvoice | undefined;
+  }
+
+  getInvoiceWithItems(id: number): { invoice: DatabaseInvoice; items: DatabaseInvoiceItem[] } | null {
+    const db = this.ensureConnection();
+    const invoice = this.getInvoiceById(id);
+    if (!invoice) return null;
+
+    const items = db.prepare(
+      'SELECT * FROM invoice_items WHERE invoice_id = ? ORDER BY sort_order'
+    ).all(id) as DatabaseInvoiceItem[];
+
+    return { invoice, items };
+  }
+
+  createInvoice(
+    invoice: Omit<DatabaseInvoice, 'invoice_id' | 'created_at' | 'updated_at'>,
+    items: Omit<DatabaseInvoiceItem, 'item_id' | 'invoice_id'>[]
+  ): number {
+    const db = this.ensureConnection();
+
+    const transaction = db.transaction(() => {
+      // 청구서 생성
+      const invStmt = db.prepare(`
+        INSERT INTO invoices (
+          invoice_number, client_id, project_name, workplace_address,
+          amount, status, date, due_date
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `);
+
+      const invResult = invStmt.run(
+        invoice.invoice_number,
+        invoice.client_id,
+        invoice.project_name || null,
+        invoice.workplace_address || null,
+        invoice.amount,
+        invoice.status || 'pending',
+        invoice.date,
+        invoice.due_date || null
+      );
+
+      const invoiceId = invResult.lastInsertRowid as number;
+
+      // 청구서 항목들 생성
+      const itemStmt = db.prepare(`
+        INSERT INTO invoice_items (
+          invoice_id, name, category, description, quantity, unit,
+          unit_price, notes, date, labor_persons, labor_unit_rate,
+          labor_persons_general, labor_unit_rate_general, sort_order
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `);
+
+      items.forEach((item, index) => {
+        itemStmt.run(
+          invoiceId,
+          item.name,
+          item.category || null,
+          item.description || null,
+          item.quantity,
+          item.unit || null,
+          item.unit_price,
+          item.notes || null,
+          item.date || null,
+          item.labor_persons || null,
+          item.labor_unit_rate || null,
+          item.labor_persons_general || null,
+          item.labor_unit_rate_general || null,
+          item.sort_order || index
+        );
+      });
+
+      return invoiceId;
+    });
+
+    return transaction();
+  }
+
+  updateInvoice(id: number, data: Partial<DatabaseInvoice>): void {
+    const db = this.ensureConnection();
+    const fields: string[] = [];
+    const values: any[] = [];
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (key !== 'invoice_id' && key !== 'created_at' && key !== 'updated_at') {
+        fields.push(`${key} = ?`);
+        values.push(value);
+      }
+    });
+
+    if (fields.length === 0) return;
+
+    values.push(id);
+    const stmt = db.prepare(`UPDATE invoices SET ${fields.join(', ')} WHERE invoice_id = ?`);
+    stmt.run(...values);
+  }
+
+  deleteInvoice(id: number): void {
+    const db = this.ensureConnection();
+    db.prepare('DELETE FROM invoices WHERE invoice_id = ?').run(id);
+  }
+
+  searchInvoices(filters: SearchFilters): DatabaseInvoice[] {
+    const db = this.ensureConnection();
+    let query = 'SELECT * FROM invoices WHERE 1=1';
+    const params: any[] = [];
+
+    if (filters.status) {
+      query += ' AND status = ?';
+      params.push(filters.status);
+    }
+
+    if (filters.clientId) {
+      query += ' AND client_id = ?';
+      params.push(filters.clientId);
+    }
+
+    if (filters.dateFrom) {
+      query += ' AND date >= ?';
+      params.push(filters.dateFrom);
+    }
+
+    if (filters.dateTo) {
+      query += ' AND date <= ?';
+      params.push(filters.dateTo);
+    }
+
+    if (filters.query) {
+      query += ' AND (invoice_number LIKE ? OR project_name LIKE ?)';
+      const searchPattern = `%${filters.query}%`;
+      params.push(searchPattern, searchPattern);
+    }
+
+    query += ' ORDER BY date DESC';
+
+    return db.prepare(query).all(...params) as DatabaseInvoice[];
+  }
+
+  // ============================================
+  // 작업 항목(WorkItems) CRUD
+  // ============================================
+
+  getAllWorkItems(): DatabaseWorkItem[] {
+    const db = this.ensureConnection();
+    return db.prepare('SELECT * FROM work_items ORDER BY created_at DESC').all() as DatabaseWorkItem[];
+  }
+
+  getWorkItemById(id: number): DatabaseWorkItem | undefined {
+    const db = this.ensureConnection();
+    return db.prepare('SELECT * FROM work_items WHERE item_id = ?').get(id) as DatabaseWorkItem | undefined;
+  }
+
+  createWorkItem(data: Omit<DatabaseWorkItem, 'item_id' | 'created_at' | 'updated_at'>): number {
+    const db = this.ensureConnection();
+    const stmt = db.prepare(`
+      INSERT INTO work_items (
+        client_id, workplace_id, project_name, name, category,
+        unit, quantity, default_price, description, notes, status,
+        date, labor_persons, labor_unit_rate, labor_persons_general,
+        labor_unit_rate_general
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+
+    const result = stmt.run(
+      data.client_id,
+      data.workplace_id || null,
+      data.project_name || null,
+      data.name,
+      data.category || null,
+      data.unit || null,
+      data.quantity || null,
+      data.default_price || null,
+      data.description || null,
+      data.notes || null,
+      data.status || 'pending',
+      data.date || null,
+      data.labor_persons || null,
+      data.labor_unit_rate || null,
+      data.labor_persons_general || null,
+      data.labor_unit_rate_general || null
+    );
+
+    return result.lastInsertRowid as number;
+  }
+
+  updateWorkItem(id: number, data: Partial<DatabaseWorkItem>): void {
+    const db = this.ensureConnection();
+    const fields: string[] = [];
+    const values: any[] = [];
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (key !== 'item_id' && key !== 'created_at' && key !== 'updated_at') {
+        fields.push(`${key} = ?`);
+        values.push(value);
+      }
+    });
+
+    if (fields.length === 0) return;
+
+    values.push(id);
+    const stmt = db.prepare(`UPDATE work_items SET ${fields.join(', ')} WHERE item_id = ?`);
+    stmt.run(...values);
+  }
+
+  deleteWorkItem(id: number): void {
+    const db = this.ensureConnection();
+    db.prepare('DELETE FROM work_items WHERE item_id = ?').run(id);
+  }
+
+  // ============================================
+  // 회사 정보(CompanyInfo) CRUD
+  // ============================================
+
+  getCompanyInfo(): DatabaseCompanyInfo | undefined {
+    const db = this.ensureConnection();
+    return db.prepare('SELECT * FROM company_info WHERE id = 1').get() as DatabaseCompanyInfo | undefined;
+  }
+
+  updateCompanyInfo(data: Partial<DatabaseCompanyInfo>): void {
+    const db = this.ensureConnection();
+    const fields: string[] = [];
+    const values: any[] = [];
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (key !== 'id' && key !== 'created_at' && key !== 'updated_at') {
+        fields.push(`${key} = ?`);
+        values.push(value);
+      }
+    });
+
+    if (fields.length === 0) return;
+
+    values.push(1);
+    const stmt = db.prepare(`UPDATE company_info SET ${fields.join(', ')} WHERE id = ?`);
+    stmt.run(...values);
+  }
+
+  // ============================================
+  // 통계 및 리포팅
+  // ============================================
+
+  getInvoiceStatistics(): Statistics {
+    const db = this.ensureConnection();
+    const result = db.prepare(`
+      SELECT
+        COUNT(*) as total_count,
+        COALESCE(SUM(amount), 0) as total_amount,
+        COALESCE(SUM(CASE WHEN status = 'paid' THEN 1 ELSE 0 END), 0) as paid_count,
+        COALESCE(SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END), 0) as paid_amount,
+        COALESCE(SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END), 0) as pending_count,
+        COALESCE(SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END), 0) as pending_amount,
+        COALESCE(SUM(CASE WHEN status = 'overdue' THEN 1 ELSE 0 END), 0) as overdue_count,
+        COALESCE(SUM(CASE WHEN status = 'overdue' THEN amount ELSE 0 END), 0) as overdue_amount
+      FROM invoices
+    `).get() as Statistics;
+
+    return result;
+  }
+
+  getEstimateStatistics(): Statistics {
+    const db = this.ensureConnection();
+    const result = db.prepare(`
+      SELECT
+        COUNT(*) as total_count,
+        COALESCE(SUM(total_amount), 0) as total_amount
+      FROM estimates
+    `).get() as Statistics;
+
+    return result;
+  }
+
+  // ============================================
+  // 유틸리티 메서드
+  // ============================================
+
+  /**
+   * 데이터베이스 백업
+   */
+  backup(backupPath: string): void {
+    const db = this.ensureConnection();
+    db.backup(backupPath);
+    console.log(`✅ Database backed up to: ${backupPath}`);
   }
 
   /**
-   * 데이터베이스 통계
+   * 데이터베이스 닫기
    */
-  async getStats(): Promise<{
-    clients: number;
-    workItems: number;
-    invoices: number;
-    estimates: number;
-  }> {
+  close(): void {
+    if (this.db) {
+      this.db.close();
+      this.db = null;
+      console.log('✅ Database connection closed');
+    }
+  }
+
+  /**
+   * 데이터베이스 최적화
+   */
+  vacuum(): void {
+    const db = this.ensureConnection();
+    db.prepare('VACUUM').run();
+    console.log('✅ Database vacuumed');
+  }
+
+  /**
+   * 데이터베이스 무결성 검사
+   */
+  checkIntegrity(): boolean {
+    const db = this.ensureConnection();
+    const result = db.prepare('PRAGMA integrity_check').get() as { integrity_check: string };
+    return result.integrity_check === 'ok';
+  }
+
+  // ============================================
+  // 성능 최적화: JOIN 쿼리
+  // ============================================
+
+  /**
+   * 청구서 목록 + 클라이언트 정보 (JOIN 최적화)
+   */
+  getInvoicesWithClients(): Array<DatabaseInvoice & { client_name: string; client_phone: string }> {
+    const db = this.ensureConnection();
+    return db.prepare(`
+      SELECT
+        i.*,
+        c.company_name as client_name,
+        c.phone as client_phone
+      FROM invoices i
+      LEFT JOIN clients c ON i.client_id = c.client_id
+      ORDER BY i.date DESC
+    `).all() as Array<DatabaseInvoice & { client_name: string; client_phone: string }>;
+  }
+
+  /**
+   * 견적서 목록 + 클라이언트 정보 (JOIN 최적화)
+   */
+  getEstimatesWithClients(): Array<DatabaseEstimate & { client_name: string; client_phone: string }> {
+    const db = this.ensureConnection();
+    return db.prepare(`
+      SELECT
+        e.*,
+        c.company_name as client_name,
+        c.phone as client_phone
+      FROM estimates e
+      LEFT JOIN clients c ON e.client_id = c.client_id
+      ORDER BY e.date DESC
+    `).all() as Array<DatabaseEstimate & { client_name: string; client_phone: string }>;
+  }
+
+  /**
+   * 작업 항목 목록 + 클라이언트 정보 (JOIN 최적화)
+   */
+  getWorkItemsWithClients(): Array<DatabaseWorkItem & { client_name: string }> {
+    const db = this.ensureConnection();
+    return db.prepare(`
+      SELECT
+        w.*,
+        c.company_name as client_name
+      FROM work_items w
+      LEFT JOIN clients c ON w.client_id = c.client_id
+      ORDER BY w.created_at DESC
+    `).all() as Array<DatabaseWorkItem & { client_name: string }>;
+  }
+
+  /**
+   * 특정 클라이언트의 모든 데이터 조회 (JOIN 최적화)
+   */
+  getClientWithAllData(clientId: number): {
+    client: DatabaseClient | undefined;
+    estimates: DatabaseEstimate[];
+    invoices: DatabaseInvoice[];
+    workItems: DatabaseWorkItem[];
+  } {
+    const db = this.ensureConnection();
+
     return {
-      clients: await this.clients.count(),
-      workItems: await this.workItems.count(),
-      invoices: await this.invoices.count(),
-      estimates: await this.estimates.count(),
+      client: this.getClientById(clientId),
+      estimates: db.prepare('SELECT * FROM estimates WHERE client_id = ? ORDER BY date DESC').all(clientId) as DatabaseEstimate[],
+      invoices: db.prepare('SELECT * FROM invoices WHERE client_id = ? ORDER BY date DESC').all(clientId) as DatabaseInvoice[],
+      workItems: db.prepare('SELECT * FROM work_items WHERE client_id = ? ORDER BY created_at DESC').all(clientId) as DatabaseWorkItem[]
     };
   }
 
   /**
-   * 데이터베이스 크기 추정 (bytes)
+   * 클라이언트별 통계 (JOIN + 집계)
    */
-  async estimateSize(): Promise<number> {
-    let totalSize = 0;
+  getClientStatistics(clientId: number): {
+    total_estimates: number;
+    total_invoices: number;
+    total_work_items: number;
+    total_billed: number;
+    total_paid: number;
+    total_outstanding: number;
+  } {
+    const db = this.ensureConnection();
+    const result = db.prepare(`
+      SELECT
+        (SELECT COUNT(*) FROM estimates WHERE client_id = ?) as total_estimates,
+        (SELECT COUNT(*) FROM invoices WHERE client_id = ?) as total_invoices,
+        (SELECT COUNT(*) FROM work_items WHERE client_id = ?) as total_work_items,
+        (SELECT COALESCE(SUM(amount), 0) FROM invoices WHERE client_id = ?) as total_billed,
+        (SELECT COALESCE(SUM(amount), 0) FROM invoices WHERE client_id = ? AND status = 'paid') as total_paid,
+        (SELECT COALESCE(SUM(amount), 0) FROM invoices WHERE client_id = ? AND status IN ('pending', 'overdue')) as total_outstanding
+    `).get(clientId, clientId, clientId, clientId, clientId, clientId) as any;
 
-    // 각 테이블의 데이터 크기 추정
-    const clients = await this.clients.toArray();
-    const workItems = await this.workItems.toArray();
-    const invoices = await this.invoices.toArray();
-    const estimates = await this.estimates.toArray();
-
-    totalSize += JSON.stringify(clients).length;
-    totalSize += JSON.stringify(workItems).length;
-    totalSize += JSON.stringify(invoices).length;
-    totalSize += JSON.stringify(estimates).length;
-
-    return totalSize;
+    return result;
   }
 }
 
-// 싱글톤 인스턴스 내보내기
-export const db = new CMSDatabase();
-
-// 앱 시작 시 자동 초기화
-db.initialize().catch(logger.error);
+// 싱글톤 인스턴스
+export const databaseService = new DatabaseService();
+export default databaseService;
