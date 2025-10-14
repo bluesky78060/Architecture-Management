@@ -23,7 +23,9 @@ class SupabaseService {
    */
   initialize(config: SupabaseConfig): void {
     try {
+      // eslint-disable-next-line no-console
       console.log('🔌 Initializing Supabase connection...');
+      // eslint-disable-next-line no-console
       console.log('📍 URL:', config.url);
 
       this.config = config;
@@ -44,8 +46,10 @@ class SupabaseService {
         },
       });
 
+      // eslint-disable-next-line no-console
       console.log('✅ Supabase initialized successfully');
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('❌ Supabase initialization failed:', error);
       throw error;
     }
@@ -55,7 +59,7 @@ class SupabaseService {
    * 클라이언트 가져오기
    */
   getClient(): SupabaseClient {
-    if (!this.client) {
+    if (this.client === null) {
       throw new Error('Supabase not initialized. Call initialize() first.');
     }
     return this.client;
@@ -80,14 +84,16 @@ class SupabaseService {
         .from('clients')
         .select('count', { count: 'exact', head: true });
 
-      if (error && error.code !== 'PGRST116') {
+      if (error !== null && error.code !== 'PGRST116') {
         // PGRST116은 테이블이 없을 때 나오는 에러 (정상)
+        // eslint-disable-next-line no-console
         console.error('Health check failed:', error);
         return false;
       }
 
       return true;
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Health check failed:', error);
       return false;
     }
@@ -97,16 +103,16 @@ class SupabaseService {
    * 연결 통계
    */
   getStats() {
-    if (!this.client) {
+    if (this.client === null) {
       return null;
     }
 
     return {
       connected: this.client !== null,
-      config: this.config ? {
+      config: this.config !== null ? {
         url: this.config.url,
-        hasAnonKey: !!this.config.anonKey,
-        hasServiceRoleKey: !!this.config.serviceRoleKey,
+        hasAnonKey: this.config.anonKey !== '' && this.config.anonKey !== undefined,
+        hasServiceRoleKey: this.config.serviceRoleKey !== '' && this.config.serviceRoleKey !== undefined,
       } : null,
     };
   }
@@ -114,11 +120,11 @@ class SupabaseService {
   /**
    * SQL 쿼리 실행 (RPC 사용)
    */
-  async query<T = any>(functionName: string, params?: any): Promise<T> {
+  async query<T = unknown>(functionName: string, params?: unknown): Promise<T> {
     const client = this.getClient();
     const { data, error } = await client.rpc(functionName, params);
 
-    if (error) {
+    if (error !== null) {
       throw new Error(`Query failed: ${error.message}`);
     }
 
@@ -139,10 +145,10 @@ class SupabaseService {
 export const supabaseService = new SupabaseService();
 
 // 환경 변수에서 설정 자동 로드
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
-const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.REACT_APP_SUPABASE_URL ?? '';
+const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY ?? '';
 
-if (supabaseUrl && supabaseAnonKey) {
+if (supabaseUrl !== '' && supabaseAnonKey !== '') {
   supabaseService.initialize({
     url: supabaseUrl,
     anonKey: supabaseAnonKey,
@@ -150,7 +156,7 @@ if (supabaseUrl && supabaseAnonKey) {
 }
 
 // 직접 supabase 클라이언트 export
-export const supabase = supabaseUrl && supabaseAnonKey
+export const supabase = (supabaseUrl !== '' && supabaseAnonKey !== '')
   ? supabaseService.getClient()
   : null;
 

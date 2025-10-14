@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useUser } from '../contexts/UserContext';
 import { useNavigate } from 'react-router-dom';
 import { LockClosedIcon, UserIcon, EnvelopeIcon } from '@heroicons/react/24/solid';
 import { supabase } from '../services/supabase';
@@ -14,7 +13,6 @@ const Login: React.FC = () => {
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-  const { login } = useUser();
   const navigate = useNavigate();
 
   const handleEmailSignIn = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
@@ -29,7 +27,7 @@ const Login: React.FC = () => {
       return;
     }
 
-    if (!supabase) {
+    if (supabase === null) {
       setError('Supabase가 초기화되지 않았습니다.');
       setLoading(false);
       return;
@@ -41,16 +39,18 @@ const Login: React.FC = () => {
         password,
       });
 
-      if (signInError) {
+      if (signInError !== null) {
         setError(signInError.message === 'Invalid login credentials'
           ? '이메일 또는 비밀번호가 올바르지 않습니다.'
           : signInError.message);
-      } else if (data.user) {
+      } else if (data.user !== null) {
         setSuccess('로그인 성공!');
+        // eslint-disable-next-line no-magic-numbers
         setTimeout(() => navigate('/'), 500);
       }
-    } catch (err: any) {
-      setError(err.message || '로그인 중 오류가 발생했습니다.');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : '로그인 중 오류가 발생했습니다.';
+      setError(errorMessage);
     }
 
     setLoading(false);
@@ -68,13 +68,14 @@ const Login: React.FC = () => {
       return;
     }
 
+    // eslint-disable-next-line no-magic-numbers
     if (password.length < 6) {
       setError('비밀번호는 최소 6자 이상이어야 합니다.');
       setLoading(false);
       return;
     }
 
-    if (!supabase) {
+    if (supabase === null) {
       setError('Supabase가 초기화되지 않았습니다.');
       setLoading(false);
       return;
@@ -91,14 +92,16 @@ const Login: React.FC = () => {
         },
       });
 
-      if (signUpError) {
+      if (signUpError !== null) {
         setError(signUpError.message);
-      } else if (data.user) {
+      } else if (data.user !== null) {
         setSuccess('회원가입이 완료되었습니다! 이메일을 확인해주세요.');
+        // eslint-disable-next-line no-magic-numbers
         setTimeout(() => setMode('login'), 2000);
       }
-    } catch (err: any) {
-      setError(err.message || '회원가입 중 오류가 발생했습니다.');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : '회원가입 중 오류가 발생했습니다.';
+      setError(errorMessage);
     }
 
     setLoading(false);
