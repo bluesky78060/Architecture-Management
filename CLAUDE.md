@@ -63,119 +63,64 @@ cp backup_checkpoints/[체크포인트명]/src/components/[파일명] /Users/lee
 
 ## 프로젝트 진행 기록
 
-### 2025.09.30 - 아이콘 시스템 통일
-- **작업 내용**: 모든 관리 컴포넌트의 카드 아이콘을 outline-style Heroicons로 변환
-- **수정된 컴포넌트**:
-  - ✅ Layout.tsx (모던 사이드바 디자인)
-  - ✅ Estimates.js (견적서 관리)
-  - ✅ Invoices.js (청구서 관리) 
-  - ✅ Clients.js (건축주 관리)
-  - ✅ WorkItems.js (작업 항목 관리)
+### 2025.10.14 - Supabase 완전 마이그레이션 🚀
+- **작업 내용**: localStorage에서 Supabase PostgreSQL로 데이터 저장소 완전 전환
+- **데이터베이스 마이그레이션**:
+  - ✅ 모든 테이블에 user_id 컬럼 추가 (UUID, auth.users 참조)
+  - ✅ user_id 인덱스 생성 (성능 최적화)
+  - ✅ RLS (Row Level Security) 정책 적용
+  - ✅ 개발 환경 전체 접근 정책 설정
+  - ✅ company_info.user_id UNIQUE constraint 추가
 
-### 사용된 아이콘
-- DocumentTextIcon, CheckCircleIcon, ClockIcon, CurrencyDollarIcon
-- UsersIcon, BuildingOfficeIcon, PhoneIcon, MapPinIcon
-- WrenchScrewdriverIcon, ExclamationTriangleIcon
+### CRUD 구현 완료
+- **Clients (건축주)**:
+  - 데이터 로딩: 전체 필드 매핑 (business 객체 포함)
+  - 데이터 저장: delete-and-insert 전략, SERIAL ID 자동 생성
+- **WorkItems (작업 항목)**:
+  - 테이블 스키마 확장 (10개 컬럼 추가: client_name, workplace_name, project_name, default_price, quantity, unit, labor_* 등)
+  - 데이터 로딩 및 저장 완전 구현
+- **Estimates (견적서)**:
+  - 중첩 데이터 처리 (estimates + estimate_items JOIN)
+  - 견적서 저장 후 반환된 ID로 항목 저장
+- **Invoices (청구서)**:
+  - 중첩 데이터 처리 (invoices + invoice_items JOIN)
+  - 청구서 저장 후 반환된 ID로 항목 저장
+- **CompanyInfo (회사 정보)**:
+  - Upsert 전략 (onConflict: user_id)
+  - 컬럼명 수정 (name → company_name)
+
+### 해결된 주요 문제
+1. **컬럼명 불일치**: name → company_name 수정
+2. **SERIAL ID 충돌**: 수동 ID 할당 제거, 데이터베이스 자동 생성 사용
+3. **스키마 불일치**: work_items 테이블 10개 컬럼 추가
+4. **NULL user_id**: 기존 데이터 삭제, user_id 필수 적용
+5. **중첩 데이터 외래키**: 부모 저장 후 반환된 ID로 자식 저장
+
+### Git 커밋
+- `0fb420f` - feat: complete Supabase CRUD implementation for all data types
+- `f03aed8` - fix: remove manual ID assignments in Supabase CRUD operations
+
+### 현재 상태
+- ⚠️ Supabase 스키마 캐시 새로고침 필요
+- ⚠️ company_info 406/400 에러 남아있음 (스키마 캐시 문제)
+- ✅ 기본 CRUD 로직 완성
+- 🔄 테스트 및 검증 진행 중
+
+### 2025.10.05 - 암호화 시스템 마이그레이션 완료 🔒
+- XOR → AES-256-GCM 전면 업그레이드
+- PBKDF2 키 파생 (100,000 iterations)
+- 자동 마이그레이션 시스템 구현
+
+### 2025.09.30 - 이전 작업 요약
+- 청구서 도장 시스템 최적화 (Safari 호환성, localStorage 전환)
+- 프로젝트 전면 정리 (console.log 제거, 번들 크기 감소)
+- Playwright MCP 포괄적 테스트 (100% 통과)
+- 아이콘 시스템 통일 (outline-style Heroicons)
 
 ## 주의사항
 - 복원 전 현재 작업 내용 백업 필수
 - 복원 후 `npm install` 실행하여 의존성 확인
 - 체크포인트는 수동 삭제 필요 (자동 삭제 안됨)
-### 2025.09.30 - Playwright MCP 포괄적 테스트 완료
-- **작업 내용**: Playwright MCP를 사용한 전체 시스템 테스트 실행
-- **테스트 범위**: 
-  - ✅ 브라우저 접속 및 페이지 로딩
-  - ✅ 로그인 기능 (비활성화 모드)
-  - ✅ 메인 대시보드 UI 요소
-  - ✅ 사이드바 네비게이션 (6개 메뉴)
-  - ✅ 견적서/청구서/건축주/작업항목/회사정보 관리 페이지
-  - ✅ 반응형 디자인 (모바일 뷰)
-  - ✅ 접근성 검사 (29개 포커스 요소, 헤딩 구조 확인)
-  - ✅ 콘솔 에러 확인 (React DevTools 알림만 존재)
-
-### 수정사항
-- React Router Future Flags 적용으로 v7 호환성 준비
-- WebSocket 연결 설정 최적화
-- 모든 페이지 정상 작동 확인
-
-### 생성된 스크린샷
-- dashboard-login-page.png
-- dashboard-main.png  
-- estimates-page.png
-- mobile-responsive-test.png
-
-### 테스트 결과
-- **전체 테스트 통과율**: 100%
-- **시스템 상태**: 프로덕션 준비 완료
-- **접근성**: 기본 요구사항 충족
-- **반응형**: 데스크톱/모바일 정상 동작
-
-### 2025.09.30 - 프로젝트 전면 정리 완료
-- **작업 내용**: /sc:cleanup 명령으로 포괄적 코드 정리 수행
-- **정리 범위**:
-  - ✅ Console.log 디버그 코드 완전 제거 (5개 파일, 23개 구문)
-  - ✅ 임시 파일/디렉토리 정리 (temp/, test-results/, nano_banana_output/)
-  - ✅ 안전 백업 생성 (checkpoint_20250930_200424_cleanup_preparation)
-  - ✅ 빌드 검증 완료 (기능 영향 없음)
-
-### 정리 결과
-- **번들 크기**: 638B 감소 (main.js + CSS)
-- **코드 품질**: 프로덕션 디버그 코드 완전 제거
-- **개발 경험**: 콘솔 로그 노이즈 제거
-- **백업 상태**: 완전 복원 가능
-
-### 생성된 문서
-- CLEANUP_REPORT.md - 상세 정리 보고서
-- checkpoint_20250930_200424_cleanup_preparation/ - 안전 백업
-
-### 2025.10.05 - 암호화 시스템 마이그레이션 완료 🔒
-- **작업 내용**: XOR 암호화를 AES-256-GCM으로 전면 업그레이드
-- **보안 개선**:
-  - ✅ AES-256-GCM 암호화 구현 (`modernSecureStorage.ts`)
-  - ✅ PBKDF2 키 파생 (100,000 iterations - OWASP 권장)
-  - ✅ 자동 마이그레이션 시스템 (`securityMigration.ts`)
-  - ✅ 호환성 어댑터 생성 (`secureStorageAdapter.ts`)
-  - ✅ 레거시 코드 백업 (`secureStorage.legacy.ts`)
-
-### 수정된 파일
-- **코어 시스템**:
-  - UserContext.tsx → secureStorageAdapter 사용
-  - imageStorage.ts → secureStorageAdapter 사용
-  - logger.ts → ESLint 예외 추가
-
-### 생성된 문서
-- `claudedocs/comprehensive-code-analysis-2025-10-05.md` - 종합 코드 분석 보고서
-- `claudedocs/encryption-migration-report-2025-10-05.md` - 암호화 마이그레이션 상세 가이드
-
-### 보안 개선도
-| 항목 | 이전 (XOR) | 현재 (AES-GCM) | 개선 |
-|------|-----------|----------------|------|
-| 알고리즘 | XOR | AES-256-GCM | ⬆️ 500% |
-| 키 파생 | 하드코딩 | PBKDF2 (100K) | ⬆️ 무한대 |
-| 인증 | 없음 | GCM 태그 | ⬆️ 신규 |
-
-### 빌드 검증
-- ✅ Compiled successfully
-- ⚡ Million.js: 100% faster
-- 📦 Bundle: 342.69 KB (gzip)
-
-### 2025.09.30 - 청구서 도장 시스템 최적화 완료
-- **작업 내용**: 청구서 출력 시 도장 표시 기능 완전 구현
-- **해결된 문제들**:
-  - ✅ Safari 브라우저 URL 길이 제한 오류 해결 (localStorage 사용)
-  - ✅ 도장 크기 최적화 (48px × 48px, A4 용지 기준 적절한 크기)
-  - ✅ 도장 위치 정확성 (`(인)` 텍스트 위에 정확히 겹쳐서 표시)
-  - ✅ 성명-도장 간격 최적화 (70px 컨테이너로 자연스러운 거리)
-  - ✅ 로그인 화면 회사명 수정 (Architecture Management System)
-
-### 기술적 개선사항
-- **데이터 전달**: URL 파라미터 → localStorage로 변경하여 안정성 향상
-- **도장 렌더링**: 두 곳(Invoices.js, invoice-output.html) 크기 통일
-- **컨테이너 최적화**: 140px → 70px 컨테이너로 UI 개선
-- **브라우저 호환성**: Chrome, Safari, Firefox 모든 브라우저 지원
-
-### 생성된 체크포인트
-- checkpoint_20250930_205041_stamp_optimization_complete/ - 도장 시스템 완성 백업
 
 ## 오류 처리 원칙
 
