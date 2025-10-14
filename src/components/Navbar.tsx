@@ -57,9 +57,9 @@ const Navbar: React.FC = () => {
             <div className="ml-2 md:ml-4 lg:ml-6 flex items-baseline space-x-3 md:space-x-4 lg:space-x-6">
                 <Link
                   to="/"
-                  className={`px-2 md:px-3 py-2 rounded-md text-xs md:text-sm font-medium flex items-center space-x-1 ${
-                    isActive('/') 
-                      ? 'bg-blue-700 text-white' 
+                  className={`px-2 md:px-3 py-2 rounded-md text-xs md:text-sm font-medium flex items-center space-x-2 ${
+                    isActive('/')
+                      ? 'bg-blue-700 text-white'
                       : 'text-blue-100 hover:bg-blue-500 hover:text-white'
                   }`}
                 >
@@ -68,9 +68,9 @@ const Navbar: React.FC = () => {
                 </Link>
                 <Link
                   to="/estimates"
-                  className={`px-2 md:px-3 py-2 rounded-md text-xs md:text-sm font-medium flex items-center space-x-1 ${
-                    isActive('/estimates') 
-                      ? 'bg-blue-700 text-white' 
+                  className={`px-2 md:px-3 py-2 rounded-md text-xs md:text-sm font-medium flex items-center space-x-2 ${
+                    isActive('/estimates')
+                      ? 'bg-blue-700 text-white'
                       : 'text-blue-100 hover:bg-blue-500 hover:text-white'
                   }`}
                 >
@@ -79,9 +79,9 @@ const Navbar: React.FC = () => {
                 </Link>
                 <Link
                   to="/invoices"
-                  className={`px-2 md:px-3 py-2 rounded-md text-xs md:text-sm font-medium flex items-center space-x-1 ${
-                    isActive('/invoices') 
-                      ? 'bg-blue-700 text-white' 
+                  className={`px-2 md:px-3 py-2 rounded-md text-xs md:text-sm font-medium flex items-center space-x-2 ${
+                    isActive('/invoices')
+                      ? 'bg-blue-700 text-white'
                       : 'text-blue-100 hover:bg-blue-500 hover:text-white'
                   }`}
                 >
@@ -90,9 +90,9 @@ const Navbar: React.FC = () => {
                 </Link>
                 <Link
                   to="/clients"
-                  className={`px-2 md:px-3 py-2 rounded-md text-xs md:text-sm font-medium flex items-center space-x-1 ${
-                    isActive('/clients') 
-                      ? 'bg-blue-700 text-white' 
+                  className={`px-2 md:px-3 py-2 rounded-md text-xs md:text-sm font-medium flex items-center space-x-2 ${
+                    isActive('/clients')
+                      ? 'bg-blue-700 text-white'
                       : 'text-blue-100 hover:bg-blue-500 hover:text-white'
                   }`}
                 >
@@ -101,9 +101,9 @@ const Navbar: React.FC = () => {
                 </Link>
                 <Link
                   to="/work-items"
-                  className={`px-2 md:px-3 py-2 rounded-md text-xs md:text-sm font-medium flex items-center space-x-1 ${
-                    isActive('/work-items') 
-                      ? 'bg-blue-700 text-white' 
+                  className={`px-2 md:px-3 py-2 rounded-md text-xs md:text-sm font-medium flex items-center space-x-2 ${
+                    isActive('/work-items')
+                      ? 'bg-blue-700 text-white'
                       : 'text-blue-100 hover:bg-blue-500 hover:text-white'
                   }`}
                 >
@@ -112,9 +112,9 @@ const Navbar: React.FC = () => {
                 </Link>
                 <Link
                   to="/company-info"
-                className={`px-2 md:px-3 py-2 rounded-md text-xs md:text-sm font-medium flex items-center space-x-1 ${
-                  isActive('/company-info') 
-                    ? 'bg-blue-700 text-white' 
+                className={`px-2 md:px-3 py-2 rounded-md text-xs md:text-sm font-medium flex items-center space-x-2 ${
+                  isActive('/company-info')
+                    ? 'bg-blue-700 text-white'
                     : 'text-blue-100 hover:bg-blue-500 hover:text-white'
                 }`}
                 >
