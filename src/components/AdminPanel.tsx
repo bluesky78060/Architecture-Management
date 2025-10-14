@@ -115,7 +115,7 @@ const AdminPanel: React.FC = () => {
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">데이터 저장</span>
-              <span className="font-medium">LocalStorage</span>
+              <span className="font-medium">Supabase</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">백업 시간</span>
