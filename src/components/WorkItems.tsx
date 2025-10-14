@@ -566,7 +566,6 @@ export default function WorkItems(): JSX.Element {
         onChangeField={onChangeField}
         onCancel={() => { setShowItemModal(false); setEditingItem(null); setNewItem(defaultNewItem); }}
         onSubmit={handleSubmit}
-        getLaborCost={getLaborCost}
       />
 
       <BulkFormModal

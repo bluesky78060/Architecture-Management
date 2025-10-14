@@ -15,10 +15,9 @@ type Props = {
   onChangeField: (name: string, value: string) => void;
   onCancel: () => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-  getLaborCost: (item: WorkItem) => number;
 };
 
-export default function ItemFormModal({ open, editingItem, newItem, clients, units, categories, statuses, onChangeField, onCancel, onSubmit, getLaborCost }: Props) {
+export default function ItemFormModal({ open, editingItem, newItem, clients, units, categories, statuses, onChangeField, onCancel, onSubmit }: Props) {
   const { getClientWorkplaces } = useClientWorkplaces();
   const { format } = useNumberFormat();
   const cal = useCalendar({ value: newItem?.date ?? '', onChange: (d) => onChangeField('date', d) });
