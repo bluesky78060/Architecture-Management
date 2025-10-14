@@ -250,7 +250,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
         if (!companyError && companyData) {
           setCompanyInfo({
-            name: companyData.name,
+            name: companyData.company_name,
             businessNumber: companyData.business_number || '',
             address: companyData.address || '',
             phone: companyData.phone || '',
@@ -360,10 +360,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const saveClients = async () => {
       try {
         // 기존 데이터 삭제 후 재생성 (간단한 동기화)
-        await supabase!.from('clients').delete().neq('client_id', 0);
+        await supabase!.from('clients').delete().eq('user_id', userId);
 
         if (clients.length > 0) {
           const dbClients = clients.map(c => ({
+            user_id: userId,
             client_id: typeof c.id === 'number' ? c.id : parseInt(String(c.id)),
             company_name: c.business?.businessName || c.name,
             representative: c.business?.representative || '',
@@ -398,7 +399,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           .from('company_info')
           .upsert({
             user_id: userId,
-            name: companyInfo.name,
+            company_name: companyInfo.name,
             business_number: companyInfo.businessNumber,
             address: companyInfo.address,
             phone: companyInfo.phone,
