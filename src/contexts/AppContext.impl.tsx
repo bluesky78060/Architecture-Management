@@ -365,7 +365,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         if (clients.length > 0) {
           const dbClients = clients.map(c => ({
             user_id: userId,
-            client_id: typeof c.id === 'number' ? c.id : parseInt(String(c.id)),
             company_name: c.business?.businessName || c.name,
             representative: c.business?.representative || '',
             business_number: c.business?.businessNumber || '',
@@ -379,7 +378,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             outstanding: c.outstanding || 0
           }));
 
-          await supabase!.from('clients').insert(dbClients);
+          const { error } = await supabase!.from('clients').insert(dbClients);
+          if (error) {
+            console.error('건축주 저장 오류:', error);
+          }
         }
       } catch (err) {
         console.error('건축주 저장 실패:', err);
@@ -427,7 +429,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         if (workItems.length > 0) {
           const dbWorkItems = workItems.map(w => ({
             user_id: userId,
-            work_item_id: typeof w.id === 'number' ? w.id : parseInt(String(w.id)),
             client_id: w.clientId,
             client_name: w.clientName,
             workplace_id: w.workplaceId,
@@ -448,7 +449,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             labor_unit_rate_general: w.laborUnitRateGeneral || 0
           }));
 
-          await supabase!.from('work_items').insert(dbWorkItems);
+          const { error } = await supabase!.from('work_items').insert(dbWorkItems);
+          if (error) {
+            console.error('작업 항목 저장 오류:', error);
+          }
         }
       } catch (err) {
         console.error('작업 항목 저장 실패:', err);
@@ -469,11 +473,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
         if (estimates.length > 0) {
           for (const estimate of estimates) {
-            const { data: estimateData } = await supabase!
+            const { data: estimateData, error: estError } = await supabase!
               .from('estimates')
               .insert({
                 user_id: userId,
-                estimate_id: estimate.id,
                 client_id: estimate.clientId,
                 client_name: estimate.clientName,
                 workplace_id: estimate.workplaceId,
@@ -486,10 +489,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
               .select()
               .single();
 
+            if (estError) {
+              console.error('견적서 저장 오류:', estError);
+              continue;
+            }
+
             if (estimateData && estimate.items.length > 0) {
               const items = estimate.items.map(item => ({
                 user_id: userId,
-                estimate_id: estimate.id,
+                estimate_id: estimateData.estimate_id,
                 name: item.name,
                 category: item.category || null,
                 quantity: item.quantity || 0,
@@ -500,7 +508,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 notes: item.notes || null
               }));
 
-              await supabase!.from('estimate_items').insert(items);
+              const { error: itemsError } = await supabase!.from('estimate_items').insert(items);
+              if (itemsError) {
+                console.error('견적서 항목 저장 오류:', itemsError);
+              }
             }
           }
         }
@@ -523,11 +534,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
         if (invoices.length > 0) {
           for (const invoice of invoices) {
-            const { data: invoiceData } = await supabase!
+            const { data: invoiceData, error: invError } = await supabase!
               .from('invoices')
               .insert({
                 user_id: userId,
-                invoice_id: invoice.id,
                 client_name: invoice.client,
                 project_name: invoice.project,
                 workplace_address: invoice.workplaceAddress,
@@ -539,10 +549,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
               .select()
               .single();
 
+            if (invError) {
+              console.error('청구서 저장 오류:', invError);
+              continue;
+            }
+
             if (invoiceData && invoice.workItems.length > 0) {
               const items = invoice.workItems.map(item => ({
                 user_id: userId,
-                invoice_id: invoice.id,
+                invoice_id: invoiceData.invoice_id,
                 name: item.name,
                 quantity: item.quantity || 0,
                 unit: item.unit || null,
@@ -558,7 +573,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 labor_unit_rate_general: item.laborUnitRateGeneral || 0
               }));
 
-              await supabase!.from('invoice_items').insert(items);
+              const { error: itemsError } = await supabase!.from('invoice_items').insert(items);
+              if (itemsError) {
+                console.error('청구서 항목 저장 오류:', itemsError);
+              }
             }
           }
         }
