@@ -78,7 +78,7 @@ export default function EstimatesTable({ items, allSelected, onToggleAll, onTogg
               </td>
               <td className="px-3 py-2 text-sm text-gray-900">{estimate.validUntil ?? '-'}</td>
               <td className="px-3 py-2 text-center text-sm font-medium">
-                <div className="flex items-center justify-center space-x-4">
+                <div className="flex items-center justify-center space-x-6">
                   <Tooltip label="편집"><button onClick={() => onEdit(estimate)} className="text-blue-600 hover:text-blue-900" title="견적서 편집">✏️</button></Tooltip>
                   <Tooltip label="출력"><button onClick={() => onPrint(estimate)} className="text-green-600 hover:text-green-900" title="견적서 출력">🖨️</button></Tooltip>
                   <Tooltip label="삭제"><button onClick={() => onDelete(estimate.id)} className="text-red-600 hover:text-red-900" title="견적서 삭제">🗑️</button></Tooltip>
