@@ -584,7 +584,6 @@ export default function WorkItems(): JSX.Element {
         onRemoveItem={onBulkRemoveItem}
         onCancel={() => { setShowBulkModal(false); }}
         onSubmit={onBulkSubmit}
-        getLaborCost={getLaborCost}
       />
 
       <ConfirmDialog

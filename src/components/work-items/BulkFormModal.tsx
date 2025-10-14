@@ -22,10 +22,9 @@ type Props = {
   onRemoveItem: (index: number) => void;
   onCancel: () => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-  getLaborCost: (item: WorkItem) => number;
 };
 
-export default function BulkFormModal({ open, clients, categories, units, bulkItems, bulkBaseInfo, showBulkCustomProject, statuses, onBaseInfoChangeField, onItemChange, onAddItem, onRemoveItem, onCancel, onSubmit, getLaborCost }: Props) {
+export default function BulkFormModal({ open, clients, categories, units, bulkItems, bulkBaseInfo, showBulkCustomProject, statuses, onBaseInfoChangeField, onItemChange, onAddItem, onRemoveItem, onCancel, onSubmit }: Props) {
   const { getClientWorkplaces } = useClientWorkplaces();
   const { getClientProjects } = useProjects();
   const { format } = useNumberFormat();
@@ -48,7 +47,7 @@ export default function BulkFormModal({ open, clients, categories, units, bulkIt
                 <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-50 text-indigo-600">📋</span>
                 <h4 className="text-base font-semibold text-gray-900">공통 정보</h4>
               </div>
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-4 gap-3 mb-3">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">건축주</label>
                   <select name="clientId" value={String(bulkBaseInfo.clientId ?? '')} onChange={(e) => onBaseInfoChangeField(e.target.name, e.target.value)} className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required>
@@ -133,6 +132,37 @@ export default function BulkFormModal({ open, clients, categories, units, bulkIt
                   </div>
                 </div>
               </div>
+
+              <div className="border-t border-gray-200 pt-3">
+                <h5 className="text-sm font-semibold text-gray-700 mb-2">인부임 정보</h5>
+                <div className="grid grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">인부 인원</label>
+                    <input type="text" name="bulkLaborPersons" value={bulkBaseInfo.bulkLaborPersons ?? ''} onChange={(e) => onBaseInfoChangeField(e.target.name, e.target.value)} placeholder="예: 3" className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">인부 단가</label>
+                    <input type="text" name="bulkLaborUnitRate" value={(() => {
+                      const val = bulkBaseInfo.bulkLaborUnitRate;
+                      if (val === null || val === undefined || val === '') return '';
+                      const num = Number(val);
+                      return Number.isFinite(num) ? format(num) : String(val);
+                    })()} onChange={(e) => onBaseInfoChangeField(e.target.name, e.target.value)} placeholder="예: 250,000" className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">인부임 합계</label>
+                    <div className="mt-1 w-full bg-indigo-50 border border-indigo-200 rounded px-3 py-2 text-sm font-semibold text-indigo-900">{
+                      (() => {
+                        const persons = Number(bulkBaseInfo.bulkLaborPersons);
+                        const rate = Number(bulkBaseInfo.bulkLaborUnitRate);
+                        const p = Number.isFinite(persons) ? persons : 0;
+                        const r = Number.isFinite(rate) ? rate : 0;
+                        return `${format(p * r)}원`;
+                      })()
+                    }</div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
@@ -147,13 +177,15 @@ export default function BulkFormModal({ open, clients, categories, units, bulkIt
               <div className="space-y-3 max-h-96 overflow-y-auto">
                 {bulkItems.map((item, index) => (
                   <div key={index} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-                    <div className="flex justify-between items-center mb-2">
+                    <div className="flex justify-between items-center mb-3">
                       <span className="text-sm font-medium text-gray-700">작업 항목 #{index + 1}</span>
                       {bulkItems.length > 1 && (
                         <button type="button" onClick={() => onRemoveItem(index)} className="text-red-600 hover:text-red-800 text-sm">삭제</button>
                       )}
                     </div>
-                    <div className="grid grid-cols-5 gap-3">
+
+                    {/* 1행: 내용, 카테고리, 세부작업 */}
+                    <div className="grid grid-cols-3 gap-3 mb-2">
                       <div>
                         <label className="block text-sm font-medium text-gray-700">내용</label>
                         <input type="text" value={item.name ?? ''} onChange={(e) => onItemChange(index, 'name', e.target.value)} className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required />
@@ -165,6 +197,14 @@ export default function BulkFormModal({ open, clients, categories, units, bulkIt
                           {categories.map(cat => (<option key={cat} value={cat}>{cat}</option>))}
                         </select>
                       </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700">세부 작업</label>
+                        <input type="text" value={item.description ?? ''} onChange={(e) => onItemChange(index, 'description', e.target.value)} className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+                      </div>
+                    </div>
+
+                    {/* 2행: 수량, 단위, 단가, 합계 */}
+                    <div className="grid grid-cols-4 gap-3 mb-2">
                       <div>
                         <label className="block text-sm font-medium text-gray-700">수량</label>
                         <input type="text" value={item.quantity ?? ''} onChange={(e) => onItemChange(index, 'quantity', e.target.value)} placeholder="예: 1" className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
@@ -185,37 +225,9 @@ export default function BulkFormModal({ open, clients, categories, units, bulkIt
                           return Number.isFinite(num) ? format(num) : String(val);
                         })()} onChange={(e) => onItemChange(index, 'defaultPrice', e.target.value)} placeholder="예: 200,000" className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
                       </div>
-                    </div>
-                    <div className="grid grid-cols-5 gap-3 mt-3">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">숙련 인부 인원</label>
-                        <input type="text" value={item.laborPersons ?? ''} onChange={(e) => onItemChange(index, 'laborPersons', e.target.value)} placeholder="예: 1" className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">숙련 인부 단가</label>
-                        <input type="text" value={(() => {
-                          const val = item.laborUnitRate;
-                          if (val === null || val === undefined) return '';
-                          const num = Number(val);
-                          return Number.isFinite(num) ? format(num) : String(val);
-                        })()} onChange={(e) => onItemChange(index, 'laborUnitRate', e.target.value)} placeholder="예: 300,000" className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">일반 인부 인원</label>
-                        <input type="text" value={item.laborPersonsGeneral ?? ''} onChange={(e) => onItemChange(index, 'laborPersonsGeneral', e.target.value)} placeholder="예: 2" className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">일반 인부 단가</label>
-                        <input type="text" value={(() => {
-                          const val = item.laborUnitRateGeneral;
-                          if (val === null || val === undefined) return '';
-                          const num = Number(val);
-                          return Number.isFinite(num) ? format(num) : String(val);
-                        })()} onChange={(e) => onItemChange(index, 'laborUnitRateGeneral', e.target.value)} placeholder="예: 200,000" className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
-                      </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700">합계</label>
-                        <div className="mt-1 w-full bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm">{
+                        <div className="mt-1 w-full bg-green-50 border border-green-200 rounded px-3 py-2 text-sm font-semibold text-green-900">{
                           (() => {
                             const pRaw = item.defaultPrice;
                             const qRaw = item.quantity;
@@ -223,33 +235,52 @@ export default function BulkFormModal({ open, clients, categories, units, bulkIt
                             const qNum = Number(qRaw);
                             const p = Number.isFinite(pNum) ? pNum : 0;
                             const q = Number.isFinite(qNum) ? qNum : 1;
-                            const laborCost = getLaborCost(item as WorkItem);
-                            const total = (p * q) + laborCost;
+                            const total = p * q;
                             return `${format(total)}원`;
                           })()
                         }</div>
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-3 mt-3">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">세부 작업</label>
-                        <input type="text" value={item.description ?? ''} onChange={(e) => onItemChange(index, 'description', e.target.value)} className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">비고</label>
-                        <input type="text" value={item.notes ?? ''} onChange={(e) => onItemChange(index, 'notes', e.target.value)} className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
-                      </div>
+
+                    {/* 3행: 비고 */}
+                    <div className="mb-3">
+                      <label className="block text-sm font-medium text-gray-700">비고</label>
+                      <input type="text" value={item.notes ?? ''} onChange={(e) => onItemChange(index, 'notes', e.target.value)} className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
                     </div>
-                    <div className="mt-3">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">상태</label>
-                      <div className="flex flex-wrap gap-1.5">
-                        {statuses.map((s) => {
-                          const active = item.status === s;
-                          const classes = active ? 'bg-indigo-600 text-white border-transparent shadow' : 'bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200';
-                          return (
-                            <button key={s} type="button" onClick={() => onItemChange(index, 'status', s)} className={`px-2.5 py-1 rounded-full text-xs transition ${classes}`} aria-pressed={active}>{s}</button>
-                          );
-                        })}
+
+                    {/* 상태 및 총합계 */}
+                    <div className="flex justify-between items-center">
+                      <div className="flex-1">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">상태</label>
+                        <div className="flex flex-wrap gap-1.5">
+                          {statuses.map((s) => {
+                            const active = item.status === s;
+                            const classes = active ? 'bg-indigo-600 text-white border-transparent shadow' : 'bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200';
+                            return (
+                              <button key={s} type="button" onClick={() => onItemChange(index, 'status', s)} className={`px-2.5 py-1 rounded-full text-xs transition ${classes}`} aria-pressed={active}>{s}</button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                      <div className="ml-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-1 text-right">총합계 금액</label>
+                        <div className="bg-blue-600 text-white rounded-lg px-4 py-2 text-lg font-bold shadow-md">{
+                          (() => {
+                            const pRaw = item.defaultPrice;
+                            const qRaw = item.quantity;
+                            const pNum = Number(pRaw);
+                            const qNum = Number(qRaw);
+                            const p = Number.isFinite(pNum) ? pNum : 0;
+                            const q = Number.isFinite(qNum) ? qNum : 1;
+                            const laborPersons = Number(bulkBaseInfo.bulkLaborPersons);
+                            const laborRate = Number(bulkBaseInfo.bulkLaborUnitRate);
+                            const lp = Number.isFinite(laborPersons) ? laborPersons : 0;
+                            const lr = Number.isFinite(laborRate) ? laborRate : 0;
+                            const laborCost = lp * lr;
+                            const total = (p * q) + laborCost;
+                            return `${format(total)}원`;
+                          })()
+                        }</div>
                       </div>
                     </div>
                   </div>
