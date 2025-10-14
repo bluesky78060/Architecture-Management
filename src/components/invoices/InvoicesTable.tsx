@@ -12,9 +12,11 @@ type Props = {
   onViewDetails: (invoice: Invoice) => void;
   onOpenPrint: (invoice: Invoice) => void;
   onDelete: (id: string) => void;
+  statuses: string[];
+  getStatusColor: (status: string) => string;
 };
 
-export default function InvoicesTable({ items, allSelected, selectedIds, onToggleAll, onToggleOne, format, onChangeStatus, onViewDetails, onOpenPrint, onDelete }: Props) {
+export default function InvoicesTable({ items, allSelected, selectedIds, onToggleAll, onToggleOne, format, onChangeStatus, onViewDetails, onOpenPrint, onDelete, statuses, getStatusColor }: Props) {
   return (
     <div className="bg-white rounded-lg shadow overflow-hidden">
       <table className="min-w-full divide-y divide-gray-200">
@@ -66,11 +68,15 @@ export default function InvoicesTable({ items, allSelected, selectedIds, onToggl
               <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-900">{invoice.workplaceAddress}</td>
               <td className="px-3 py-2 whitespace-nowrap text-center text-sm text-gray-900">{format(invoice.amount)}원</td>
               <td className="px-3 py-2 whitespace-nowrap">
-                <select className={"px-2 py-1 text-xs font-semibold rounded-full border-0 " + (invoice.status === "결제완료" ? "bg-green-100 text-green-800" : invoice.status === "발송됨" ? "bg-blue-100 text-blue-800" : invoice.status === "미결제" ? "bg-orange-100 text-orange-800" : "bg-yellow-100 text-yellow-800") + " focus:outline-none focus:ring-0"} value={invoice.status} onChange={(e) => onChangeStatus(invoice.id as string, e.target.value)} title="청구서 상태 변경">
-                  <option value="발송대기">발송대기</option>
-                  <option value="발송됨">발송됨</option>
-                  <option value="미결제">미결제</option>
-                  <option value="결제완료">결제완료</option>
+                <select
+                  className={`px-2 py-1 text-xs font-semibold rounded-full border-0 ${getStatusColor(invoice.status)} focus:outline-none focus:ring-0`}
+                  value={invoice.status}
+                  onChange={(e) => onChangeStatus(invoice.id as string, e.target.value)}
+                  title="청구서 상태 변경"
+                >
+                  {statuses.map((status) => (
+                    <option key={status} value={status}>{status}</option>
+                  ))}
                 </select>
               </td>
               <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-900">{invoice.date}</td>

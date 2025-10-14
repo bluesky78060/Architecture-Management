@@ -17,6 +17,18 @@ export default function Invoices(): JSX.Element {
   const { format } = useNumberFormat();
   const filters = useFilters();
 
+  const statuses = ['발송대기', '발송됨', '미결제', '결제완료'];
+
+  const getStatusColor = (status: string): string => {
+    switch (status) {
+      case '결제완료': return 'bg-green-100 text-green-800';
+      case '발송됨': return 'bg-blue-100 text-blue-800';
+      case '미결제': return 'bg-orange-100 text-orange-800';
+      case '발송대기': return 'bg-yellow-100 text-yellow-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
   type FormItem = {
     name: string;
     quantity: number | '';
@@ -402,6 +414,8 @@ export default function Invoices(): JSX.Element {
         onViewDetails={handleViewDetails}
         onOpenPrint={handleOpenPrint}
         onDelete={handleDelete}
+        statuses={statuses}
+        getStatusColor={getStatusColor}
       />
 
       {(detail !== null && detail !== undefined) && (
