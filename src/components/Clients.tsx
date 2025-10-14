@@ -673,19 +673,19 @@ const Clients: React.FC = () => {
                   </div>
                 </td>
                 <td className="px-2 py-3 whitespace-nowrap text-sm font-medium">
-                  <div className="flex justify-center space-x-4">
+                  <div className="flex justify-center">
                     <Tooltip label="상세보기">
-                      <button 
+                      <button
                         onClick={() => viewClientDetails(client)}
-                        className="text-blue-600 hover:text-blue-900"
+                        className="text-blue-600 hover:text-blue-900 mx-2"
                         title="건축주 상세보기"
                       >
                         🔍
                       </button>
                     </Tooltip>
                     <Tooltip label="편집">
-                      <button 
-                        className="text-blue-600 hover:text-blue-900"
+                      <button
+                        className="text-blue-600 hover:text-blue-900 mx-2"
                         onClick={() => handleEditClient(client)}
                         title="건축주 편집"
                       >
@@ -693,8 +693,8 @@ const Clients: React.FC = () => {
                       </button>
                     </Tooltip>
                     <Tooltip label="삭제">
-                      <button 
-                        className="text-red-600 hover:text-red-900"
+                      <button
+                        className="text-red-600 hover:text-red-900 mx-2"
                         title="건축주 삭제"
                       >
                         🗑️
