@@ -1,26 +1,8 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build"
-      }
-    }
-  ],
   "routes": [
-    {
-      "src": "/Architecture-Management/(.*)",
-      "dest": "/$1"
-    },
     {
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ],
-  "env": {
-    "REACT_APP_SUPABASE_URL": "https://rmruecimrcdtmixweqsx.supabase.co",
-    "REACT_APP_DATABASE_BACKEND": "supabase"
-  }
+  ]
 }
