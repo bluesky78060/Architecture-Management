@@ -8,8 +8,7 @@ import {
   WrenchScrewdriverIcon,
   CogIcon,
   CalculatorIcon,
-  UserIcon,
-  ShieldCheckIcon
+  UserIcon
 } from '@heroicons/react/24/outline';
 
 interface LayoutProps {
@@ -27,7 +26,7 @@ const navigation = [
 
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
-  const { isAdmin, logout } = useUser();
+  const { logout } = useUser();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -98,30 +97,16 @@ export default function Layout({ children }: LayoutProps) {
               className="flex w-full items-center px-4 py-3 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors duration-200"
             >
               <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mr-3">
-                {isAdmin() ? (
-                  <ShieldCheckIcon className="h-4 w-4 text-white" />
-                ) : (
-                  <UserIcon className="h-4 w-4 text-white" />
-                )}
+                <UserIcon className="h-4 w-4 text-white" />
               </div>
               <div className="text-left flex-1">
-                <div className="text-sm font-medium text-gray-900">{isAdmin() ? '관리자' : '사용자'}</div>
+                <div className="text-sm font-medium text-gray-900">사용자</div>
                 <div className="text-xs text-gray-500">v2.0 Enhanced Edition</div>
               </div>
             </button>
-            
+
             {showUserMenu && (
               <div className="absolute bottom-full mb-2 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden">
-                {isAdmin() && (
-                  <Link
-                    to="/admin"
-                    className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                    onClick={() => setShowUserMenu(false)}
-                  >
-                    <ShieldCheckIcon className="mr-3 h-4 w-4 text-gray-500" />
-                    관리자 패널
-                  </Link>
-                )}
                 <button
                   onClick={logout}
                   className="flex w-full items-center px-4 py-3 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors"

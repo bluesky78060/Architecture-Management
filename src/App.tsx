@@ -10,7 +10,6 @@ import InvoicesPage from './pages/InvoicesPage';
 import Clients from './components/Clients';
 import WorkItemsPage from './pages/WorkItemsPage';
 import CompanyInfo from './components/CompanyInfo';
-import AdminPanel from './components/AdminPanel';
 import Migration from './pages/Migration';
 
 function AppContent() {
@@ -32,7 +31,6 @@ function AppContent() {
         <Route path="/work-items" element={<WorkItemsPage />} />
         <Route path="/company-info" element={<CompanyInfo />} />
         <Route path="/migration" element={<Migration />} />
-        <Route path="/admin" element={<AdminPanel />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Layout>

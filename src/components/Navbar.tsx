@@ -1,21 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
-import { 
-  HomeIcon, 
+import {
+  HomeIcon,
   DocumentTextIcon,
   UsersIcon,
   WrenchScrewdriverIcon,
   CogIcon,
   CalculatorIcon,
   BuildingOffice2Icon,
-  UserIcon,
-  ShieldCheckIcon
+  UserIcon
 } from '@heroicons/react/24/outline';
 
 const Navbar: React.FC = () => {
   const location = useLocation();
-  const { currentUser, isAdmin, logout } = useUser();
+  const { currentUser, logout } = useUser();
   const [showUserMenu, setShowUserMenu] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -48,24 +47,14 @@ const Navbar: React.FC = () => {
       <div className="max-w-screen-2xl mx-auto pl-0.5 pr-0.5">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center ml-0.5">
-            {isAdmin() ? (
-              <div className="text-xl font-bold flex items-center space-x-2 cursor-default select-none">
-                <BuildingOffice2Icon className="h-8 w-8" />
-                <span>건축 관리 시스템</span>
-              </div>
-            ) : (
-              <Link to="/" className="text-xl font-bold flex items-center space-x-2">
-                <BuildingOffice2Icon className="h-8 w-8" />
-                <span>건축 관리 시스템</span>
-              </Link>
-            )}
+            <Link to="/" className="text-xl font-bold flex items-center space-x-2">
+              <BuildingOffice2Icon className="h-8 w-8" />
+              <span>건축 관리 시스템</span>
+            </Link>
           </div>
-          
+
           <div className="hidden md:block">
-            {isAdmin() ? (
-              <div className="ml-6 md:ml-8 lg:ml-10" />
-            ) : (
-              <div className="ml-2 md:ml-4 lg:ml-6 flex items-baseline space-x-3 md:space-x-4 lg:space-x-6">
+            <div className="ml-2 md:ml-4 lg:ml-6 flex items-baseline space-x-3 md:space-x-4 lg:space-x-6">
                 <Link
                   to="/"
                   className={`px-2 md:px-3 py-2 rounded-md text-xs md:text-sm font-medium flex items-center space-x-1 ${
@@ -133,7 +122,6 @@ const Navbar: React.FC = () => {
                   <span>환경설정</span>
                 </Link>
               </div>
-            )}
           </div>
 
           <div className="relative mr-0.5" ref={menuRef}>
@@ -141,17 +129,8 @@ const Navbar: React.FC = () => {
               onClick={() => setShowUserMenu(!showUserMenu)}
               className="flex items-center space-x-2 px-3 py-2 rounded-md text-blue-100 hover:bg-blue-500 hover:text-white"
             >
-              {isAdmin() ? (
-                <>
-                  <ShieldCheckIcon className="h-5 w-5" aria-label="관리자" />
-                  <span>관리자</span>
-                </>
-              ) : (
-                <>
-                  <UserIcon className="h-5 w-5" aria-label="사용자" />
-                  <span>{(currentUser?.name !== undefined && currentUser.name !== '') ? currentUser.name : currentUser?.username}</span>
-                </>
-              )}
+              <UserIcon className="h-5 w-5" aria-label="사용자" />
+              <span>{(currentUser?.name !== undefined && currentUser.name !== '') ? currentUser.name : currentUser?.username}</span>
             </button>
 
             {showUserMenu && (
