@@ -197,18 +197,24 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- 각 테이블에 트리거 적용
+-- 기존 트리거가 있으면 먼저 삭제
+DROP TRIGGER IF EXISTS update_clients_updated_at ON clients;
 CREATE TRIGGER update_clients_updated_at BEFORE UPDATE ON clients
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_estimates_updated_at ON estimates;
 CREATE TRIGGER update_estimates_updated_at BEFORE UPDATE ON estimates
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_invoices_updated_at ON invoices;
 CREATE TRIGGER update_invoices_updated_at BEFORE UPDATE ON invoices
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_work_items_updated_at ON work_items;
 CREATE TRIGGER update_work_items_updated_at BEFORE UPDATE ON work_items
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_company_info_updated_at ON company_info;
 CREATE TRIGGER update_company_info_updated_at BEFORE UPDATE ON company_info
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
