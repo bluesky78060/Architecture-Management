@@ -137,4 +137,21 @@ class SupabaseService {
 
 // 싱글톤 인스턴스
 export const supabaseService = new SupabaseService();
+
+// 환경 변수에서 설정 자동 로드
+const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
+const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
+
+if (supabaseUrl && supabaseAnonKey) {
+  supabaseService.initialize({
+    url: supabaseUrl,
+    anonKey: supabaseAnonKey,
+  });
+}
+
+// 직접 supabase 클라이언트 export
+export const supabase = supabaseUrl && supabaseAnonKey
+  ? supabaseService.getClient()
+  : null;
+
 export default supabaseService;

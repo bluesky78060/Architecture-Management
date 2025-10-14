@@ -1,38 +1,110 @@
 import React, { useState } from 'react';
 import { useUser } from '../contexts/UserContext';
 import { useNavigate } from 'react-router-dom';
-import { LockClosedIcon, UserIcon } from '@heroicons/react/24/solid';
+import { LockClosedIcon, UserIcon, EnvelopeIcon } from '@heroicons/react/24/solid';
+import { supabase } from '../services/supabase';
+
+type AuthMode = 'login' | 'signup';
 
 const Login: React.FC = () => {
-  const [username, setUsername] = useState<string>('');
+  const [mode, setMode] = useState<AuthMode>('login');
+  const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [name, setName] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const [success, setSuccess] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const { login } = useUser();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+  const handleEmailSignIn = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setSuccess('');
 
-    if (username.trim() === '' || password.trim() === '') {
-      setError('아이디와 비밀번호를 입력해주세요.');
+    if (email.trim() === '' || password.trim() === '') {
+      setError('이메일과 비밀번호를 입력해주세요.');
       setLoading(false);
       return;
     }
 
-    const result = login(username, password);
-    
-    if (result.success) {
-      // 로그인 성공 시 항상 대시보드로 이동
-      navigate('/');
-    } else {
-      setError(result.error ?? '로그인에 실패했습니다.');
+    if (!supabase) {
+      setError('Supabase가 초기화되지 않았습니다.');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (signInError) {
+        setError(signInError.message === 'Invalid login credentials'
+          ? '이메일 또는 비밀번호가 올바르지 않습니다.'
+          : signInError.message);
+      } else if (data.user) {
+        setSuccess('로그인 성공!');
+        setTimeout(() => navigate('/'), 500);
+      }
+    } catch (err: any) {
+      setError(err.message || '로그인 중 오류가 발생했습니다.');
     }
 
     setLoading(false);
   };
+
+  const handleEmailSignUp = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    if (email.trim() === '' || password.trim() === '' || name.trim() === '') {
+      setError('모든 필드를 입력해주세요.');
+      setLoading(false);
+      return;
+    }
+
+    if (password.length < 6) {
+      setError('비밀번호는 최소 6자 이상이어야 합니다.');
+      setLoading(false);
+      return;
+    }
+
+    if (!supabase) {
+      setError('Supabase가 초기화되지 않았습니다.');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            name: name,
+          },
+        },
+      });
+
+      if (signUpError) {
+        setError(signUpError.message);
+      } else if (data.user) {
+        setSuccess('회원가입이 완료되었습니다! 이메일을 확인해주세요.');
+        setTimeout(() => setMode('login'), 2000);
+      }
+    } catch (err: any) {
+      setError(err.message || '회원가입 중 오류가 발생했습니다.');
+    }
+
+    setLoading(false);
+  };
+
+  const handleSubmit = mode === 'login' ? handleEmailSignIn : handleEmailSignUp;
 
   return (
     <div className="min-h-screen relative flex items-center justify-center px-4 py-8 overflow-hidden">
@@ -70,26 +142,82 @@ const Login: React.FC = () => {
               <LockClosedIcon className="w-7 h-7" />
             </div>
             <h1 className="font-sans font-bold text-3xl text-gray-900 mb-1 tracking-wide">건축 관리 시스템</h1>
-            <p className="text-gray-600">로그인하여 시작하세요</p>
+            <p className="text-gray-600">{mode === 'login' ? '로그인하여 시작하세요' : '새 계정을 만드세요'}</p>
+          </div>
+
+          {/* 탭 전환 */}
+          <div className="flex mb-6 bg-gray-100 rounded-lg p-1">
+            <button
+              type="button"
+              onClick={() => {
+                setMode('login');
+                setError('');
+                setSuccess('');
+              }}
+              className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors ${
+                mode === 'login'
+                  ? 'bg-white text-blue-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              로그인
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMode('signup');
+                setError('');
+                setSuccess('');
+              }}
+              className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors ${
+                mode === 'signup'
+                  ? 'bg-white text-blue-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              회원가입
+            </button>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            {mode === 'signup' && (
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                  이름
+                </label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                    <UserIcon className="w-5 h-5" />
+                  </span>
+                  <input
+                    id="name"
+                    type="text"
+                    autoComplete="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="이름을 입력하세요"
+                  />
+                </div>
+              </div>
+            )}
+
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
-                아이디
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                이메일
               </label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
-                  <UserIcon className="w-5 h-5" />
+                  <EnvelopeIcon className="w-5 h-5" />
                 </span>
                 <input
-                  id="username"
-                  type="text"
-                  autoComplete="username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  id="email"
+                  type="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="아이디를 입력하세요"
+                  placeholder="이메일을 입력하세요"
                 />
               </div>
             </div>
@@ -105,11 +233,11 @@ const Login: React.FC = () => {
                 <input
                   id="password"
                   type="password"
-                  autoComplete="current-password"
+                  autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="비밀번호를 입력하세요"
+                  placeholder={mode === 'signup' ? '비밀번호 (최소 6자)' : '비밀번호를 입력하세요'}
                 />
               </div>
             </div>
@@ -120,12 +248,18 @@ const Login: React.FC = () => {
               </div>
             )}
 
+            {success !== '' && (
+              <div className="p-3 bg-green-50 border border-green-200 rounded-md">
+                <p className="text-green-700 text-sm">{success}</p>
+              </div>
+            )}
+
             <button
               type="submit"
               disabled={loading}
               className="w-full bg-blue-600 text-white py-2.5 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {loading ? '로그인 중...' : '로그인'}
+              {loading ? (mode === 'login' ? '로그인 중...' : '가입 중...') : (mode === 'login' ? '로그인' : '회원가입')}
             </button>
           </form>
 
