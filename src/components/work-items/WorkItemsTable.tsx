@@ -123,16 +123,16 @@ export default function WorkItemsTable({ items, selection, format, getLaborCost,
                   <div className="text-sm text-gray-900">{item.date}</div>
                 </td>
                 <td className="px-3 py-3 whitespace-nowrap text-sm font-medium w-24">
-                  <div className="flex space-x-6">
+                  <div className="flex">
                     <Tooltip label="편집">
-                      <button onClick={() => onEdit(item)} className="text-blue-600 hover:text-blue-900" title="작업 항목 편집">✏️</button>
+                      <button onClick={() => onEdit(item)} className="text-blue-600 hover:text-blue-900 mx-2" title="작업 항목 편집">✏️</button>
                     </Tooltip>
                     <Tooltip label="삭제">
-                      <button onClick={() => onDelete(item.id)} className="text-red-600 hover:text-red-900" title="작업 항목 삭제">🗑️</button>
+                      <button onClick={() => onDelete(item.id)} className="text-red-600 hover:text-red-900 mx-2" title="작업 항목 삭제">🗑️</button>
                     </Tooltip>
                     {item.status === '완료' && (
                       <Tooltip label="청구서 생성">
-                        <button onClick={() => onCreateInvoice(item)} className="text-green-600 hover:text-green-900" title="청구서 생성">🧾</button>
+                        <button onClick={() => onCreateInvoice(item)} className="text-green-600 hover:text-green-900 mx-2" title="청구서 생성">🧾</button>
                       </Tooltip>
                     )}
                   </div>

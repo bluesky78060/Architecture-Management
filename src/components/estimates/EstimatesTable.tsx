@@ -78,12 +78,12 @@ export default function EstimatesTable({ items, allSelected, onToggleAll, onTogg
               </td>
               <td className="px-3 py-2 text-sm text-gray-900">{estimate.validUntil ?? '-'}</td>
               <td className="px-3 py-2 text-center text-sm font-medium">
-                <div className="flex items-center justify-center space-x-6">
-                  <Tooltip label="편집"><button onClick={() => onEdit(estimate)} className="text-blue-600 hover:text-blue-900" title="견적서 편집">✏️</button></Tooltip>
-                  <Tooltip label="출력"><button onClick={() => onPrint(estimate)} className="text-green-600 hover:text-green-900" title="견적서 출력">🖨️</button></Tooltip>
-                  <Tooltip label="삭제"><button onClick={() => onDelete(estimate.id)} className="text-red-600 hover:text-red-900" title="견적서 삭제">🗑️</button></Tooltip>
+                <div className="flex items-center justify-center">
+                  <Tooltip label="편집"><button onClick={() => onEdit(estimate)} className="text-blue-600 hover:text-blue-900 mx-2" title="견적서 편집">✏️</button></Tooltip>
+                  <Tooltip label="출력"><button onClick={() => onPrint(estimate)} className="text-green-600 hover:text-green-900 mx-2" title="견적서 출력">🖨️</button></Tooltip>
+                  <Tooltip label="삭제"><button onClick={() => onDelete(estimate.id)} className="text-red-600 hover:text-red-900 mx-2" title="견적서 삭제">🗑️</button></Tooltip>
                   {estimate.status === '승인됨' && (
-                    <Tooltip label="작업 항목으로 변환"><button onClick={() => onConvert(estimate.id)} className="text-purple-600 hover:text-purple-900" title="작업 항목으로 변환">🔄</button></Tooltip>
+                    <Tooltip label="작업 항목으로 변환"><button onClick={() => onConvert(estimate.id)} className="text-purple-600 hover:text-purple-900 mx-2" title="작업 항목으로 변환">🔄</button></Tooltip>
                   )}
                 </div>
               </td>
