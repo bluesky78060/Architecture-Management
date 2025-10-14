@@ -119,6 +119,13 @@ const Clients: React.FC = () => {
     setShowConfirmDelete(false);
   };
 
+  /** 개별 건축주 삭제 */
+  const handleDelete = (id: Id) => {
+    if (window.confirm('이 건축주를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+      setClients(prev => prev.filter(c => c.id !== id));
+    }
+  };
+
   // Excel 관련 함수들
   const handleExportToExcel = () => {
     exportToExcel.clients(clients);
@@ -694,6 +701,7 @@ const Clients: React.FC = () => {
                     </Tooltip>
                     <Tooltip label="삭제">
                       <button
+                        onClick={() => handleDelete(client.id)}
                         className="text-red-600 hover:text-red-900 mx-2"
                         title="건축주 삭제"
                       >
