@@ -32,7 +32,6 @@ function AppContent() {
         <Route path="/work-items" element={<WorkItemsPage />} />
         <Route path="/company-info" element={<CompanyInfo />} />
         <Route path="/migration" element={<Migration />} />
-        <Route path="/supabase-test" element={<SupabaseTest />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Layout>
@@ -42,9 +41,14 @@ function AppContent() {
 function App() {
   return (
     <UserProvider>
-      <AppProvider>
-        <AppContent />
-      </AppProvider>
+      <Routes>
+        <Route path="/supabase-test" element={<SupabaseTest />} />
+        <Route path="*" element={
+          <AppProvider>
+            <AppContent />
+          </AppProvider>
+        } />
+      </Routes>
     </UserProvider>
   );
 }

@@ -63,9 +63,19 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   // 사용자 인증 확인
   useEffect(() => {
+    const LOGIN_DISABLED = (process.env.REACT_APP_DISABLE_LOGIN === '1') ||
+      (typeof window !== 'undefined' && window.localStorage !== null && window.localStorage.getItem('CMS_DISABLE_LOGIN') === '1');
+
     const checkAuth = async () => {
       if (!supabase) {
         setError('Supabase가 초기화되지 않았습니다');
+        setLoading(false);
+        return;
+      }
+
+      // 로그인 비활성화 모드면 인증 체크 건너뛰기
+      if (LOGIN_DISABLED) {
+        setUserId('dev-user-id'); // 개발용 임시 user_id
         setLoading(false);
         return;
       }
@@ -82,13 +92,44 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     checkAuth();
   }, []);
 
-  // 초기 데이터 로딩 (간단한 버전)
+  // 초기 데이터 로딩
   useEffect(() => {
     if (!userId || !supabase) return;
 
     const loadData = async () => {
       try {
         setLoading(true);
+
+        // Clients 로딩
+        const { data: clientsData, error: clientsError } = await supabase!
+          .from('clients')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (clientsError) throw clientsError;
+
+        const mappedClients: Client[] = (clientsData || []).map((c: any) => ({
+          id: c.client_id,
+          name: c.company_name || '',
+          phone: c.phone || '',
+          email: c.email || '',
+          address: c.address || '',
+          type: c.type || 'BUSINESS',
+          business: c.type === 'BUSINESS' ? {
+            businessName: c.company_name || '',
+            representative: c.representative || '',
+            businessNumber: c.business_number || '',
+            businessType: '',
+            businessItem: '',
+            businessAddress: c.address || '',
+            taxEmail: c.email || ''
+          } : undefined,
+          totalBilled: c.total_billed || 0,
+          outstanding: c.outstanding || 0,
+          notes: c.notes || ''
+        }));
+
+        setClients(mappedClients);
 
         // 도장 이미지 로딩
         const { loadStampImage } = await import('../utils/imageStorage');
@@ -181,6 +222,41 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     return newItems;
   };
+
+  // Clients 저장
+  useEffect(() => {
+    if (!userId || !supabase || loading) return;
+
+    const saveClients = async () => {
+      try {
+        // 기존 데이터 삭제 후 재생성 (간단한 동기화)
+        await supabase!.from('clients').delete().neq('client_id', 0);
+
+        if (clients.length > 0) {
+          const dbClients = clients.map(c => ({
+            client_id: typeof c.id === 'number' ? c.id : parseInt(String(c.id)),
+            company_name: c.business?.businessName || c.name,
+            representative: c.business?.representative || '',
+            business_number: c.business?.businessNumber || '',
+            address: c.address || '',
+            email: c.email || '',
+            phone: c.phone || '',
+            contact_person: '',
+            type: c.type || 'BUSINESS',
+            notes: c.notes || '',
+            total_billed: c.totalBilled || 0,
+            outstanding: c.outstanding || 0
+          }));
+
+          await supabase!.from('clients').insert(dbClients);
+        }
+      } catch (err) {
+        console.error('건축주 저장 실패:', err);
+      }
+    };
+
+    saveClients();
+  }, [clients, userId, loading]);
 
   const value: AppContextValue = {
     companyInfo,
