@@ -173,7 +173,7 @@ export default function ItemFormModal({ open, editingItem, newItem, clients, uni
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">합계</label>
-                  <div className="mt-1 w-full bg-gray-100 border border-gray-200 rounded px-3 py-2 text-sm">{
+                  <div className="mt-1 w-full bg-green-50 border border-green-200 rounded px-3 py-2 text-sm font-semibold text-green-900">{
                     (() => {
                       const pRaw = newItem.defaultPrice;
                       const qRaw = newItem.quantity;
@@ -181,53 +181,70 @@ export default function ItemFormModal({ open, editingItem, newItem, clients, uni
                       const qNum = Number(qRaw);
                       const p = Number.isFinite(pNum) ? pNum : 0;
                       const q = Number.isFinite(qNum) ? qNum : 1;
-                      const laborCost = getLaborCost(newItem);
-                      const total = (p * q) + laborCost;
-                      return `${format(total)}원`;
+                      return `${format(p * q)}원`;
                     })()
                   }</div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 mt-3">
+              <div className="grid grid-cols-3 gap-3 mt-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">숙련 인부 인원</label>
-                  <input type="text" name="laborPersons" value={String(newItem.laborPersons ?? '')} onChange={(e) => onChangeField(e.target.name, e.target.value)} placeholder="예: 1" className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+                  <label className="block text-sm font-medium text-gray-700">인부 인원</label>
+                  <input type="text" name="laborPersons" value={String(newItem.laborPersons ?? '')} onChange={(e) => onChangeField(e.target.name, e.target.value)} placeholder="예: 3" className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">숙련 인부 단가</label>
-                  <div className="relative mt-1">
-                    <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-gray-400">₩</span>
-                    <input type="text" name="laborUnitRate" value={typeof newItem.laborUnitRate === 'number' ? format(newItem.laborUnitRate) : ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} placeholder="예: 300,000" className="block w-full border border-gray-200 rounded-md pl-7 pr-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
-                  </div>
+                  <label className="block text-sm font-medium text-gray-700">인부 단가</label>
+                  <input type="text" name="laborUnitRate" value={typeof newItem.laborUnitRate === 'number' ? format(newItem.laborUnitRate) : ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} placeholder="예: 250,000" className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">일반 인부 인원</label>
-                  <input type="text" name="laborPersonsGeneral" value={String(newItem.laborPersonsGeneral ?? '')} onChange={(e) => onChangeField(e.target.name, e.target.value)} placeholder="예: 2" className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+                  <label className="block text-sm font-medium text-gray-700">인부임 합계</label>
+                  <div className="mt-1 w-full bg-indigo-50 border border-indigo-200 rounded px-3 py-2 text-sm font-semibold text-indigo-900">{
+                    (() => {
+                      const persons = Number(newItem.laborPersons ?? 0);
+                      const rate = Number(newItem.laborUnitRate ?? 0);
+                      const p = Number.isFinite(persons) ? persons : 0;
+                      const r = Number.isFinite(rate) ? rate : 0;
+                      return `${format(p * r)}원`;
+                    })()
+                  }</div>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">일반 인부 단가</label>
-                  <div className="relative mt-1">
-                    <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-gray-400">₩</span>
-                    <input type="text" name="laborUnitRateGeneral" value={typeof newItem.laborUnitRateGeneral === 'number' ? format(newItem.laborUnitRateGeneral) : ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} placeholder="예: 200,000" className="block w-full border border-gray-200 rounded-md pl-7 pr-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
-                  </div>
-                </div>
-                {getLaborCost(newItem) > 0 && (
-                  <div className="text-sm text-gray-600 mt-1 col-span-2">인부비 소계: {getLaborCost(newItem).toLocaleString()}원</div>
-                )}
               </div>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">상태</label>
-              <div className="flex flex-wrap gap-1.5">
-                {statuses.map((s) => {
-                  const active = newItem.status === s;
-                  const classes = active ? 'bg-indigo-600 text-white border-transparent shadow' : 'bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200';
-                  return (
-                    <button key={s} type="button" onClick={() => onChangeField('status', s)} className={`px-3 py-1.5 rounded-full text-sm transition ${classes}`} aria-pressed={active}>{s}</button>
-                  );
-                })}
+              <div className="flex justify-between items-center">
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">상태</label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {statuses.map((s) => {
+                      const active = newItem.status === s;
+                      const classes = active ? 'bg-indigo-600 text-white border-transparent shadow' : 'bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200';
+                      return (
+                        <button key={s} type="button" onClick={() => onChangeField('status', s)} className={`px-3 py-1.5 rounded-full text-sm transition ${classes}`} aria-pressed={active}>{s}</button>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div className="ml-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2 text-right">총합계 금액</label>
+                  <div className="bg-blue-600 text-white rounded-lg px-4 py-2 text-base font-bold shadow-md">{
+                    (() => {
+                      const pRaw = newItem.defaultPrice;
+                      const qRaw = newItem.quantity;
+                      const pNum = Number(pRaw);
+                      const qNum = Number(qRaw);
+                      const p = Number.isFinite(pNum) ? pNum : 0;
+                      const q = Number.isFinite(qNum) ? qNum : 1;
+                      const laborPersons = Number(newItem.laborPersons ?? 0);
+                      const laborRate = Number(newItem.laborUnitRate ?? 0);
+                      const lp = Number.isFinite(laborPersons) ? laborPersons : 0;
+                      const lr = Number.isFinite(laborRate) ? laborRate : 0;
+                      const laborCost = lp * lr;
+                      const total = (p * q) + laborCost;
+                      return `${format(total)}원`;
+                    })()
+                  }</div>
+                </div>
               </div>
             </div>
 
