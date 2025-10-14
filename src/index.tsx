@@ -51,35 +51,7 @@ const root = ReactDOM.createRoot(
 
 // Hosting-aware basename resolution
 const resolveBasename = (): string => {
-  const normalize = (p: string): string => {
-    let path = p.trim();
-    try {
-      const u = new URL(path, window.location.origin);
-      path = u.pathname;
-    } catch {
-      // Not a full URL
-    }
-    if (!path.startsWith('/')) path = `/${path}`;
-    if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
-    return path;
-  };
-
-  // If env explicitly sets it, honor it
-  const fromEnv = process.env.REACT_APP_BASE_PATH;
-  if (typeof fromEnv === 'string' && fromEnv.trim() !== '') return normalize(fromEnv);
-
-  const fromPublicUrl = process.env.PUBLIC_URL;
-  if (typeof fromPublicUrl === 'string' && fromPublicUrl.trim() !== '') return normalize(fromPublicUrl);
-
-  // Auto-detect GitHub Pages subpath, e.g., /Architecture-Management
-  const isGhPages = typeof window !== 'undefined' && /github\.io$/.test(window.location.hostname);
-  if (isGhPages) {
-    // For BrowserRouter on GitHub Pages, use the repository name as basename
-    const seg = window.location.pathname.split('/').filter(Boolean)[0];
-    return (typeof seg === 'string' && seg !== '') ? `/${seg}` : '/';
-  }
-
-  // Default
+  // For Vercel and other standard hosting, always use root
   return '/';
 };
 
