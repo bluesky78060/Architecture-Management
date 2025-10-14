@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { MS_IN_SECOND, SECONDS_IN_MINUTE } from '../constants/units';
 import { getSecureItemAsync, setSecureItem, removeSecureItem, migrateSensitiveData } from '../utils/secureStorageAdapter';
+import { supabase } from '../services/supabase';
 
 interface User {
   id: number;
@@ -123,6 +124,27 @@ export const UserProvider = ({ children }: UserProviderProps) => {
         setIsLoggedIn(true);
         try { sessionStorage.setItem('CURRENT_USER', JSON.stringify(devUser)); } catch (e) {}
       } else {
+        // Supabase 세션 확인
+        if (supabase !== null) {
+          supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session?.user !== undefined && session?.user !== null) {
+              const supabaseUser: User = {
+                id: 1,
+                username: session.user.email ?? 'user',
+                name: session.user.user_metadata?.name ?? session.user.email ?? 'User',
+                role: 'admin'
+              };
+              setCurrentUser(supabaseUser);
+              setIsLoggedIn(true);
+              try { sessionStorage.setItem('CURRENT_USER', JSON.stringify(supabaseUser)); } catch (e) {}
+              return;
+            }
+          }).catch(() => {
+            // Supabase 세션 확인 실패 시 로컬 세션 확인
+          });
+        }
+
+        // 로컬 세션 확인
         const savedUser = sessionStorage.getItem('CURRENT_USER');
         if (savedUser !== null && savedUser !== '') {
           setCurrentUser(JSON.parse(savedUser) as User);
@@ -133,6 +155,33 @@ export const UserProvider = ({ children }: UserProviderProps) => {
         }
       }
     })();
+
+    // Supabase auth state 변경 감지
+    if (supabase === null) {
+      return;
+    }
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user !== undefined && session?.user !== null) {
+        const supabaseUser: User = {
+          id: 1,
+          username: session.user.email ?? 'user',
+          name: session.user.user_metadata?.name ?? session.user.email ?? 'User',
+          role: 'admin'
+        };
+        setCurrentUser(supabaseUser);
+        setIsLoggedIn(true);
+        try { sessionStorage.setItem('CURRENT_USER', JSON.stringify(supabaseUser)); } catch (e) {}
+      } else if (!getLoginDisabled()) {
+        setCurrentUser(null);
+        setIsLoggedIn(false);
+        try { sessionStorage.removeItem('CURRENT_USER'); } catch (e) {}
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const login = (username: string, password: string): LoginResult => {
@@ -161,6 +210,14 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       // 로그인 비활성화 모드에서는 로그아웃을 무시하거나 상태만 유지합니다.
       return;
     }
+
+    // Supabase 로그아웃
+    if (supabase !== null) {
+      supabase.auth.signOut().catch(() => {
+        // 로그아웃 실패해도 로컬 세션은 정리
+      });
+    }
+
     setCurrentUser(null);
     setIsLoggedIn(false);
     try { sessionStorage.removeItem('CURRENT_USER'); } catch (e) {}
