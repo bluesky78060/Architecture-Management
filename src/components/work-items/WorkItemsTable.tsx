@@ -100,11 +100,15 @@ export default function WorkItemsTable({ items, selection, format, getLaborCost,
                     const qtyRaw = Number(item.quantity);
                     const price = Number.isFinite(priceRaw) ? priceRaw : 0;
                     const qty = Number.isFinite(qtyRaw) ? qtyRaw : 1;
-                    const line = price * qty + getLaborCost(item);
+                    const laborCost = getLaborCost(item);
+                    const line = price * qty + laborCost;
                     return (
                       <>
                         <div className="text-sm font-medium text-gray-900">{format(price)}원</div>
                         <div className="text-xs text-gray-500">× {qty} {item.unit}</div>
+                        {laborCost > 0 && (
+                          <div className="text-xs text-indigo-600">+ 인건비 {format(laborCost)}원</div>
+                        )}
                         <div className="text-xs text-gray-700 font-medium">{format(line)}원</div>
                       </>
                     );
