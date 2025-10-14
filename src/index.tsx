@@ -19,7 +19,6 @@ const Clients = lazy(() => import('./components/Clients'));
 const WorkItemsPage = lazy(() => import('./pages/WorkItemsPage'));
 const CompanyInfo = lazy(() => import('./components/CompanyInfo'));
 const AdminPanel = lazy(() => import('./components/AdminPanel'));
-const Migration = lazy(() => import('./pages/Migration'));
 
 // Loading fallback component
 function LoadingFallback() {
@@ -79,7 +78,6 @@ const routes = createRoutesFromElements(
     <Route path="work-items" element={<Suspense fallback={<LoadingFallback />}><WorkItemsPage /></Suspense>} />
     <Route path="company-info" element={<Suspense fallback={<LoadingFallback />}><CompanyInfo /></Suspense>} />
     <Route path="admin" element={<Suspense fallback={<LoadingFallback />}><AdminPanel /></Suspense>} />
-    <Route path="migration" element={<Suspense fallback={<LoadingFallback />}><Migration /></Suspense>} />
     <Route path="*" element={<Navigate to="/" replace />} />
   </Route>
 );

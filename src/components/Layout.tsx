@@ -9,8 +9,7 @@ import {
   CogIcon,
   CalculatorIcon,
   UserIcon,
-  ShieldCheckIcon,
-  ArrowPathIcon
+  ShieldCheckIcon
 } from '@heroicons/react/24/outline';
 
 interface LayoutProps {
@@ -24,7 +23,6 @@ const navigation = [
   { name: '건축주 관리', href: '/clients', icon: UsersIcon },
   { name: '작업 항목 관리', href: '/work-items', icon: WrenchScrewdriverIcon },
   { name: '환경설정', href: '/company-info', icon: CogIcon },
-  { name: '데이터 마이그레이션', href: '/migration', icon: ArrowPathIcon },
 ];
 
 export default function Layout({ children }: LayoutProps) {
