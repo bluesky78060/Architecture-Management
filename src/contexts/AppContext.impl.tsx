@@ -471,26 +471,44 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     const timer = setTimeout(async () => {
       try {
-        await supabase!
+        // 먼저 존재하는지 확인
+        const { data: existing } = await supabase!
           .from('company_info')
-          .upsert({
-            user_id: userId,
-            company_name: companyInfo.name,
-            business_number: companyInfo.businessNumber,
-            address: companyInfo.address,
-            phone: companyInfo.phone,
-            email: companyInfo.email,
-            representative: companyInfo.representative,
-            bank_account: companyInfo.bankAccount,
-            account_holder: companyInfo.accountHolder
-          });
+          .select('company_info_id')
+          .eq('user_id', userId)
+          .maybeSingle();
+
+        const payload = {
+          user_id: userId,
+          company_name: companyInfo.name,
+          business_number: companyInfo.businessNumber,
+          address: companyInfo.address,
+          phone: companyInfo.phone,
+          email: companyInfo.email,
+          representative: companyInfo.representative,
+          bank_account: companyInfo.bankAccount,
+          account_holder: companyInfo.accountHolder
+        };
+
+        if (existing) {
+          // 업데이트
+          await supabase!
+            .from('company_info')
+            .update(payload)
+            .eq('user_id', userId);
+        } else {
+          // 삽입
+          await supabase!
+            .from('company_info')
+            .insert(payload);
+        }
       } catch (err) {
         console.error('회사 정보 저장 실패:', err);
       }
     }, DEBOUNCE_DELAY_MS);
 
     return () => clearTimeout(timer);
-  }, [companyInfo, userId, loading, isInitialLoad]);
+  }, [companyInfo, userId, supabase, loading, isInitialLoad]);
 
   // Work Items 저장 - WorkItems.tsx에서 즉시 저장하므로 디바운스 저장 비활성화
   // Clients.tsx와 WorkItems.tsx에서 각각 즉시 INSERT/UPDATE/DELETE 처리
