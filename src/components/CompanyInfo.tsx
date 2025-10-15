@@ -180,11 +180,11 @@ export default function CompanyInfo(): JSX.Element {
           <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-100">
             <h2 className="text-xl font-semibold text-gray-900">업체 정보 관리</h2>
             {!isEditing ? (
-              <button onClick={() => setIsEditing(true)} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">수정</button>
+              <button onClick={() => setIsEditing(true)} className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-1.5 px-3 rounded">수정</button>
             ) : (
               <div className="space-x-2">
-                <button onClick={handleSave} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">저장</button>
-                <button onClick={handleCancel} className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">취소</button>
+                <button onClick={handleSave} className="bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-1.5 px-3 rounded">저장</button>
+                <button onClick={handleCancel} className="bg-gray-500 hover:bg-gray-600 text-white text-sm font-medium py-1.5 px-3 rounded">취소</button>
               </div>
             )}
           </div>
