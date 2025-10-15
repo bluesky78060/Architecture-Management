@@ -322,7 +322,7 @@ const Clients: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const payload = { ...newClient };
     if (payload.type === 'BUSINESS') {
@@ -352,16 +352,56 @@ const Clients: React.FC = () => {
           .map(wp => (wp.description !== '' && wp.description !== null && wp.description !== undefined ? wp.description : '').trim())
           .filter((s): s is string => s !== '')))
       };
-      setClients(prev => prev.map(client => 
-        client.id === editingClientId 
+
+      // Supabase 업데이트 (즉시)
+      try {
+        const { supabase, getCurrentUserId } = await import('../services/supabase');
+        if (supabase !== null && supabase !== undefined) {
+          const userId = await getCurrentUserId();
+          const { error } = await supabase
+            .from('clients')
+            .update({
+              user_id: userId,
+              company_name: updatedClient.business?.businessName || updatedClient.name || '',
+              representative: updatedClient.business?.representative || '',
+              business_number: updatedClient.business?.businessNumber || '',
+              address: updatedClient.address || '',
+              email: updatedClient.email || '',
+              phone: updatedClient.phone || '',
+              mobile: updatedClient.mobile || '',
+              contact_person: updatedClient.type === 'PERSON' ? updatedClient.name : (updatedClient.business?.representative || ''),
+              type: updatedClient.type || 'BUSINESS',
+              notes: updatedClient.notes || '',
+              workplaces: updatedClient.workplaces || [],
+              projects: updatedClient.projects || [],
+              total_billed: 0,
+              outstanding: 0
+            })
+            .eq('client_id', editingClientId);
+
+          if (error !== null && error !== undefined) {
+            alert('건축주 수정 중 오류가 발생했습니다: ' + error.message);
+            return;
+          }
+        }
+      } catch (err) {
+        alert('건축주 수정 실패: ' + String(err));
+        return;
+      }
+
+      setClients(prev => prev.map(client =>
+        client.id === editingClientId
           ? { ...client, ...updatedClient, totalBilled: client.totalBilled, outstanding: client.outstanding }
           : client
       ));
     } else {
       // 새로 추가 모드
-      const client: Client = {
+      const previousClients = [...clients];
+
+      // 임시 ID로 UI 먼저 업데이트 (optimistic update)
+      const tempClient: Client = {
         ...payload,
-        id: clients.length + 1,
+        id: Date.now(), // 임시 ID
         workplaces: newClient.workplaces.map((wp, index) => ({
           ...wp,
           id: index + 1
@@ -372,9 +412,58 @@ const Clients: React.FC = () => {
         totalBilled: 0,
         outstanding: 0
       };
-      setClients(prev => [...prev, client]);
+      setClients(prev => [...prev, tempClient]);
+
+      // Supabase INSERT (즉시) - client_id는 제거하여 auto-increment 사용
+      try {
+        const { supabase, getCurrentUserId } = await import('../services/supabase');
+        if (supabase !== null && supabase !== undefined) {
+          const userId = await getCurrentUserId();
+          const { data, error } = await supabase
+            .from('clients')
+            .insert({
+              user_id: userId,
+              company_name: payload.business?.businessName || payload.name,
+              representative: payload.business?.representative || '',
+              business_number: payload.business?.businessNumber || '',
+              address: payload.address || '',
+              email: payload.email || '',
+              phone: payload.phone || '',
+              mobile: payload.mobile || '',
+              contact_person: payload.type === 'PERSON' ? payload.name : (payload.business?.representative || ''),
+              type: payload.type || 'BUSINESS',
+              notes: payload.notes || '',
+              workplaces: tempClient.workplaces,
+              projects: tempClient.projects,
+              total_billed: 0,
+              outstanding: 0
+            })
+            .select('client_id')
+            .single();
+
+          if (error !== null && error !== undefined) {
+            alert('건축주 생성 중 오류가 발생했습니다: ' + error.message);
+            setClients(previousClients);
+            return;
+          }
+
+          // 데이터베이스에서 받은 실제 ID로 업데이트
+          if (data !== null && data !== undefined) {
+            const realClientId = data.client_id;
+            setClients(prev => prev.map(c =>
+              c.id === tempClient.id
+                ? { ...c, id: realClientId }
+                : c
+            ));
+          }
+        }
+      } catch (err) {
+        alert('건축주 생성 실패: ' + String(err));
+        setClients(previousClients);
+        return;
+      }
     }
-    
+
     // 상태 초기화
     setNewClient({
       type: 'PERSON',
