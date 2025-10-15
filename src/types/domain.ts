@@ -155,7 +155,8 @@ export interface CompanyInfo {
   email?: string;
   address?: string;
   businessNumber?: string;
-  stampUrl?: string; // storage URL
+  stampUrl?: string; // storage URL (deprecated - use stampImage)
+  stampImage?: string; // Base64 data URL stored in Supabase
   bankAccount?: string; // 은행/계좌 정보
   accountHolder?: string; // 예금주
 }

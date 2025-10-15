@@ -127,22 +127,21 @@ export default function CompanyInfo(): JSX.Element {
     }
     
     try {
-
       const imageDataUrl = await imageToBase64(file);
 
-      const saved = await saveStampImage(imageDataUrl);
-      if (saved) {
-        setStampImage(imageDataUrl);
-        // 저장소 정보 업데이트
-        if (checkStorageAvailable()) {
-          const info = await getStorageInfo();
-          setStorageInfoState(info);
-        }
-        alert('도장 이미지가 성공적으로 저장되었습니다.');
-      } else {
-        alert('이미지 저장에 실패했습니다.\n파일 크기를 줄이거나 브라우저 저장소를 확인해주세요.');
-        if (fileInputRef.current !== null) fileInputRef.current.value = '';
+      // 1. Supabase에 저장 (companyInfo 업데이트하면 자동 저장)
+      setCompanyInfo({ ...companyInfo, stampImage: imageDataUrl });
+      setStampImage(imageDataUrl);
+
+      // 2. IndexedDB에도 백업 저장 (옵션)
+      await saveStampImage(imageDataUrl);
+
+      // 저장소 정보 업데이트
+      if (checkStorageAvailable()) {
+        const info = await getStorageInfo();
+        setStorageInfoState(info);
       }
+      alert('도장 이미지가 성공적으로 저장되었습니다.');
     } catch (error) {
       alert('이미지 처리 중 오류가 발생했습니다.\n파일이 손상되었거나 지원하지 않는 형식일 수 있습니다.');
       if (fileInputRef.current !== null) fileInputRef.current.value = '';
@@ -151,12 +150,17 @@ export default function CompanyInfo(): JSX.Element {
 
   const requestRemoveStampImage = () => setShowConfirmRemoveStamp(true);
   const confirmRemoveStampImage = async () => {
-    const removed = await removeStampImage();
-    if (removed) {
+    try {
+      // 1. Supabase에서 삭제 (companyInfo 업데이트하면 자동 저장)
+      setCompanyInfo({ ...companyInfo, stampImage: undefined });
       setStampImage(null);
+
+      // 2. IndexedDB에서도 삭제
+      await removeStampImage();
+
       if (fileInputRef.current !== null) fileInputRef.current.value = '';
       alert('도장 이미지가 완전히 삭제되었습니다.');
-    } else {
+    } catch (error) {
       alert('이미지 삭제 중 오류가 발생했습니다.');
     }
     setShowConfirmRemoveStamp(false);

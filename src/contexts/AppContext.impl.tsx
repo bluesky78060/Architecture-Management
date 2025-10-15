@@ -352,6 +352,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           .maybeSingle();
 
         if (!companyError && companyData) {
+          const stampImageData = companyData.stamp_image || '';
           setCompanyInfo({
             name: companyData.company_name,
             businessNumber: companyData.business_number || '',
@@ -359,15 +360,22 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             phone: companyData.phone || '',
             email: companyData.email || '',
             representative: companyData.representative || '',
+            stampImage: stampImageData,
             bankAccount: '',
             accountHolder: ''
           });
+          // 도장 이미지를 컨텍스트 상태에도 설정
+          setStampImage(stampImageData || null);
+        } else {
+          // 데이터가 없으면 로컬 IndexedDB에서 로드 시도 (마이그레이션용)
+          const { loadStampImage } = await import('../utils/imageStorage');
+          const loadedImage = await loadStampImage();
+          if (loadedImage) {
+            setStampImage(loadedImage);
+            // IndexedDB에서 로드한 이미지를 companyInfo에도 설정
+            setCompanyInfo(prev => ({ ...prev, stampImage: loadedImage }));
+          }
         }
-
-        // 도장 이미지 로딩
-        const { loadStampImage } = await import('../utils/imageStorage');
-        const loadedImage = await loadStampImage();
-        setStampImage(loadedImage);
 
         setError(null);
       } catch (err) {
@@ -477,7 +485,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           address: companyInfo.address,
           phone: companyInfo.phone,
           email: companyInfo.email,
-          representative: companyInfo.representative
+          representative: companyInfo.representative,
+          stamp_image: companyInfo.stampImage || null
         };
 
         const insertPayload = {
