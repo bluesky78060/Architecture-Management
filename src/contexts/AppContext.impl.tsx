@@ -438,46 +438,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     return newItems;
   };
 
-  // Clients 저장 (디바운싱 적용)
-  useEffect(() => {
-    if (!userId || !supabase || loading || isInitialLoad) return;
-
-    const timer = setTimeout(async () => {
-      try {
-        // 기존 데이터 삭제 후 재생성 (간단한 동기화)
-        await supabase!.from('clients').delete().eq('user_id', userId);
-
-        if (clients.length > 0) {
-          const dbClients = clients.map(c => ({
-            user_id: userId,
-            company_name: c.business?.businessName || c.name,
-            representative: c.business?.representative || '',
-            business_number: c.business?.businessNumber || '',
-            address: c.address || '',
-            email: c.email || '',
-            phone: c.phone || '',
-            mobile: c.mobile || '',
-            contact_person: c.type === 'PERSON' ? c.name : (c.business?.representative || ''),
-            type: c.type || 'BUSINESS',
-            notes: c.notes || '',
-            workplaces: c.workplaces || [],
-            projects: c.projects || [],
-            total_billed: c.totalBilled || 0,
-            outstanding: c.outstanding || 0
-          }));
-
-          const { error } = await supabase!.from('clients').insert(dbClients);
-          if (error) {
-            console.error('건축주 저장 오류:', error);
-          }
-        }
-      } catch (err) {
-        console.error('건축주 저장 실패:', err);
-      }
-    }, DEBOUNCE_DELAY_MS);
-
-    return () => clearTimeout(timer);
-  }, [clients, userId, loading, isInitialLoad]);
+  // Clients 저장 - Clients.tsx에서 즉시 저장하므로 디바운스 저장 비활성화
+  // Clients.tsx에서 즉시 INSERT/UPDATE/DELETE 처리
+  // 디바운스 저장은 중복 INSERT 409 Conflict를 발생시키므로 제거
+  // useEffect(() => {
+  //   ... (disabled)
+  // }, [clients, userId, loading, isInitialLoad]);
 
   // Company Info 저장 (디바운싱 적용)
   useEffect(() => {
@@ -506,60 +472,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     return () => clearTimeout(timer);
   }, [companyInfo, userId, loading, isInitialLoad]);
 
-  // Work Items 저장 (디바운싱 적용)
-  useEffect(() => {
-    if (!userId || !supabase || loading || isInitialLoad) return;
-
-    const timer = setTimeout(async () => {
-      try {
-        await supabase!.from('work_items').delete().eq('user_id', userId);
-
-        if (workItems.length > 0) {
-          // Status 한글 -> 영어 변환 함수
-          const toDbStatus = (status: string | undefined): string => {
-            if (status === null || status === undefined || status === '') return 'planned';
-            const statusMap: Record<string, string> = {
-              '예정': 'planned',
-              '진행중': 'in_progress',
-              '완료': 'completed',
-              '보류': 'on_hold',
-            };
-            return statusMap[status] ?? 'planned';
-          };
-
-          const dbWorkItems = workItems.map(w => ({
-            user_id: userId,
-            client_id: w.clientId,
-            client_name: w.clientName,
-            workplace_id: w.workplaceId,
-            workplace_name: w.workplaceName,
-            project_name: w.projectName,
-            name: w.name,
-            category: w.category || null,
-            default_price: w.defaultPrice || 0,
-            quantity: w.quantity || 0,
-            unit: w.unit || null,
-            description: w.description || null,
-            status: toDbStatus(w.status),
-            notes: w.notes || null,
-            labor_persons: w.laborPersons || 0,
-            labor_unit_rate: w.laborUnitRate || 0,
-            labor_persons_general: w.laborPersonsGeneral || 0,
-            labor_unit_rate_general: w.laborUnitRateGeneral || 0
-          }));
-
-          const { error } = await supabase!.from('work_items').insert(dbWorkItems);
-          if (error) {
-            console.error('작업 항목 저장 오류:', error);
-          }
-        }
-      } catch (err) {
-        console.error('작업 항목 저장 실패:', err);
-      }
-    }, DEBOUNCE_DELAY_MS);
-
-    return () => clearTimeout(timer);
-  }, [workItems, userId, loading, isInitialLoad]);
+  // Work Items 저장 - WorkItems.tsx에서 즉시 저장하므로 디바운스 저장 비활성화
+  // Clients.tsx와 WorkItems.tsx에서 각각 즉시 INSERT/UPDATE/DELETE 처리
+  // 디바운스 저장은 중복 INSERT 409 Conflict를 발생시키므로 제거
+  // useEffect(() => {
+  //   ... (disabled)
+  // }, [workItems, userId, loading, isInitialLoad]);
 
   // Estimates 저장 (디바운싱 적용)
   useEffect(() => {
