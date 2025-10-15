@@ -420,7 +420,8 @@ export default function WorkItems(): JSX.Element {
         };
 
         // Status 한글 -> 영어 변환 함수
-        const toDbStatus = (status: string): string => {
+        const toDbStatus = (status: string | undefined): string => {
+          if (!status) return 'planned';
           const statusMap: Record<string, string> = {
             '예정': 'planned',
             '진행중': 'in_progress',
@@ -508,15 +509,22 @@ export default function WorkItems(): JSX.Element {
         };
 
         // Status 한글 -> 영어 변환 함수
-        const toDbStatus = (status: string): string => {
+        const toDbStatus = (status: string | undefined): string => {
+          if (!status) return 'planned';
           const statusMap: Record<string, string> = {
             '예정': 'planned',
             '진행중': 'in_progress',
             '완료': 'completed',
             '보류': 'on_hold',
           };
+          // eslint-disable-next-line no-console
+          console.log('📊 Status 변환:', status, '->', statusMap[status] ?? 'planned');
           return statusMap[status] ?? 'planned';
         };
+
+        const dbStatus = toDbStatus(created.status);
+        // eslint-disable-next-line no-console
+        console.log('🔍 DB에 저장할 status:', dbStatus);
 
         const { error } = await supabase
           .from('work_items')
@@ -532,7 +540,7 @@ export default function WorkItems(): JSX.Element {
             quantity: toIntOrNull(created.quantity) ?? 0,
             unit: created.unit ?? '',
             default_price: toIntOrNull(created.defaultPrice) ?? 0,
-            status: toDbStatus(created.status),
+            status: dbStatus,
             notes: created.notes ?? '',
             labor_persons: toIntOrNull(created.laborPersons) ?? 0,
             labor_unit_rate: toIntOrNull(created.laborUnitRate) ?? 0,
