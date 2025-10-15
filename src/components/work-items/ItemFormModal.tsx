@@ -208,6 +208,11 @@ export default function ItemFormModal({ open, editingItem, newItem, clients, uni
                   }</div>
                 </div>
               </div>
+
+              <div className="mt-3">
+                <label className="block text-sm font-medium text-gray-700">비고</label>
+                <input type="text" name="notes" value={newItem.notes ?? ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} placeholder="추가 메모나 특이사항을 입력하세요" className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+              </div>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
@@ -245,14 +250,6 @@ export default function ItemFormModal({ open, editingItem, newItem, clients, uni
                   }</div>
                 </div>
               </div>
-            </div>
-
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
-              <div className="flex items-center mb-3 gap-3">
-                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-yellow-50 text-yellow-600">📝</span>
-                <h4 className="text-base font-semibold text-gray-900">비고</h4>
-              </div>
-              <textarea name="notes" value={newItem.notes ?? ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} placeholder="추가 메모나 특이사항을 입력하세요" rows={3} className="w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none" />
             </div>
 
             <div className="flex justify-end space-x-2 pt-2">
