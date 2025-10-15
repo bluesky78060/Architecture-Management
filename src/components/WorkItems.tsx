@@ -517,21 +517,12 @@ export default function WorkItems(): JSX.Element {
             '완료': 'completed',
             '보류': 'on_hold',
           };
-          // eslint-disable-next-line no-console
-          console.log('📊 Status 변환:', status, '->', statusMap[status] ?? 'planned');
           return statusMap[status] ?? 'planned';
         };
 
         const dbStatus = toDbStatus(created.status);
-        // eslint-disable-next-line no-console
-        console.log('🔍 DB에 저장할 status:', dbStatus);
-
         const clientIdValue = toIntOrNull(created.clientId);
         const workplaceIdValue = toIntOrNull(created.workplaceId);
-        // eslint-disable-next-line no-console
-        console.log('🔍 client_id:', created.clientId, '->', clientIdValue);
-        // eslint-disable-next-line no-console
-        console.log('🔍 workplace_id:', created.workplaceId, '->', workplaceIdValue);
 
         // client_id가 필수이므로 null이면 에러
         if (clientIdValue === null) {
