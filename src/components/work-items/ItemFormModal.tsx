@@ -28,7 +28,7 @@ export default function ItemFormModal({ open, editingItem, newItem, clients, uni
   return (
     <div className="fixed inset-0 bg-gray-800/50 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
       <div className="relative top-8 mx-auto w-[980px] max-w-[95vw] shadow-2xl rounded-2xl bg-white/80 ring-1 ring-black/5">
-        <div className="rounded-t-2xl bg-gradient-to-br from-indigo-50 via-purple-50 to-white px-8 pt-6 pb-6">
+        <div className="rounded-t-2xl bg-gradient-to-br from-indigo-50 via-purple-50 to-white px-8 pt-5 pb-3">
           <div className="flex items-center justify-between">
             <div className="text-center flex-1">
               <h3 className="text-2xl font-extrabold tracking-tight text-indigo-600">{editingItem !== null ? '작업 항목 편집' : '새 작업 항목 추가'}</h3>
@@ -40,7 +40,7 @@ export default function ItemFormModal({ open, editingItem, newItem, clients, uni
             </div>
           </div>
         </div>
-        <div className="px-6 pb-6">
+        <div className="px-6 pb-6 pt-3">
           <form id="work-item-form" onSubmit={onSubmit} className="space-y-4">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
               <div className="flex items-center mb-3 gap-3">
