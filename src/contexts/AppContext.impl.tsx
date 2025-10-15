@@ -205,10 +205,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
         setClients(mappedClients);
 
-        // Work Items 로딩
+        // Work Items 로딩 - clients 테이블과 JOIN하여 client_name 가져오기
         const { data: workItemsData, error: workItemsError } = await supabase!
           .from('work_items')
-          .select('*')
+          .select(`
+            *,
+            clients!work_items_client_id_fkey (
+              name,
+              workplaces
+            )
+          `)
           .order('created_at', { ascending: false });
 
         if (workItemsError) throw workItemsError;
@@ -225,27 +231,37 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           return statusMap[status] ?? '예정';
         };
 
-        const mappedWorkItems: WorkItem[] = (workItemsData || []).map((w: any) => ({
-          id: w.work_item_id,
-          clientId: w.client_id,
-          clientName: w.client_name || '',
-          workplaceId: w.workplace_id,
-          workplaceName: w.workplace_name || '',
-          projectName: w.project_name || '',
-          name: w.name,
-          category: w.category || '',
-          defaultPrice: w.default_price || 0,
-          quantity: w.quantity || 0,
-          unit: w.unit || '',
-          description: w.description || '',
-          status: fromDbStatus(w.status),
-          date: w.start_date || '',
-          notes: w.notes || '',
-          laborPersons: w.labor_persons || 0,
-          laborUnitRate: w.labor_unit_rate || 0,
-          laborPersonsGeneral: w.labor_persons_general || 0,
-          laborUnitRateGeneral: w.labor_unit_rate_general || 0
-        }));
+        const mappedWorkItems: WorkItem[] = (workItemsData || []).map((w: any) => {
+          // client 정보에서 이름 가져오기
+          const clientName = w.clients?.name || '';
+
+          // workplace 정보 찾기
+          const workplaces = w.clients?.workplaces || [];
+          const workplace = workplaces.find((wp: any) => wp.id === w.workplace_id);
+          const workplaceName = workplace?.name || '';
+
+          return {
+            id: w.work_item_id,
+            clientId: w.client_id,
+            clientName,
+            workplaceId: w.workplace_id,
+            workplaceName,
+            projectName: w.project_name || '',
+            name: w.name,
+            category: w.category || '',
+            defaultPrice: w.default_price || 0,
+            quantity: w.quantity || 0,
+            unit: w.unit || '',
+            description: w.description || '',
+            status: fromDbStatus(w.status),
+            date: w.start_date || '',
+            notes: w.notes || '',
+            laborPersons: w.labor_persons || 0,
+            laborUnitRate: w.labor_unit_rate || 0,
+            laborPersonsGeneral: w.labor_persons_general || 0,
+            laborUnitRateGeneral: w.labor_unit_rate_general || 0
+          };
+        });
 
         setWorkItems(mappedWorkItems);
 
