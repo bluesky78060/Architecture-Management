@@ -162,11 +162,14 @@ export const supabase = (supabaseUrl !== '' && supabaseAnonKey !== '')
 
 /**
  * 현재 로그인한 사용자 ID 가져오기
- * Supabase Auth 사용자 ID 반환 (없으면 기본값 "default-user")
+ * Supabase Auth 사용자 ID 반환 (없으면 기본 UUID)
  */
 export async function getCurrentUserId(): Promise<string> {
+  // 개발/테스트용 기본 UUID (nil UUID)
+  const DEFAULT_USER_UUID = '00000000-0000-0000-0000-000000000000';
+
   if (supabase === null) {
-    return 'default-user';
+    return DEFAULT_USER_UUID;
   }
 
   try {
@@ -178,7 +181,7 @@ export async function getCurrentUserId(): Promise<string> {
     // 세션 가져오기 실패 시 기본값 반환
   }
 
-  return 'default-user';
+  return DEFAULT_USER_UUID;
 }
 
 export default supabaseService;

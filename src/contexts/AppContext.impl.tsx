@@ -80,7 +80,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
       // 로그인 비활성화 모드면 인증 체크 건너뛰기
       if (LOGIN_DISABLED) {
-        setUserId('dev-user-id'); // 개발용 임시 user_id
+        // 개발용 UUID (nil UUID)
+        setUserId('00000000-0000-0000-0000-000000000000');
         setLoading(false);
         return;
       }
@@ -90,7 +91,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setUserId(user.id);
       } else {
         // 인증 없이도 기본 사용자로 작동 (개발/테스트 모드)
-        setUserId('default-user');
+        // 개발용 UUID (nil UUID)
+        setUserId('00000000-0000-0000-0000-000000000000');
       }
       setLoading(false);
     };
