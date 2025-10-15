@@ -168,10 +168,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       try {
         setLoading(true);
 
-        // Clients 로딩
+        // Clients 로딩 (현재 사용자 것만)
         const { data: clientsData, error: clientsError } = await supabase!
           .from('clients')
           .select('*')
+          .eq('user_id', userId)
           .order('created_at', { ascending: false });
 
         if (clientsError) {
@@ -205,7 +206,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
         setClients(mappedClients);
 
-        // Work Items 로딩 - clients 테이블과 JOIN하여 client_name 가져오기
+        // Work Items 로딩 - clients 테이블과 JOIN하여 client_name 가져오기 (현재 사용자 것만)
         const { data: workItemsData, error: workItemsError } = await supabase!
           .from('work_items')
           .select(`
@@ -215,6 +216,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
               workplaces
             )
           `)
+          .eq('user_id', userId)
           .order('created_at', { ascending: false });
 
         if (workItemsError) throw workItemsError;
@@ -265,13 +267,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
         setWorkItems(mappedWorkItems);
 
-        // Estimates 로딩
+        // Estimates 로딩 (현재 사용자 것만)
         const { data: estimatesData, error: estimatesError } = await supabase!
           .from('estimates')
           .select(`
             *,
             estimate_items (*)
           `)
+          .eq('user_id', userId)
           .order('created_at', { ascending: false });
 
         if (estimatesError) throw estimatesError;
@@ -301,13 +304,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
         setEstimates(mappedEstimates);
 
-        // Invoices 로딩
+        // Invoices 로딩 (현재 사용자 것만)
         const { data: invoicesData, error: invoicesError } = await supabase!
           .from('invoices')
           .select(`
             *,
             invoice_items (*)
           `)
+          .eq('user_id', userId)
           .order('created_at', { ascending: false });
 
         if (invoicesError) throw invoicesError;
