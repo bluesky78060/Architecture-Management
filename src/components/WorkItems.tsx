@@ -412,24 +412,31 @@ export default function WorkItems(): JSX.Element {
         alert('데이터베이스 연결에 실패했습니다.');
         return;
       }
+        // Integer 필드를 안전하게 변환하는 헬퍼 함수
+        const toIntOrNull = (val: any): number | null => {
+          if (val === null || val === undefined || val === '') return null;
+          const num = Number(val);
+          return isNaN(num) ? null : num;
+        };
+
         const { error } = await supabase
           .from('work_items')
           .update({
-            client_id: updated.clientId ? Number(updated.clientId) : null,
-            workplace_id: updated.workplaceId ? Number(updated.workplaceId) : null,
+            client_id: toIntOrNull(updated.clientId),
+            workplace_id: toIntOrNull(updated.workplaceId),
             project_name: updated.projectName ?? '',
             name: updated.name,
             description: updated.description ?? '',
             category: updated.category ?? '',
-            quantity: updated.quantity ?? 0,
+            quantity: toIntOrNull(updated.quantity) ?? 0,
             unit: updated.unit ?? '',
-            default_price: updated.defaultPrice ?? 0,
+            default_price: toIntOrNull(updated.defaultPrice) ?? 0,
             status: updated.status,
             notes: updated.notes ?? '',
-            labor_persons: updated.laborPersons ?? 0,
-            labor_unit_rate: updated.laborUnitRate ?? 0,
-            labor_persons_general: updated.laborPersonsGeneral ?? 0,
-            labor_unit_rate_general: updated.laborUnitRateGeneral ?? 0,
+            labor_persons: toIntOrNull(updated.laborPersons) ?? 0,
+            labor_unit_rate: toIntOrNull(updated.laborUnitRate) ?? 0,
+            labor_persons_general: toIntOrNull(updated.laborPersonsGeneral) ?? 0,
+            labor_unit_rate_general: toIntOrNull(updated.laborUnitRateGeneral) ?? 0,
           })
           .eq('work_item_id', updated.id);
 
@@ -482,26 +489,33 @@ export default function WorkItems(): JSX.Element {
         const { getCurrentUserId } = await import('../services/supabase');
         const userId = await getCurrentUserId();
 
+        // Integer 필드를 안전하게 변환하는 헬퍼 함수
+        const toIntOrNull = (val: any): number | null => {
+          if (val === null || val === undefined || val === '') return null;
+          const num = Number(val);
+          return isNaN(num) ? null : num;
+        };
+
         const { error } = await supabase
           .from('work_items')
           .insert({
-            work_item_id: created.id,
+            work_item_id: toIntOrNull(created.id) ?? 0,
             user_id: userId,
-            client_id: created.clientId ? Number(created.clientId) : null,
-            workplace_id: created.workplaceId ? Number(created.workplaceId) : null,
+            client_id: toIntOrNull(created.clientId),
+            workplace_id: toIntOrNull(created.workplaceId),
             project_name: created.projectName ?? '',
             name: created.name,
             description: created.description ?? '',
             category: created.category ?? '',
-            quantity: created.quantity ?? 0,
+            quantity: toIntOrNull(created.quantity) ?? 0,
             unit: created.unit ?? '',
-            default_price: created.defaultPrice ?? 0,
+            default_price: toIntOrNull(created.defaultPrice) ?? 0,
             status: created.status,
             notes: created.notes ?? '',
-            labor_persons: created.laborPersons ?? 0,
-            labor_unit_rate: created.laborUnitRate ?? 0,
-            labor_persons_general: created.laborPersonsGeneral ?? 0,
-            labor_unit_rate_general: created.laborUnitRateGeneral ?? 0,
+            labor_persons: toIntOrNull(created.laborPersons) ?? 0,
+            labor_unit_rate: toIntOrNull(created.laborUnitRate) ?? 0,
+            labor_persons_general: toIntOrNull(created.laborPersonsGeneral) ?? 0,
+            labor_unit_rate_general: toIntOrNull(created.laborUnitRateGeneral) ?? 0,
           });
 
         if (error !== null && error !== undefined) {
