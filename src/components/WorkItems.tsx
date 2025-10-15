@@ -210,7 +210,7 @@ export default function WorkItems(): JSX.Element {
     };
   };
 
-  const handleCreateInvoice = (workItem: WorkItem) => {
+  const handleCreateInvoice = async (workItem: WorkItem) => {
     const INVOICE_ID_PADDING = 3;
     const DAYS_UNTIL_DUE = 14;
     const HOURS_PER_DAY = 24;
@@ -232,6 +232,7 @@ export default function WorkItems(): JSX.Element {
     const dueDateTime = Date.now() + (DAYS_UNTIL_DUE * HOURS_PER_DAY * MINUTES_PER_HOUR * SECONDS_PER_MINUTE * MS_PER_SECOND);
     const newInvoice = {
       id: newInvoiceId,
+      clientId: workItem.clientId,
       client: workItem.clientName ?? '',
       project: workItem.projectName ?? '',
       workplaceAddress: workplace?.address ?? '',
@@ -241,8 +242,92 @@ export default function WorkItems(): JSX.Element {
       dueDate: new Date(dueDateTime).toISOString().split('T')[0],
       workItems: items,
     };
-    setInvoices(prev => [...prev, newInvoice]);
-    alert(`청구서 ${newInvoiceId}가 생성되었습니다.`);
+
+    // 이전 상태 백업
+    const previousInvoices = [...invoices];
+
+    // UI 먼저 업데이트 (optimistic update)
+    const tempInvoice = { ...newInvoice, id: `TEMP-${Date.now()}` };
+    setInvoices(prev => [...prev, tempInvoice]);
+
+    // Supabase INSERT
+    try {
+      const { supabase, getCurrentUserId } = await import('../services/supabase');
+      if (supabase !== null && supabase !== undefined) {
+        const userId = await getCurrentUserId();
+
+        // Status 한글 → 영어 변환
+        const toDbStatus = (status: string): string => {
+          const statusMap: Record<string, string> = {
+            '발송대기': 'pending',
+            '발송됨': 'pending',
+            '미결제': 'overdue',
+            '결제완료': 'paid',
+          };
+          return statusMap[status] ?? 'pending';
+        };
+
+        // 1. Invoice 메인 데이터 INSERT
+        const { data: invoiceData, error: invoiceError } = await supabase
+          .from('invoices')
+          .insert({
+            user_id: userId,
+            invoice_number: newInvoiceId,
+            client_id: workItem.clientId,
+            workplace_id: workItem.workplaceId,
+            title: workItem.projectName ?? '',
+            date: newInvoice.date,
+            due_date: newInvoice.dueDate,
+            status: toDbStatus(newInvoice.status),
+            amount: totalAmount,
+            notes: '',
+          })
+          .select('invoice_id')
+          .single();
+
+        if (invoiceError !== null && invoiceError !== undefined) {
+          alert(`청구서 생성 중 오류가 발생했습니다: ${invoiceError.message}`);
+          setInvoices(previousInvoices);
+          return;
+        }
+
+        // 2. Invoice Items INSERT
+        if (invoiceData !== null && invoiceData !== undefined && items.length > 0) {
+          const dbInvoiceItems = items.map((item, index) => ({
+            user_id: userId,
+            invoice_id: invoiceData.invoice_id,
+            category: item.category ?? '',
+            name: item.name,
+            description: item.description ?? '',
+            unit: item.unit ?? '',
+            quantity: item.quantity,
+            unit_price: item.unitPrice,
+            sort_order: index,
+          }));
+
+          const { error: itemsError } = await supabase
+            .from('invoice_items')
+            .insert(dbInvoiceItems);
+
+          if (itemsError !== null && itemsError !== undefined) {
+            alert(`청구서 항목 저장 중 오류가 발생했습니다: ${itemsError.message}`);
+            // Invoice는 생성되었으나 items 저장 실패 - 계속 진행
+          }
+        }
+
+        // 실제 ID로 UI 업데이트
+        setInvoices(prev => prev.map(inv =>
+          inv.id === tempInvoice.id
+            ? { ...newInvoice, id: newInvoiceId }
+            : inv
+        ));
+
+        alert(`청구서 ${newInvoiceId}가 생성되었습니다.`);
+      }
+    } catch (err) {
+      alert(`청구서 생성 실패: ${String(err)}`);
+      setInvoices(previousInvoices);
+    }
   };
 
   const onChangeField = (name: string, value: string) => {
