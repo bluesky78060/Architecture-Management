@@ -211,7 +211,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           .select(`
             *,
             clients!client_id (
-              name,
+              company_name,
               workplaces
             )
           `)
@@ -232,8 +232,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         };
 
         const mappedWorkItems: WorkItem[] = (workItemsData || []).map((w: any) => {
-          // client 정보에서 이름 가져오기
-          const clientName = w.clients?.name || '';
+          // client 정보에서 회사명 가져오기
+          const clientName = w.clients?.company_name || '';
 
           // workplace 정보 찾기
           const workplaces = w.clients?.workplaces || [];
