@@ -344,12 +344,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
         setInvoices(mappedInvoices);
 
-        // Company Info 로딩
+        // Company Info 로딩 (현재 사용자 것만)
         const { data: companyData, error: companyError } = await supabase!
           .from('company_info')
           .select('*')
-          .limit(1)
-          .single();
+          .eq('user_id', userId)
+          .maybeSingle();
 
         if (!companyError && companyData) {
           setCompanyInfo({
@@ -483,7 +483,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             representative: companyInfo.representative,
             bank_account: companyInfo.bankAccount,
             account_holder: companyInfo.accountHolder
-          }, { onConflict: 'user_id' });
+          });
       } catch (err) {
         console.error('회사 정보 저장 실패:', err);
       }
