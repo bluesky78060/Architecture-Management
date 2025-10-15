@@ -117,6 +117,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           id: c.client_id,
           name: c.company_name || '',
           phone: c.phone || '',
+          mobile: c.mobile || '',
           email: c.email || '',
           address: c.address || '',
           type: c.type || 'BUSINESS',
@@ -129,6 +130,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             businessAddress: c.address || '',
             taxEmail: c.email || ''
           } : undefined,
+          workplaces: c.workplaces || [],
+          projects: c.projects || [],
           totalBilled: c.total_billed || 0,
           outstanding: c.outstanding || 0,
           notes: c.notes || ''
@@ -380,9 +383,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
               address: c.address || '',
               email: c.email || '',
               phone: c.phone || '',
-              contact_person: '',
+              mobile: c.mobile || '',
+              contact_person: c.type === 'PERSON' ? c.name : (c.business?.representative || ''),
               type: c.type || 'BUSINESS',
               notes: c.notes || '',
+              workplaces: c.workplaces || [],
+              projects: c.projects || [],
               total_billed: c.totalBilled || 0,
               outstanding: c.outstanding || 0
             };
