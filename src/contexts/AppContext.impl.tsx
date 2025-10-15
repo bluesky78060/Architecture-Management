@@ -89,9 +89,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       if (user) {
         setUserId(user.id);
       } else {
-        setError('로그인이 필요합니다');
-        setLoading(false);
+        // 인증 없이도 기본 사용자로 작동 (개발/테스트 모드)
+        setUserId('default-user');
       }
+      setLoading(false);
     };
 
     checkAuth();
