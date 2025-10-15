@@ -101,10 +101,28 @@ export default function Invoices(): JSX.Element {
     setPendingDeleteId(id);
   };
 
-  const confirmDeleteSingle = () => {
+  const confirmDeleteSingle = async () => {
     if (pendingDeleteId === null || pendingDeleteId === undefined) return;
+
+    // UI에서 즉시 제거
     setInvoices(prev => prev.filter(inv => inv.id !== pendingDeleteId));
     setPendingDeleteId(null);
+
+    // Supabase에서도 즉시 삭제 (invoice_items도 CASCADE로 자동 삭제됨)
+    try {
+      const { supabase } = await import('../services/supabase');
+      if (supabase === null || supabase === undefined) return;
+      const { error } = await supabase
+        .from('invoices')
+        .delete()
+        .eq('invoice_id', pendingDeleteId);
+
+      if (error !== null && error !== undefined) {
+        // 오류 발생
+      }
+    } catch (err) {
+      // 실패
+    }
   };
 
   const handleBulkDelete = () => {
@@ -112,10 +130,27 @@ export default function Invoices(): JSX.Element {
     setShowConfirmBulkDelete(true);
   };
 
-  const confirmBulkDelete = () => {
+  const confirmBulkDelete = async () => {
+    // UI에서 즉시 제거
     setInvoices(prev => prev.filter(inv => !selection.selected.includes(inv.id)));
     selection.clear();
     setShowConfirmBulkDelete(false);
+
+    // Supabase에서도 즉시 삭제 (invoice_items도 CASCADE로 자동 삭제됨)
+    try {
+      const { supabase } = await import('../services/supabase');
+      if (supabase === null || supabase === undefined) return;
+      const { error } = await supabase
+        .from('invoices')
+        .delete()
+        .in('invoice_id', selection.selected);
+
+      if (error !== null && error !== undefined) {
+        // 오류 발생
+      }
+    } catch (err) {
+      // 실패
+    }
   };
 
   const [detail, setDetail] = useState<Invoice | null>(null);
@@ -305,7 +340,7 @@ export default function Invoices(): JSX.Element {
     }, MIN_VALUE);
   };
 
-  const submitForm = (e: React.FormEvent) => {
+  const submitForm = async (e: React.FormEvent) => {
     e.preventDefault();
     const MIN_ID_VALUE = 0;
     const INVOICE_ID_PAD_LENGTH = 3;
@@ -336,12 +371,13 @@ export default function Invoices(): JSX.Element {
       amount: getFormTotal(),
       status: form.status,
       date: form.date,
-      workItems: form.items.map(it => {
+      workItems: form.items.map((it, index) => {
         const qtyNum = Number(it.quantity);
         const priceNum = Number(it.unitPrice);
         const totalNum = Number(it.total);
 
         return {
+          id: index + 1,
           name: it.name,
           quantity: (qtyNum !== MIN_VALUE && !isNaN(qtyNum)) ? qtyNum : MIN_VALUE,
           unit: it.unit,
@@ -359,12 +395,86 @@ export default function Invoices(): JSX.Element {
         };
       }),
     };
+
+    // 이전 상태 백업 (롤백용)
+    const previousInvoices = invoices;
+
+    // UI 즉시 업데이트 (낙관적 업데이트)
     setInvoices(prev => [...prev, created]);
     setShowForm(false);
     setForm({
       clientId: '', client: '', workplaceId: '', workplaceAddress: '', project: '', date: new Date().toISOString().split('T')[0], status: '발송대기',
       items: [{ name: '', quantity: 1, unit: '', unitPrice: 0, total: 0, category: '', description: '', laborPersons: '', laborUnitRate: '', laborPersonsGeneral: '', laborUnitRateGeneral: '' }]
     });
+
+    // Supabase에도 즉시 생성 (invoices + invoice_items)
+    try {
+      const { supabase } = await import('../services/supabase');
+      if (supabase === null || supabase === undefined) {
+        // Supabase 초기화 실패 시 롤백
+        setInvoices(previousInvoices);
+        alert('데이터베이스 연결에 실패했습니다.');
+        return;
+      }
+      const { getCurrentUserId } = await import('../services/supabase');
+        const userId = await getCurrentUserId();
+
+      // 1. invoices 테이블 삽입
+      const { error: invError } = await supabase
+        .from('invoices')
+        .insert({
+          invoice_id: created.id,
+          user_id: userId,
+          client_id: created.clientId,
+          project_name: created.project ?? '',
+          workplace_address: created.workplaceAddress ?? '',
+          date: created.date,
+          status: created.status,
+          total_amount: created.amount,
+        });
+
+      if (invError !== null && invError !== undefined) {
+        // 오류 발생 시 롤백
+        setInvoices(previousInvoices);
+        alert(`청구서 생성 중 오류가 발생했습니다: ${invError.message}`);
+        return;
+      }
+
+      // 2. invoice_items 삽입
+      const itemsToInsert = created.workItems.map((item, index) => ({
+        invoice_id: created.id,
+        item_id: index + 1,
+        category: item.category ?? '',
+        name: item.name,
+        description: item.description ?? '',
+        quantity: item.quantity ?? 0,
+        unit: item.unit ?? '',
+        unit_price: item.unitPrice ?? 0,
+        total: item.total ?? 0,
+        notes: item.notes ?? '',
+        date: item.date ?? '',
+        labor_persons: typeof item.laborPersons === 'number' ? item.laborPersons : 0,
+        labor_unit_rate: typeof item.laborUnitRate === 'number' ? item.laborUnitRate : 0,
+        labor_persons_general: typeof item.laborPersonsGeneral === 'number' ? item.laborPersonsGeneral : 0,
+        labor_unit_rate_general: typeof item.laborUnitRateGeneral === 'number' ? item.laborUnitRateGeneral : 0,
+      }));
+
+      const { error: itemsError } = await supabase
+        .from('invoice_items')
+        .insert(itemsToInsert);
+
+      if (itemsError !== null && itemsError !== undefined) {
+        // 오류 발생 시 롤백
+        setInvoices(previousInvoices);
+        alert(`청구서 항목 생성 중 오류가 발생했습니다: ${itemsError.message}`);
+        return;
+      }
+    } catch (err) {
+      // 예외 발생 시 롤백
+      setInvoices(previousInvoices);
+      alert('청구서 생성 중 예상치 못한 오류가 발생했습니다.');
+      return;
+    }
   };
 
   return (

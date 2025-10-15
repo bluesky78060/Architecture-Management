@@ -160,4 +160,25 @@ export const supabase = (supabaseUrl !== '' && supabaseAnonKey !== '')
   ? supabaseService.getClient()
   : null;
 
+/**
+ * 현재 로그인한 사용자 ID 가져오기
+ * Supabase Auth 사용자 ID 반환 (없으면 기본값 "default-user")
+ */
+export async function getCurrentUserId(): Promise<string> {
+  if (supabase === null) {
+    return 'default-user';
+  }
+
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user?.id !== undefined && session?.user?.id !== null) {
+      return session.user.id;
+    }
+  } catch (error) {
+    // 세션 가져오기 실패 시 기본값 반환
+  }
+
+  return 'default-user';
+}
+
 export default supabaseService;

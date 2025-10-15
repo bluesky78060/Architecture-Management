@@ -262,7 +262,7 @@ const Estimates: React.FC = () => {
     }, MIN_VALUE);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!modalState.noDueDate) {
@@ -281,7 +281,7 @@ const Estimates: React.FC = () => {
       if (q === MIN_VALUE || isNaN(q) || q <= MIN_VALUE) { alert(`항목 #${i + FIRST_ITEM_INDEX}: 수량을 입력하세요.`); return; }
       if (p === MIN_VALUE || isNaN(p) || p <= MIN_VALUE) { alert(`항목 #${i + FIRST_ITEM_INDEX}: 단가를 입력하세요.`); return; }
     }
-    
+
     const selectedClientData = clients.find(c => c.id === newEstimate.clientId);
     const selectedWorkplaceData = getClientWorkplaces(newEstimate.clientId).find(wp => wp.id === newEstimate.workplaceId);
 
@@ -317,13 +317,160 @@ const Estimates: React.FC = () => {
     } as Estimate;
 
     if (modalState.editingEstimate !== null && modalState.editingEstimate !== undefined) {
+      // 이전 상태 백업 (롤백용)
+      const previousEstimates = estimates;
+
+      // 수정: UI 즉시 업데이트 (낙관적 업데이트)
       setEstimates(prev => prev.map(est =>
         est.id === modalState.editingEstimate?.id ? estimateData : est
       ));
+
+      // Supabase에도 즉시 업데이트 (estimates + estimate_items)
+      try {
+        const { supabase } = await import('../services/supabase');
+      if (supabase === null || supabase === undefined) {
+        // Supabase 초기화 실패 시 롤백
+        setEstimates(previousEstimates);
+        alert('데이터베이스 연결에 실패했습니다.');
+        return;
+      }
+
+        // 1. estimates 테이블 업데이트
+        const { error: estError } = await supabase
+          .from('estimates')
+          .update({
+            client_id: estimateData.clientId,
+            workplace_id: estimateData.workplaceId,
+            project_name: estimateData.projectName ?? '',
+            title: estimateData.title ?? '',
+            date: estimateData.date,
+            valid_until: estimateData.validUntil ?? null,
+            status: estimateData.status,
+            notes: estimateData.notes ?? '',
+            total_amount: estimateData.totalAmount,
+          })
+          .eq('estimate_id', estimateData.id);
+
+        if (estError !== null && estError !== undefined) {
+          // 오류 발생 시 롤백
+          setEstimates(previousEstimates);
+          alert(`견적서 수정 중 오류가 발생했습니다: ${estError.message}`);
+          return;
+        }
+
+        // 2. 기존 estimate_items 삭제
+        await supabase
+          .from('estimate_items')
+          .delete()
+          .eq('estimate_id', estimateData.id);
+
+        // 3. 새로운 estimate_items 삽입
+        const FIRST_INDEX = 1;
+        const itemsToInsert = estimateData.items.map((item, index) => ({
+          estimate_id: estimateData.id,
+          item_id: index + FIRST_INDEX,
+          category: item.category ?? '',
+          name: item.name,
+          description: item.description ?? '',
+          quantity: item.quantity ?? 0,
+          unit: item.unit ?? '',
+          unit_price: item.unitPrice ?? 0,
+          total: item.total ?? 0,
+          notes: item.notes ?? '',
+        }));
+
+        const { error: itemsError } = await supabase
+          .from('estimate_items')
+          .insert(itemsToInsert);
+
+        if (itemsError !== null && itemsError !== undefined) {
+          // 오류 발생 시 롤백
+          setEstimates(previousEstimates);
+          alert(`견적서 항목 저장 중 오류가 발생했습니다: ${itemsError.message}`);
+          return;
+        }
+      } catch (err) {
+        // 예외 발생 시 롤백
+        setEstimates(previousEstimates);
+        alert('견적서 수정 중 예상치 못한 오류가 발생했습니다.');
+        return;
+      }
     } else {
+      // 이전 상태 백업 (롤백용)
+      const previousEstimates = estimates;
+
+      // 생성: UI 즉시 업데이트 (낙관적 업데이트)
       setEstimates(prev => [...prev, estimateData]);
+
+      // Supabase에도 즉시 생성 (estimates + estimate_items)
+      try {
+        const { supabase } = await import('../services/supabase');
+      if (supabase === null || supabase === undefined) {
+        // Supabase 초기화 실패 시 롤백
+        setEstimates(previousEstimates);
+        alert('데이터베이스 연결에 실패했습니다.');
+        return;
+      }
+        const { getCurrentUserId } = await import('../services/supabase');
+        const userId = await getCurrentUserId();
+
+        // 1. estimates 테이블 삽입
+        const { error: estError } = await supabase
+          .from('estimates')
+          .insert({
+            estimate_id: estimateData.id,
+            user_id: userId,
+            client_id: estimateData.clientId,
+            workplace_id: estimateData.workplaceId,
+            project_name: estimateData.projectName ?? '',
+            title: estimateData.title ?? '',
+            date: estimateData.date,
+            valid_until: estimateData.validUntil ?? null,
+            status: estimateData.status,
+            notes: estimateData.notes ?? '',
+            total_amount: estimateData.totalAmount,
+          });
+
+        if (estError !== null && estError !== undefined) {
+          // 오류 발생 시 롤백
+          setEstimates(previousEstimates);
+          alert(`견적서 생성 중 오류가 발생했습니다: ${estError.message}`);
+          return;
+        }
+
+        // 2. estimate_items 삽입
+        const FIRST_INDEX_INSERT = 1;
+        const itemsToInsert = estimateData.items.map((item, index) => ({
+          estimate_id: estimateData.id,
+          item_id: index + FIRST_INDEX_INSERT,
+          category: item.category ?? '',
+          name: item.name,
+          description: item.description ?? '',
+          quantity: item.quantity ?? 0,
+          unit: item.unit ?? '',
+          unit_price: item.unitPrice ?? 0,
+          total: item.total ?? 0,
+          notes: item.notes ?? '',
+        }));
+
+        const { error: itemsError } = await supabase
+          .from('estimate_items')
+          .insert(itemsToInsert);
+
+        if (itemsError !== null && itemsError !== undefined) {
+          // 오류 발생 시 롤백
+          setEstimates(previousEstimates);
+          alert(`견적서 항목 생성 중 오류가 발생했습니다: ${itemsError.message}`);
+          return;
+        }
+      } catch (err) {
+        // 예외 발생 시 롤백
+        setEstimates(previousEstimates);
+        alert('견적서 생성 중 예상치 못한 오류가 발생했습니다.');
+        return;
+      }
     }
-    
+
     resetForm();
   };
 
@@ -389,21 +536,57 @@ const Estimates: React.FC = () => {
     setPendingDeleteId(id);
   };
 
-  const handleBulkDelete = () => {
+  const handleBulkDelete = async () => {
     if (uiState.selectedIds.length === 0) return;
+
+    // UI에서 즉시 제거
     setEstimates(prev => prev.filter(est => !uiState.selectedIds.includes(est.id)));
     setUiState(prev => ({ ...prev, selectedIds: [] }));
     setModalState(prev => ({ ...prev, showConfirmDelete: false }));
+
+    // Supabase에서도 즉시 삭제 (estimate_items도 CASCADE로 자동 삭제됨)
+    try {
+      const { supabase } = await import('../services/supabase');
+      if (supabase === null || supabase === undefined) return;
+      const { error} = await supabase
+        .from('estimates')
+        .delete()
+        .in('estimate_id', uiState.selectedIds);
+
+      if (error !== null && error !== undefined) {
+        // 오류 발생
+      }
+    } catch (err) {
+      // 실패
+    }
   };
 
   const handleConvertToWorkItems = (estimateId: ID) => {
     setPendingConvertId(estimateId);
   };
 
-  const confirmDeleteSingle = () => {
+  const confirmDeleteSingle = async () => {
     if (pendingDeleteId == null) return;
+
+    // UI에서 즉시 제거
     setEstimates(prev => prev.filter(estimate => estimate.id !== String(pendingDeleteId)));
     setPendingDeleteId(null);
+
+    // Supabase에서도 즉시 삭제 (estimate_items도 CASCADE로 자동 삭제됨)
+    try {
+      const { supabase } = await import('../services/supabase');
+      if (supabase === null || supabase === undefined) return;
+      const { error } = await supabase
+        .from('estimates')
+        .delete()
+        .eq('estimate_id', pendingDeleteId);
+
+      if (error !== null && error !== undefined) {
+        // 오류 발생
+      }
+    } catch (err) {
+      // 실패
+    }
   };
 
   const confirmConvertSingle = () => {

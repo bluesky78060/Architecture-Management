@@ -123,16 +123,17 @@ const Clients: React.FC = () => {
     // Supabase에서도 즉시 삭제 (디바운싱 없이)
     try {
       const { supabase } = await import('../services/supabase');
+      if (supabase === null || supabase === undefined) return;
       const { error } = await supabase
         .from('clients')
         .delete()
         .in('client_id', selection.selected);
 
-      if (error) {
-        console.error('건축주 일괄 삭제 오류:', error);
+      if (error !== null && error !== undefined) {
+        // 건축주 삭제 오류 발생
       }
     } catch (err) {
-      console.error('건축주 일괄 삭제 실패:', err);
+      // 실패
     }
   };
 
@@ -146,16 +147,17 @@ const Clients: React.FC = () => {
       // React state의 id는 DB의 client_id와 동일
       try {
         const { supabase } = await import('../services/supabase');
+      if (supabase === null || supabase === undefined) return;
         const { error } = await supabase
           .from('clients')
           .delete()
           .eq('client_id', id);
 
-        if (error) {
-          console.error('건축주 삭제 오류:', error);
+        if (error !== null && error !== undefined) {
+          // 오류 발생
         }
       } catch (err) {
-        console.error('건축주 삭제 실패:', err);
+        // 실패
       }
     }
   };

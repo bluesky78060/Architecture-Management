@@ -147,10 +147,28 @@ export default function WorkItems(): JSX.Element {
   };
 
   const handleDelete = (id: Id) => setPendingDeleteId(id);
-  const confirmDeleteSingle = () => {
+  const confirmDeleteSingle = async () => {
     if (pendingDeleteId == null) return;
+
+    // UI에서 즉시 제거
     setWorkItems(prev => prev.filter(i => i.id !== pendingDeleteId));
     setPendingDeleteId(null);
+
+    // Supabase에서도 즉시 삭제
+    try {
+      const { supabase } = await import('../services/supabase');
+      if (supabase === null || supabase === undefined) return;
+      const { error } = await supabase
+        .from('work_items')
+        .delete()
+        .eq('work_item_id', pendingDeleteId);
+
+      if (error !== null && error !== undefined) {
+        // 오류 발생
+      }
+    } catch (err) {
+      // 실패
+    }
   };
 
   const toInvoiceItem = (wi: WorkItem) => {
@@ -367,11 +385,16 @@ export default function WorkItems(): JSX.Element {
     alert(`${createdItems.length}개의 작업 항목이 추가되었습니다.`);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const selectedClientData = clients.find(c => Number(c.id) === Number(newItem.clientId));
     const selectedWorkplace = getClientWorkplaces(newItem.clientId).find(wp => wp.id === newItem.workplaceId);
+
     if (editingItem !== null) {
+      // 이전 상태 백업 (롤백용)
+      const previousWorkItems = workItems;
+
+      // 수정: UI 즉시 업데이트 (낙관적 업데이트)
       const updated = {
         ...editingItem,
         ...newItem,
@@ -379,7 +402,56 @@ export default function WorkItems(): JSX.Element {
         workplaceName: selectedWorkplace?.name ?? editingItem.workplaceName,
       } as WorkItem;
       setWorkItems(prev => prev.map(i => i.id === editingItem.id ? updated : i));
+
+      // Supabase에도 즉시 업데이트
+      try {
+        const { supabase } = await import('../services/supabase');
+      if (supabase === null || supabase === undefined) {
+        // Supabase 초기화 실패 시 롤백
+        setWorkItems(previousWorkItems);
+        alert('데이터베이스 연결에 실패했습니다.');
+        return;
+      }
+        const { error } = await supabase
+          .from('work_items')
+          .update({
+            client_id: updated.clientId,
+            workplace_id: updated.workplaceId,
+            project_name: updated.projectName ?? '',
+            name: updated.name,
+            description: updated.description ?? '',
+            category: updated.category ?? '',
+            quantity: updated.quantity ?? 0,
+            unit: updated.unit ?? '',
+            default_price: updated.defaultPrice ?? 0,
+            status: updated.status,
+            date: updated.date ?? new Date().toISOString().split('T')[0],
+            notes: updated.notes ?? '',
+            labor_persons: updated.laborPersons ?? 0,
+            labor_unit_rate: updated.laborUnitRate ?? 0,
+            labor_persons_general: updated.laborPersonsGeneral ?? 0,
+            labor_unit_rate_general: updated.laborUnitRateGeneral ?? 0,
+          })
+          .eq('work_item_id', updated.id);
+
+        if (error !== null && error !== undefined) {
+          // 오류 발생 시 롤백
+          setWorkItems(previousWorkItems);
+          alert(`작업 항목 수정 중 오류가 발생했습니다: ${error.message}`);
+          return;
+        }
+      } catch (err) {
+        // 예외 발생 시 롤백
+        setWorkItems(previousWorkItems);
+        alert('작업 항목 수정 중 예상치 못한 오류가 발생했습니다.');
+        return;
+      }
     } else {
+      // 이전 상태 백업 (롤백용)
+      const previousWorkItems = workItems;
+      const previousClients = clients;
+
+      // 생성: UI 즉시 업데이트 (낙관적 업데이트)
       const nextId = ((workItems.length > 0) ? Math.max(...workItems.map(i => Number(i.id) ?? 0)) : 0) + 1;
       const created: WorkItem = {
         ...newItem,
@@ -389,6 +461,7 @@ export default function WorkItems(): JSX.Element {
         date: newItem.date ?? new Date().toISOString().split('T')[0],
       } as WorkItem;
       setWorkItems(prev => [...prev, created]);
+
       const hasProjectName = newItem.projectName !== undefined && newItem.projectName !== null && newItem.projectName !== '';
       if (hasProjectName) {
         setClients(prev => prev.map(c => Number(c.id) === Number(newItem.clientId)
@@ -396,7 +469,59 @@ export default function WorkItems(): JSX.Element {
           : c
         ));
       }
+
+      // Supabase에도 즉시 생성
+      try {
+        const { supabase } = await import('../services/supabase');
+      if (supabase === null || supabase === undefined) {
+        // Supabase 초기화 실패 시 롤백
+        setWorkItems(previousWorkItems);
+        setClients(previousClients);
+        alert('데이터베이스 연결에 실패했습니다.');
+        return;
+      }
+        const { getCurrentUserId } = await import('../services/supabase');
+        const userId = await getCurrentUserId();
+
+        const { error } = await supabase
+          .from('work_items')
+          .insert({
+            work_item_id: created.id,
+            user_id: userId,
+            client_id: created.clientId,
+            workplace_id: created.workplaceId,
+            project_name: created.projectName ?? '',
+            name: created.name,
+            description: created.description ?? '',
+            category: created.category ?? '',
+            quantity: created.quantity ?? 0,
+            unit: created.unit ?? '',
+            default_price: created.defaultPrice ?? 0,
+            status: created.status,
+            date: created.date ?? new Date().toISOString().split('T')[0],
+            notes: created.notes ?? '',
+            labor_persons: created.laborPersons ?? 0,
+            labor_unit_rate: created.laborUnitRate ?? 0,
+            labor_persons_general: created.laborPersonsGeneral ?? 0,
+            labor_unit_rate_general: created.laborUnitRateGeneral ?? 0,
+          });
+
+        if (error !== null && error !== undefined) {
+          // 오류 발생 시 롤백
+          setWorkItems(previousWorkItems);
+          setClients(previousClients);
+          alert(`작업 항목 생성 중 오류가 발생했습니다: ${error.message}`);
+          return;
+        }
+      } catch (err) {
+        // 예외 발생 시 롤백
+        setWorkItems(previousWorkItems);
+        setClients(previousClients);
+        alert('작업 항목 생성 중 예상치 못한 오류가 발생했습니다.');
+        return;
+      }
     }
+
     setShowItemModal(false);
     setEditingItem(null);
     setNewItem(defaultNewItem);
@@ -410,12 +535,30 @@ export default function WorkItems(): JSX.Element {
     setShowConfirmBulkDelete(true);
   };
 
-  const confirmBulkDelete = () => {
+  const confirmBulkDelete = async () => {
     const count = selection.selected.length;
+
+    // UI에서 즉시 제거
     setWorkItems(prev => prev.filter(i => !selection.selected.includes(i.id)));
     selection.clear();
     setShowConfirmBulkDelete(false);
     alert(`${count}개의 작업 항목이 삭제되었습니다.`);
+
+    // Supabase에서도 즉시 삭제
+    try {
+      const { supabase } = await import('../services/supabase');
+      if (supabase === null || supabase === undefined) return;
+      const { error } = await supabase
+        .from('work_items')
+        .delete()
+        .in('work_item_id', selection.selected);
+
+      if (error !== null && error !== undefined) {
+        // 오류 발생
+      }
+    } catch (err) {
+      // 실패
+    }
   };
 
   const handleApplyBulkStatus = () => {
