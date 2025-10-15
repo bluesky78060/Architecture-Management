@@ -415,8 +415,8 @@ export default function WorkItems(): JSX.Element {
         const { error } = await supabase
           .from('work_items')
           .update({
-            client_id: updated.clientId,
-            workplace_id: updated.workplaceId,
+            client_id: updated.clientId ? Number(updated.clientId) : null,
+            workplace_id: updated.workplaceId ? Number(updated.workplaceId) : null,
             project_name: updated.projectName ?? '',
             name: updated.name,
             description: updated.description ?? '',
@@ -487,8 +487,8 @@ export default function WorkItems(): JSX.Element {
           .insert({
             work_item_id: created.id,
             user_id: userId,
-            client_id: created.clientId,
-            workplace_id: created.workplaceId,
+            client_id: created.clientId ? Number(created.clientId) : null,
+            workplace_id: created.workplaceId ? Number(created.workplaceId) : null,
             project_name: created.projectName ?? '',
             name: created.name,
             description: created.description ?? '',
