@@ -405,7 +405,7 @@ export default function WorkItems(): JSX.Element {
     setBulkItems(prev => (prev.length <= 1 ? prev : prev.filter((_, i) => i !== index)));
   };
 
-  const onBulkSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onBulkSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const errors: string[] = [];
     const hasClientId = bulkBaseInfo.clientId !== '' && bulkBaseInfo.clientId !== null && bulkBaseInfo.clientId !== undefined;
@@ -454,6 +454,11 @@ export default function WorkItems(): JSX.Element {
       laborUnitRate: item.laborUnitRate ?? '',
     }));
 
+    // 이전 상태 백업 (롤백용)
+    const previousWorkItems = workItems;
+    const previousClients = clients;
+
+    // UI 즉시 업데이트 (낙관적 업데이트)
     setWorkItems(prev => [...prev, ...createdItems]);
     const hasBulkProjectName = bulkBaseInfo.projectName !== '' && bulkBaseInfo.projectName !== null && bulkBaseInfo.projectName !== undefined;
     if (hasBulkProjectName) {
@@ -461,6 +466,75 @@ export default function WorkItems(): JSX.Element {
         ? { ...c, projects: Array.from(new Set([...(c.projects ?? []), bulkBaseInfo.projectName])) }
         : c
       ));
+    }
+
+    // Supabase에도 즉시 생성
+    try {
+      const { supabase } = await import('../services/supabase');
+      if (supabase === null || supabase === undefined) {
+        setWorkItems(previousWorkItems);
+        setClients(previousClients);
+        alert('데이터베이스 연결에 실패했습니다.');
+        return;
+      }
+      const { getCurrentUserId } = await import('../services/supabase');
+      const userId = await getCurrentUserId();
+
+      // Integer 필드를 안전하게 변환하는 헬퍼 함수
+      const toIntOrNull = (val: string | number | null | undefined): number | null => {
+        if (val === null || val === undefined || val === '') return null;
+        const num = Number(val);
+        return isNaN(num) ? null : num;
+      };
+
+      // Status 한글 -> 영어 변환 함수
+      const toDbStatus = (status: string | undefined): string => {
+        if (status === null || status === undefined || status === '') return 'planned';
+        const statusMap: Record<string, string> = {
+          '예정': 'planned',
+          '진행중': 'in_progress',
+          '완료': 'completed',
+          '보류': 'on_hold',
+        };
+        return statusMap[status] ?? 'planned';
+      };
+
+      // 대량 INSERT를 위한 데이터 배열 생성
+      const dbWorkItems = createdItems.map(item => ({
+        user_id: userId,
+        client_id: toIntOrNull(item.clientId),
+        workplace_id: toIntOrNull(item.workplaceId),
+        project_name: item.projectName ?? '',
+        name: item.name,
+        description: item.description ?? '',
+        category: item.category ?? '',
+        quantity: toIntOrNull(item.quantity) ?? 0,
+        unit: item.unit ?? '',
+        default_price: toIntOrNull(item.defaultPrice) ?? 0,
+        status: toDbStatus(item.status),
+        start_date: item.date ?? null,
+        notes: item.notes ?? '',
+        labor_persons: toIntOrNull(item.laborPersons) ?? 0,
+        labor_unit_rate: toIntOrNull(item.laborUnitRate) ?? 0,
+        labor_persons_general: toIntOrNull(item.laborPersonsGeneral) ?? 0,
+        labor_unit_rate_general: toIntOrNull(item.laborUnitRateGeneral) ?? 0,
+      }));
+
+      const { error } = await supabase
+        .from('work_items')
+        .insert(dbWorkItems);
+
+      if (error !== null && error !== undefined) {
+        setWorkItems(previousWorkItems);
+        setClients(previousClients);
+        alert(`작업 항목 생성 중 오류가 발생했습니다: ${error.message}`);
+        return;
+      }
+    } catch (err) {
+      setWorkItems(previousWorkItems);
+      setClients(previousClients);
+      alert('작업 항목 생성 중 예상치 못한 오류가 발생했습니다.');
+      return;
     }
 
     setShowBulkModal(false);
