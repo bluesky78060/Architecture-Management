@@ -541,10 +541,10 @@ export default function WorkItems(): JSX.Element {
           return;
         }
 
+        // work_item_id는 데이터베이스에서 자동 생성하도록 제거
         const { error } = await supabase
           .from('work_items')
           .insert({
-            work_item_id: toIntOrNull(created.id) ?? 0,
             user_id: userId,
             client_id: clientIdValue,
             workplace_id: workplaceIdValue,
