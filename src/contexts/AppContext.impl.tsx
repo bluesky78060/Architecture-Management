@@ -353,11 +353,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     return newItems;
   };
 
-  // Clients 저장
+  // Clients 저장 (디바운싱 적용)
   useEffect(() => {
     if (!userId || !supabase || loading) return;
 
-    const saveClients = async () => {
+    const timer = setTimeout(async () => {
       try {
         // 기존 데이터 삭제 후 재생성 (간단한 동기화)
         await supabase!.from('clients').delete().eq('user_id', userId);
@@ -386,16 +386,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       } catch (err) {
         console.error('건축주 저장 실패:', err);
       }
-    };
+    }, 1000); // 1초 디바운스
 
-    saveClients();
+    return () => clearTimeout(timer);
   }, [clients, userId, loading]);
 
-  // Company Info 저장
+  // Company Info 저장 (디바운싱 적용)
   useEffect(() => {
     if (!userId || !supabase || loading) return;
 
-    const saveCompanyInfo = async () => {
+    const timer = setTimeout(async () => {
       try {
         await supabase!
           .from('company_info')
@@ -413,16 +413,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       } catch (err) {
         console.error('회사 정보 저장 실패:', err);
       }
-    };
+    }, 1000);
 
-    saveCompanyInfo();
+    return () => clearTimeout(timer);
   }, [companyInfo, userId, loading]);
 
-  // Work Items 저장
+  // Work Items 저장 (디바운싱 적용)
   useEffect(() => {
     if (!userId || !supabase || loading) return;
 
-    const saveWorkItems = async () => {
+    const timer = setTimeout(async () => {
       try {
         await supabase!.from('work_items').delete().eq('user_id', userId);
 
@@ -457,16 +457,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       } catch (err) {
         console.error('작업 항목 저장 실패:', err);
       }
-    };
+    }, 1000);
 
-    saveWorkItems();
+    return () => clearTimeout(timer);
   }, [workItems, userId, loading]);
 
-  // Estimates 저장
+  // Estimates 저장 (디바운싱 적용)
   useEffect(() => {
     if (!userId || !supabase || loading) return;
 
-    const saveEstimates = async () => {
+    const timer = setTimeout(async () => {
       try {
         await supabase!.from('estimate_items').delete().match({ user_id: userId });
         await supabase!.from('estimates').delete().eq('user_id', userId);
@@ -518,16 +518,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       } catch (err) {
         console.error('견적서 저장 실패:', err);
       }
-    };
+    }, 1000);
 
-    saveEstimates();
+    return () => clearTimeout(timer);
   }, [estimates, userId, loading]);
 
-  // Invoices 저장
+  // Invoices 저장 (디바운싱 적용)
   useEffect(() => {
     if (!userId || !supabase || loading) return;
 
-    const saveInvoices = async () => {
+    const timer = setTimeout(async () => {
       try {
         await supabase!.from('invoice_items').delete().match({ user_id: userId });
         await supabase!.from('invoices').delete().eq('user_id', userId);
@@ -583,9 +583,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       } catch (err) {
         console.error('청구서 저장 실패:', err);
       }
-    };
+    }, 1000);
 
-    saveInvoices();
+    return () => clearTimeout(timer);
   }, [invoices, userId, loading]);
 
   const value: AppContextValue = {
