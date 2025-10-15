@@ -39,7 +39,7 @@ export default function WorkItems(): JSX.Element {
       name: '',
       category: '',
       defaultPrice: 0,
-      quantity: 1,
+      quantity: '' as unknown as number,
       unit: '',
       description: '',
       status: '예정',
@@ -73,7 +73,7 @@ export default function WorkItems(): JSX.Element {
     name: '',
     category: '',
     defaultPrice: 0,
-    quantity: 1,
+    quantity: '' as unknown as number,
     unit: '',
     description: '',
     status: '예정',
@@ -397,7 +397,7 @@ export default function WorkItems(): JSX.Element {
     setBulkItems(prev => ([
       ...prev,
       {
-        name: '', category: '', defaultPrice: 0, quantity: 1, unit: '', description: '', status: '예정', notes: '', laborPersons: '', laborUnitRate: ''
+        name: '', category: '', defaultPrice: 0, quantity: '' as unknown as number, unit: '', description: '', status: '예정', notes: '', laborPersons: '', laborUnitRate: ''
       }
     ]));
   };
@@ -431,7 +431,6 @@ export default function WorkItems(): JSX.Element {
       ? bulkBaseInfo.bulkLaborUnitRate
       : (String(bulkBaseInfo.bulkLaborUnitRate).trim() === '' ? '' : (parseInt(String(bulkBaseInfo.bulkLaborUnitRate), 10) ?? 0));
 
-    const DEFAULT_QUANTITY = 1;
     const createdItems: WorkItem[] = bulkItems.map((item, idx) => ({
       id: currentMaxId + idx + 1,
       clientId: Number(bulkBaseInfo.clientId) as number,
@@ -443,7 +442,7 @@ export default function WorkItems(): JSX.Element {
       name: item.name ?? '',
       category: item.category ?? '',
       defaultPrice: (typeof item.defaultPrice === 'number' ? item.defaultPrice : 0),
-      quantity: (typeof item.quantity === 'number' ? item.quantity : DEFAULT_QUANTITY),
+      quantity: (typeof item.quantity === 'number' && item.quantity !== 0) ? item.quantity : ((item.quantity as unknown as string) === '' ? '' as unknown as number : 1),
       unit: item.unit ?? '',
       description: item.description ?? '',
       status: (item.status as WorkStatus) ?? '예정',
@@ -599,7 +598,7 @@ export default function WorkItems(): JSX.Element {
 
     setShowBulkModal(false);
     setShowBulkCustomProject(false);
-    setBulkItems([{ name: '', category: '', defaultPrice: 0, quantity: 1, unit: '', description: '', status: '예정', notes: '', laborPersons: '', laborUnitRate: '' }]);
+    setBulkItems([{ name: '', category: '', defaultPrice: 0, quantity: '' as unknown as number, unit: '', description: '', status: '예정', notes: '', laborPersons: '', laborUnitRate: '' }]);
     setBulkBaseInfo({ clientId: '', workplaceId: '', projectName: '', date: new Date().toISOString().split('T')[0], bulkLaborPersons: '', bulkLaborUnitRate: '' });
     alert(`${createdItems.length}개의 작업 항목이 추가되었습니다.`);
   };
