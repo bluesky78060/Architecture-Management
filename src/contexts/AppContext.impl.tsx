@@ -361,11 +361,19 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             email: companyData.email || '',
             representative: companyData.representative || '',
             stampImage: stampImageData,
-            bankAccount: '',
-            accountHolder: ''
+            bankAccount: companyData.bank_account || '',
+            accountHolder: companyData.account_holder || ''
           });
           // 도장 이미지를 컨텍스트 상태에도 설정
           setStampImage(stampImageData || null);
+
+          // 단위와 카테고리 로드
+          if (companyData.units && Array.isArray(companyData.units)) {
+            setUnits(companyData.units);
+          }
+          if (companyData.categories && Array.isArray(companyData.categories)) {
+            setCategories(companyData.categories);
+          }
         } else {
           // 데이터가 없으면 로컬 IndexedDB에서 로드 시도 (마이그레이션용)
           const { loadStampImage } = await import('../utils/imageStorage');
@@ -486,7 +494,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           phone: companyInfo.phone,
           email: companyInfo.email,
           representative: companyInfo.representative,
-          stamp_image: companyInfo.stampImage || null
+          stamp_image: companyInfo.stampImage || null,
+          bank_account: companyInfo.bankAccount || null,
+          account_holder: companyInfo.accountHolder || null,
+          units: units,
+          categories: categories
         };
 
         const insertPayload = {
@@ -508,7 +520,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }, DEBOUNCE_DELAY_MS);
 
     return () => clearTimeout(timer);
-  }, [companyInfo, userId, supabase, loading, isInitialLoad]);
+  }, [companyInfo, units, categories, userId, supabase, loading, isInitialLoad]);
 
   // Work Items 저장 - WorkItems.tsx에서 즉시 저장하므로 디바운스 저장 비활성화
   // Clients.tsx와 WorkItems.tsx에서 각각 즉시 INSERT/UPDATE/DELETE 처리
