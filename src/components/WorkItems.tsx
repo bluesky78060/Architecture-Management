@@ -421,7 +421,7 @@ export default function WorkItems(): JSX.Element {
 
         // Status 한글 -> 영어 변환 함수
         const toDbStatus = (status: string | undefined): string => {
-          if (!status) return 'planned';
+          if (status === null || status === undefined || status === '') return 'planned';
           const statusMap: Record<string, string> = {
             '예정': 'planned',
             '진행중': 'in_progress',
