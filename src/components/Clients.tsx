@@ -112,17 +112,51 @@ const Clients: React.FC = () => {
   const toggleSelectOne = (id: Id, checked: boolean) => selection.toggleOne(id, checked);
   
   /** 선택된 건축주 일괄 삭제 */
-  const handleBulkDelete = () => {
+  const handleBulkDelete = async () => {
     if (selection.selected.length === 0) return;
+
+    // UI에서 즉시 제거
     setClients(prev => prev.filter(c => !selection.selected.includes(c.id)));
     selection.clear();
     setShowConfirmDelete(false);
+
+    // Supabase에서도 즉시 삭제 (디바운싱 없이)
+    try {
+      const { supabase } = await import('../services/supabase');
+      const { error } = await supabase
+        .from('clients')
+        .delete()
+        .in('client_id', selection.selected);
+
+      if (error) {
+        console.error('건축주 일괄 삭제 오류:', error);
+      }
+    } catch (err) {
+      console.error('건축주 일괄 삭제 실패:', err);
+    }
   };
 
   /** 개별 건축주 삭제 */
-  const handleDelete = (id: Id) => {
+  const handleDelete = async (id: Id) => {
     if (window.confirm('이 건축주를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+      // UI에서 즉시 제거
       setClients(prev => prev.filter(c => c.id !== id));
+
+      // Supabase에서도 즉시 삭제 (디바운싱 없이)
+      // React state의 id는 DB의 client_id와 동일
+      try {
+        const { supabase } = await import('../services/supabase');
+        const { error } = await supabase
+          .from('clients')
+          .delete()
+          .eq('client_id', id);
+
+        if (error) {
+          console.error('건축주 삭제 오류:', error);
+        }
+      } catch (err) {
+        console.error('건축주 삭제 실패:', err);
+      }
     }
   };
 
