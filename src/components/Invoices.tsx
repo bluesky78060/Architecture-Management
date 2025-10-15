@@ -690,19 +690,19 @@ export default function Invoices(): JSX.Element {
                           <div className="text-xs font-medium text-blue-700 mb-1">인부임 정보</div>
                           <div className="grid grid-cols-4 gap-2">
                             <div>
-                              <label className="block text-xs text-blue-600 mb-1">숙련 인부수</label>
+                              <label className="block text-xs text-blue-600 mb-1">인부수</label>
                               <input type="text" value={it.laborPersons === '' ? '' : String(it.laborPersons)} onChange={(e) => onFormItemChange(idx, 'laborPersons', e.target.value)} className="w-full border border-blue-200 rounded px-2 py-1 text-sm" placeholder="명" />
                             </div>
                             <div>
-                              <label className="block text-xs text-blue-600 mb-1">숙련 단가</label>
+                              <label className="block text-xs text-blue-600 mb-1">단가</label>
                               <input type="text" value={it.laborUnitRate === '' ? '' : String(it.laborUnitRate)} onChange={(e) => onFormItemChange(idx, 'laborUnitRate', e.target.value)} className="w-full border border-blue-200 rounded px-2 py-1 text-sm" placeholder="원" />
                             </div>
                             <div>
-                              <label className="block text-xs text-blue-600 mb-1">일반 인부수</label>
+                              <label className="block text-xs text-blue-600 mb-1">인부수</label>
                               <input type="text" value={it.laborPersonsGeneral === '' ? '' : String(it.laborPersonsGeneral)} onChange={(e) => onFormItemChange(idx, 'laborPersonsGeneral', e.target.value)} className="w-full border border-blue-200 rounded px-2 py-1 text-sm" placeholder="명" />
                             </div>
                             <div>
-                              <label className="block text-xs text-blue-600 mb-1">일반 단가</label>
+                              <label className="block text-xs text-blue-600 mb-1">단가</label>
                               <input type="text" value={it.laborUnitRateGeneral === '' ? '' : String(it.laborUnitRateGeneral)} onChange={(e) => onFormItemChange(idx, 'laborUnitRateGeneral', e.target.value)} className="w-full border border-blue-200 rounded px-2 py-1 text-sm" placeholder="원" />
                             </div>
                           </div>
