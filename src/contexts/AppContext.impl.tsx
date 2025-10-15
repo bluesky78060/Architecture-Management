@@ -172,7 +172,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         const { data: clientsData, error: clientsError } = await supabase!
           .from('clients')
           .select('*')
-          .eq('user_id', userId)
           .order('created_at', { ascending: false });
 
         if (clientsError) {
@@ -210,7 +209,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         const { data: workItemsData, error: workItemsError } = await supabase!
           .from('work_items')
           .select('*')
-          .eq('user_id', userId)
           .order('created_at', { ascending: false });
 
         if (workItemsError) throw workItemsError;
@@ -246,7 +244,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             *,
             estimate_items (*)
           `)
-          .eq('user_id', userId)
           .order('created_at', { ascending: false });
 
         if (estimatesError) throw estimatesError;
@@ -283,7 +280,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             *,
             invoice_items (*)
           `)
-          .eq('user_id', userId)
           .order('created_at', { ascending: false });
 
         if (invoicesError) throw invoicesError;
@@ -320,7 +316,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         const { data: companyData, error: companyError } = await supabase!
           .from('company_info')
           .select('*')
-          .eq('user_id', userId)
+          .limit(1)
           .single();
 
         if (!companyError && companyData) {
