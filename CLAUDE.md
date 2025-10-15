@@ -63,6 +63,38 @@ cp backup_checkpoints/[체크포인트명]/src/components/[파일명] /Users/lee
 
 ## 프로젝트 진행 기록
 
+### 2025.10.15 - 클라이언트 필드 완성 및 Vercel 배포 수정 ✨
+- **작업 내용**: 클라이언트 데이터 완전 저장 구현 및 빌드 환경 최적화
+- **문제 진단**:
+  - 콘솔 로그: 데이터가 완전히 준비되었으나 일부 필드만 저장됨
+  - DB 확인: mobile, workplaces, projects 필드가 테이블에 없음
+- **DB 스키마 확장**:
+  - ✅ `mobile` VARCHAR(20) 컬럼 추가 (휴대전화)
+  - ✅ `workplaces` JSONB 컬럼 추가 (작업장 배열)
+  - ✅ `projects` JSONB 컬럼 추가 (프로젝트 배열)
+  - ✅ 인덱스 추가 (idx_clients_mobile, idx_clients_workplaces)
+- **코드 수정**:
+  - AppContext.impl.tsx: 클라이언트 로딩 로직에 mobile, workplaces, projects 추가
+  - AppContext.impl.tsx: 클라이언트 저장 로직에 모든 필드 매핑
+  - contact_person 매핑 수정 (PERSON: name, BUSINESS: representative)
+- **Vercel 빌드 수정**:
+  - vercel.json에 명시적 빌드 설정 추가 (buildCommand, outputDirectory, framework)
+  - ENOENT package.json 오류 해결
+- **ESLint 수정**:
+  - JSON_INDENT_SPACES 상수 추가 (magic number 2 제거)
+  - INITIAL_LOAD_GRACE_PERIOD_MS, DEBOUNCE_DELAY_MS 상수 사용
+- **검증 완료**:
+  - 이찬희: workplaces, projects 정상 저장
+  - 박나라: mobile, workplaces, projects 모두 정상 저장
+  - 콘솔 로그와 Supabase Table Editor로 데이터 완전성 확인
+
+### Git 커밋
+- `fcee3cf` - feat: add missing client fields (mobile, workplaces, projects)
+- `7f4da22` - fix: add explicit build configuration to vercel.json
+- `a72c4a7` - fix: replace magic numbers with named constants
+- `d3467c4` - fix: replace JSON.stringify magic number with constant
+- `aaae9c4` - chore: remove debug logging after successful verification
+
 ### 2025.10.14 - Supabase 완전 마이그레이션 🚀
 - **작업 내용**: localStorage에서 Supabase PostgreSQL로 데이터 저장소 완전 전환
 - **데이터베이스 마이그레이션**:
