@@ -210,7 +210,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           .from('work_items')
           .select(`
             *,
-            clients!work_items_client_id_fkey (
+            clients!client_id (
               name,
               workplaces
             )
