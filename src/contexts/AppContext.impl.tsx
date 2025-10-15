@@ -7,9 +7,6 @@ import type { CompanyInfo, Client, WorkItem, Invoice, Estimate, UnitName, Catego
 const INITIAL_LOAD_GRACE_PERIOD_MS = 100;
 const DEBOUNCE_DELAY_MS = 1000;
 
-// JSON formatting constants
-const JSON_INDENT_SPACES = 2;
-
 export interface AppContextValue {
   companyInfo: CompanyInfo;
   setCompanyInfo: React.Dispatch<React.SetStateAction<CompanyInfo>>;
@@ -376,37 +373,27 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         await supabase!.from('clients').delete().eq('user_id', userId);
 
         if (clients.length > 0) {
-          console.log('📊 Total clients to save:', clients.length);
-          const dbClients = clients.map((c, index) => {
-            console.log(`💾 [${index}] Saving client:`, JSON.stringify(c, null, JSON_INDENT_SPACES));
-            const dbClient = {
-              user_id: userId,
-              company_name: c.business?.businessName || c.name,
-              representative: c.business?.representative || '',
-              business_number: c.business?.businessNumber || '',
-              address: c.address || '',
-              email: c.email || '',
-              phone: c.phone || '',
-              mobile: c.mobile || '',
-              contact_person: c.type === 'PERSON' ? c.name : (c.business?.representative || ''),
-              type: c.type || 'BUSINESS',
-              notes: c.notes || '',
-              workplaces: c.workplaces || [],
-              projects: c.projects || [],
-              total_billed: c.totalBilled || 0,
-              outstanding: c.outstanding || 0
-            };
-            console.log(`📦 [${index}] DB Client:`, JSON.stringify(dbClient, null, JSON_INDENT_SPACES));
-            return dbClient;
-          });
+          const dbClients = clients.map(c => ({
+            user_id: userId,
+            company_name: c.business?.businessName || c.name,
+            representative: c.business?.representative || '',
+            business_number: c.business?.businessNumber || '',
+            address: c.address || '',
+            email: c.email || '',
+            phone: c.phone || '',
+            mobile: c.mobile || '',
+            contact_person: c.type === 'PERSON' ? c.name : (c.business?.representative || ''),
+            type: c.type || 'BUSINESS',
+            notes: c.notes || '',
+            workplaces: c.workplaces || [],
+            projects: c.projects || [],
+            total_billed: c.totalBilled || 0,
+            outstanding: c.outstanding || 0
+          }));
 
-          console.log('💾 DB Clients to save (total):', dbClients.length);
-          console.log('📋 First client sample:', JSON.stringify(dbClients[0], null, JSON_INDENT_SPACES));
           const { error } = await supabase!.from('clients').insert(dbClients);
           if (error) {
             console.error('건축주 저장 오류:', error);
-          } else {
-            console.log('✅ Clients saved successfully');
           }
         }
       } catch (err) {
