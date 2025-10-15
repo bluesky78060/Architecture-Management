@@ -214,13 +214,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         if (workItemsError) throw workItemsError;
 
         // Status 영어 -> 한글 변환 함수
-        const fromDbStatus = (status: string): string => {
-          const statusMap: Record<string, string> = {
+        const fromDbStatus = (status: string): '예정' | '진행중' | '완료' | '보류' => {
+          const statusMap: Record<string, '예정' | '진행중' | '완료' | '보류'> = {
             'planned': '예정',
             'in_progress': '진행중',
             'completed': '완료',
             'on_hold': '보류',
-            'cancelled': '취소',
+            'cancelled': '보류', // cancelled는 보류로 매핑
           };
           return statusMap[status] ?? '예정';
         };
