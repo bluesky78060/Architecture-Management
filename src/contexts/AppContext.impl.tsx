@@ -239,7 +239,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           unit: w.unit || '',
           description: w.description || '',
           status: fromDbStatus(w.status),
-          date: w.date || '',
+          date: w.start_date || '',
           notes: w.notes || '',
           laborPersons: w.labor_persons || 0,
           laborUnitRate: w.labor_unit_rate || 0,

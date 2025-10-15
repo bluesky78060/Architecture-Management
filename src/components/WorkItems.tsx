@@ -696,11 +696,55 @@ export default function WorkItems(): JSX.Element {
     }
   };
 
-  const handleApplyBulkStatus = () => {
+  const handleApplyBulkStatus = async () => {
     const hasStatus = bulkStatus !== '' && bulkStatus !== null && bulkStatus !== undefined;
     if (!hasStatus) { alert('변경할 상태를 선택하세요.'); return; }
+
+    // 이전 상태 백업 (롤백용)
+    const previousWorkItems = workItems;
+
+    // UI 즉시 업데이트 (낙관적 업데이트)
     setWorkItems(prev => prev.map(item => selection.selected.includes(item.id) ? { ...item, status: bulkStatus as WorkStatus } : item));
     setBulkStatus('');
+
+    // Supabase에도 즉시 업데이트
+    try {
+      const { supabase } = await import('../services/supabase');
+      if (supabase === null || supabase === undefined) {
+        setWorkItems(previousWorkItems);
+        alert('데이터베이스 연결에 실패했습니다.');
+        return;
+      }
+
+      // Status 한글 -> 영어 변환 함수
+      const toDbStatus = (status: string | undefined): string => {
+        if (status === null || status === undefined || status === '') return 'planned';
+        const statusMap: Record<string, string> = {
+          '예정': 'planned',
+          '진행중': 'in_progress',
+          '완료': 'completed',
+          '보류': 'on_hold',
+        };
+        return statusMap[status] ?? 'planned';
+      };
+
+      const dbStatus = toDbStatus(bulkStatus as WorkStatus);
+
+      // 선택된 항목들의 상태를 일괄 업데이트
+      const { error } = await supabase
+        .from('work_items')
+        .update({ status: dbStatus })
+        .in('work_item_id', selection.selected);
+
+      if (error !== null && error !== undefined) {
+        setWorkItems(previousWorkItems);
+        alert(`상태 변경 중 오류가 발생했습니다: ${error.message}`);
+        return;
+      }
+    } catch (err) {
+      setWorkItems(previousWorkItems);
+      alert('상태 변경 중 예상치 못한 오류가 발생했습니다.');
+    }
   };
 
   const handleCreateBulkInvoice = () => {
