@@ -28,12 +28,20 @@ export default function ItemFormModal({ open, editingItem, newItem, clients, uni
   return (
     <div className="fixed inset-0 bg-gray-800/50 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
       <div className="relative top-8 mx-auto w-[980px] max-w-[95vw] shadow-2xl rounded-2xl bg-white/80 ring-1 ring-black/5">
-        <div className="rounded-t-2xl bg-gradient-to-br from-indigo-50 via-purple-50 to-white px-8 pt-8 pb-6 text-center">
-          <h3 className="text-2xl font-extrabold tracking-tight text-indigo-600">{editingItem !== null ? '작업 항목 편집' : '새 작업 항목 추가'}</h3>
-          <p className="mt-2 text-sm text-gray-500">새로운 건설 작업 항목을 등록하고 관리하세요</p>
+        <div className="rounded-t-2xl bg-gradient-to-br from-indigo-50 via-purple-50 to-white px-8 pt-6 pb-6">
+          <div className="flex items-center justify-between">
+            <div className="text-center flex-1">
+              <h3 className="text-2xl font-extrabold tracking-tight text-indigo-600">{editingItem !== null ? '작업 항목 편집' : '새 작업 항목 추가'}</h3>
+              <p className="mt-2 text-sm text-gray-500">새로운 건설 작업 항목을 등록하고 관리하세요</p>
+            </div>
+            <div className="flex space-x-2 ml-4">
+              <button type="button" onClick={onCancel} className="px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-white/50 rounded-lg transition">취소</button>
+              <button type="submit" form="work-item-form" className="px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-md transition">{editingItem !== null ? '수정' : '추가'}</button>
+            </div>
+          </div>
         </div>
         <div className="px-6 pb-6">
-          <form onSubmit={onSubmit} className="space-y-4">
+          <form id="work-item-form" onSubmit={onSubmit} className="space-y-4">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
               <div className="flex items-center mb-3 gap-3">
                 <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-50 text-indigo-600">🏗️</span>
@@ -250,11 +258,6 @@ export default function ItemFormModal({ open, editingItem, newItem, clients, uni
                   }</div>
                 </div>
               </div>
-            </div>
-
-            <div className="flex justify-end space-x-2 pt-2">
-              <button type="button" onClick={onCancel} className="px-4 py-2 text-gray-600 hover:text-gray-800">취소</button>
-              <button type="submit" className="px-4 py-2 rounded bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow">{editingItem !== null ? '수정' : '추가'}</button>
             </div>
           </form>
         </div>
