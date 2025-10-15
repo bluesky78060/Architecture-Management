@@ -38,7 +38,7 @@ export default function WorkItems(): JSX.Element {
     {
       name: '',
       category: '',
-      defaultPrice: 0,
+      defaultPrice: '' as unknown as number,
       quantity: '' as unknown as number,
       unit: '',
       description: '',
@@ -72,7 +72,7 @@ export default function WorkItems(): JSX.Element {
     projectName: '',
     name: '',
     category: '',
-    defaultPrice: 0,
+    defaultPrice: '' as unknown as number,
     quantity: '' as unknown as number,
     unit: '',
     description: '',
@@ -397,7 +397,7 @@ export default function WorkItems(): JSX.Element {
     setBulkItems(prev => ([
       ...prev,
       {
-        name: '', category: '', defaultPrice: 0, quantity: '' as unknown as number, unit: '', description: '', status: '예정', notes: '', laborPersons: '', laborUnitRate: ''
+        name: '', category: '', defaultPrice: '' as unknown as number, quantity: '' as unknown as number, unit: '', description: '', status: '예정', notes: '', laborPersons: '', laborUnitRate: ''
       }
     ]));
   };
@@ -441,7 +441,7 @@ export default function WorkItems(): JSX.Element {
       date: bulkBaseInfo.date ?? new Date().toISOString().split('T')[0],
       name: item.name ?? '',
       category: item.category ?? '',
-      defaultPrice: (typeof item.defaultPrice === 'number' ? item.defaultPrice : 0),
+      defaultPrice: (typeof item.defaultPrice === 'number' && item.defaultPrice !== 0) ? item.defaultPrice : ((item.defaultPrice as unknown as string) === '' ? '' as unknown as number : 0),
       quantity: (typeof item.quantity === 'number' && item.quantity !== 0) ? item.quantity : ((item.quantity as unknown as string) === '' ? '' as unknown as number : 1),
       unit: item.unit ?? '',
       description: item.description ?? '',
@@ -598,7 +598,7 @@ export default function WorkItems(): JSX.Element {
 
     setShowBulkModal(false);
     setShowBulkCustomProject(false);
-    setBulkItems([{ name: '', category: '', defaultPrice: 0, quantity: '' as unknown as number, unit: '', description: '', status: '예정', notes: '', laborPersons: '', laborUnitRate: '' }]);
+    setBulkItems([{ name: '', category: '', defaultPrice: '' as unknown as number, quantity: '' as unknown as number, unit: '', description: '', status: '예정', notes: '', laborPersons: '', laborUnitRate: '' }]);
     setBulkBaseInfo({ clientId: '', workplaceId: '', projectName: '', date: new Date().toISOString().split('T')[0], bulkLaborPersons: '', bulkLaborUnitRate: '' });
     alert(`${createdItems.length}개의 작업 항목이 추가되었습니다.`);
   };
