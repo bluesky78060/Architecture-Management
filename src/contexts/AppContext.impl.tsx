@@ -471,15 +471,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     const timer = setTimeout(async () => {
       try {
-        // 먼저 존재하는지 확인
-        const { data: existing } = await supabase!
-          .from('company_info')
-          .select('company_info_id')
-          .eq('user_id', userId)
-          .maybeSingle();
-
-        const payload = {
-          user_id: userId,
+        const updatePayload = {
           company_name: companyInfo.name,
           business_number: companyInfo.businessNumber,
           address: companyInfo.address,
@@ -490,17 +482,18 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           account_holder: companyInfo.accountHolder
         };
 
-        if (existing) {
-          // 업데이트
-          await supabase!
-            .from('company_info')
-            .update(payload)
-            .eq('user_id', userId);
-        } else {
-          // 삽입
-          await supabase!
-            .from('company_info')
-            .insert(payload);
+        const insertPayload = {
+          user_id: userId,
+          ...updatePayload
+        };
+
+        // Upsert 사용 (user_id unique constraint 기반 자동 conflict 처리)
+        const { error: upsertError } = await supabase!
+          .from('company_info')
+          .upsert(insertPayload);
+
+        if (upsertError) {
+          console.error('회사 정보 저장 실패:', upsertError);
         }
       } catch (err) {
         console.error('회사 정보 저장 실패:', err);
