@@ -373,9 +373,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         await supabase!.from('clients').delete().eq('user_id', userId);
 
         if (clients.length > 0) {
-          const dbClients = clients.map(c => {
-            console.log('💾 Saving client:', c);
-            return {
+          console.log('📊 Total clients to save:', clients.length);
+          const dbClients = clients.map((c, index) => {
+            console.log(`💾 [${index}] Saving client:`, JSON.stringify(c, null, 2));
+            const dbClient = {
               user_id: userId,
               company_name: c.business?.businessName || c.name,
               representative: c.business?.representative || '',
@@ -392,9 +393,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
               total_billed: c.totalBilled || 0,
               outstanding: c.outstanding || 0
             };
+            console.log(`📦 [${index}] DB Client:`, JSON.stringify(dbClient, null, 2));
+            return dbClient;
           });
 
-          console.log('💾 DB Clients to save:', dbClients);
+          console.log('💾 DB Clients to save (total):', dbClients.length);
+          console.log('📋 First client sample:', JSON.stringify(dbClients[0], null, 2));
           const { error } = await supabase!.from('clients').insert(dbClients);
           if (error) {
             console.error('건축주 저장 오류:', error);
