@@ -98,6 +98,66 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     checkAuth();
   }, []);
 
+  // 자동 로그아웃 - 1시간 동안 활동 없으면 로그아웃
+  useEffect(() => {
+    const MINUTES_PER_HOUR = 60;
+    const SECONDS_PER_MINUTE = 60;
+    const MILLISECONDS_PER_SECOND = 1000;
+    const INACTIVITY_TIMEOUT_MS = MINUTES_PER_HOUR * SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND; // 1시간 (밀리초)
+    let timeoutId: NodeJS.Timeout;
+
+    const handleLogout = async () => {
+      if (!supabase) return;
+
+      const LOGIN_DISABLED = (process.env.REACT_APP_DISABLE_LOGIN === '1') ||
+        (typeof window !== 'undefined' && window.localStorage !== null && window.localStorage.getItem('CMS_DISABLE_LOGIN') === '1');
+
+      if (LOGIN_DISABLED) return; // 로그인 비활성화 모드면 자동 로그아웃 안 함
+
+      try {
+        await supabase.auth.signOut();
+        setUserId(null);
+        setError('비활성 상태로 인해 자동 로그아웃되었습니다. 다시 로그인해주세요.');
+
+        // 페이지 새로고침하여 로그인 화면으로 이동
+        window.location.reload();
+      } catch (err) {
+        console.error('Auto logout failed:', err);
+      }
+    };
+
+    const resetTimer = () => {
+      // 기존 타이머 제거
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+
+      // 새로운 타이머 설정
+      timeoutId = setTimeout(handleLogout, INACTIVITY_TIMEOUT_MS);
+    };
+
+    // 사용자 활동 감지 이벤트들
+    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+
+    // 이벤트 리스너 등록
+    events.forEach(event => {
+      document.addEventListener(event, resetTimer, true);
+    });
+
+    // 초기 타이머 설정
+    resetTimer();
+
+    // 클린업: 이벤트 리스너 제거 및 타이머 클리어
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      events.forEach(event => {
+        document.removeEventListener(event, resetTimer, true);
+      });
+    };
+  }, [userId]);
+
   // 초기 데이터 로딩
   useEffect(() => {
     if (!userId || !supabase) return;
