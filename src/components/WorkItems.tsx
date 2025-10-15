@@ -526,13 +526,28 @@ export default function WorkItems(): JSX.Element {
         // eslint-disable-next-line no-console
         console.log('🔍 DB에 저장할 status:', dbStatus);
 
+        const clientIdValue = toIntOrNull(created.clientId);
+        const workplaceIdValue = toIntOrNull(created.workplaceId);
+        // eslint-disable-next-line no-console
+        console.log('🔍 client_id:', created.clientId, '->', clientIdValue);
+        // eslint-disable-next-line no-console
+        console.log('🔍 workplace_id:', created.workplaceId, '->', workplaceIdValue);
+
+        // client_id가 필수이므로 null이면 에러
+        if (clientIdValue === null) {
+          alert('건축주를 선택해주세요.');
+          setWorkItems(previousWorkItems);
+          setClients(previousClients);
+          return;
+        }
+
         const { error } = await supabase
           .from('work_items')
           .insert({
             work_item_id: toIntOrNull(created.id) ?? 0,
             user_id: userId,
-            client_id: toIntOrNull(created.clientId),
-            workplace_id: toIntOrNull(created.workplaceId),
+            client_id: clientIdValue,
+            workplace_id: workplaceIdValue,
             project_name: created.projectName ?? '',
             name: created.name,
             description: created.description ?? '',
