@@ -1,11 +1,6 @@
-/* eslint-disable @typescript-eslint/strict-boolean-expressions, @typescript-eslint/no-explicit-any, no-console */
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '../services/supabase';
 import type { CompanyInfo, Client, WorkItem, Invoice, Estimate, UnitName, CategoryName } from '../types/domain';
-
-// Timing constants for data synchronization
-const INITIAL_LOAD_GRACE_PERIOD_MS = 100;
-const DEBOUNCE_DELAY_MS = 1000;
 
 export interface AppContextValue {
   companyInfo: CompanyInfo;
@@ -26,7 +21,21 @@ export interface AppContextValue {
   setStampImage: React.Dispatch<React.SetStateAction<string | null>>;
   getCompletedWorkItems: () => WorkItem[];
   getCompletedWorkItemsByClient: (clientId: number) => WorkItem[];
-  addWorkItemToInvoice: (workItem: WorkItem, quantity?: number | null, unitPrice?: number | null) => any;
+  addWorkItemToInvoice: (workItem: WorkItem, quantity?: number | null, unitPrice?: number | null) => {
+    name: string;
+    quantity: number;
+    unit: string;
+    unitPrice: number;
+    total: number;
+    laborPersons: number;
+    laborUnitRate: number;
+    laborPersonsGeneral: number;
+    laborUnitRateGeneral: number;
+    description: string;
+    category: string;
+    date: string;
+    notes: string;
+  };
   convertEstimateToWorkItems: (estimateId: string) => WorkItem[];
   loading: boolean;
   error: string | null;
@@ -36,26 +45,25 @@ const AppContext = createContext<AppContextValue | undefined>(undefined);
 
 export const useApp = (): AppContextValue => {
   const ctx = useContext(AppContext);
-  if (!ctx) throw new Error('useApp must be used within an AppProvider');
+  if (ctx === undefined) throw new Error('useApp must be used within an AppProvider');
   return ctx;
-};
-
-const defaultCompanyInfo: CompanyInfo = {
-  name: '한국건설',
-  businessNumber: '123-45-67890',
-  address: '서울시 강남구 테헤란로 123',
-  phone: '02-1234-5678',
-  email: 'info@hangeonconstruction.com',
-  representative: '홍길동',
-  bankAccount: '신한은행 110-123-456789',
-  accountHolder: '한국건설(주)'
 };
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  const defaultCompanyInfo: CompanyInfo = {
+    name: '한국건설',
+    businessNumber: '123-45-67890',
+    address: '서울시 강남구 테헤란로 123',
+    phone: '02-1234-5678',
+    email: 'info@hangeonconstruction.com',
+    representative: '홍길동',
+    bankAccount: '신한은행 110-123-456789',
+    accountHolder: '한국건설(주)'
+  };
 
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo>(defaultCompanyInfo);
   const [clients, setClients] = useState<Client[]>([]);
@@ -68,19 +76,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   // 사용자 인증 확인
   useEffect(() => {
-    const LOGIN_DISABLED = (process.env.REACT_APP_DISABLE_LOGIN === '1') ||
-      (typeof window !== 'undefined' && window.localStorage !== null && window.localStorage.getItem('CMS_DISABLE_LOGIN') === '1');
-
     const checkAuth = async () => {
       if (!supabase) {
         setError('Supabase가 초기화되지 않았습니다');
-        setLoading(false);
-        return;
-      }
-
-      // 로그인 비활성화 모드면 인증 체크 건너뛰기
-      if (LOGIN_DISABLED) {
-        setUserId('dev-user-id'); // 개발용 임시 user_id
         setLoading(false);
         return;
       }
@@ -106,38 +104,33 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setLoading(true);
 
         // Clients 로딩
-        const { data: clientsData, error: clientsError } = await supabase!
+        const { data: clientsData, error: clientsError } = await supabase
           .from('clients')
           .select('*')
+          .eq('user_id', userId)
           .order('created_at', { ascending: false });
 
         if (clientsError) throw clientsError;
 
         const mappedClients: Client[] = (clientsData || []).map((c: any) => ({
           id: c.client_id,
-          name: c.company_name || '',
-          phone: c.phone || '',
-          email: c.email || '',
+          companyName: c.company_name,
+          name: c.representative || '',
+          businessNumber: c.business_number || '',
           address: c.address || '',
+          email: c.email || '',
+          phone: c.phone || '',
+          contactPerson: c.contact_person || '',
           type: c.type || 'BUSINESS',
-          business: c.type === 'BUSINESS' ? {
-            businessName: c.company_name || '',
-            representative: c.representative || '',
-            businessNumber: c.business_number || '',
-            businessType: '',
-            businessItem: '',
-            businessAddress: c.address || '',
-            taxEmail: c.email || ''
-          } : undefined,
+          notes: c.notes || '',
           totalBilled: c.total_billed || 0,
-          outstanding: c.outstanding || 0,
-          notes: c.notes || ''
+          outstanding: c.outstanding || 0
         }));
 
         setClients(mappedClients);
 
         // Work Items 로딩
-        const { data: workItemsData, error: workItemsError } = await supabase!
+        const { data: workItemsData, error: workItemsError } = await supabase
           .from('work_items')
           .select('*')
           .eq('user_id', userId)
@@ -170,7 +163,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setWorkItems(mappedWorkItems);
 
         // Estimates 로딩
-        const { data: estimatesData, error: estimatesError } = await supabase!
+        const { data: estimatesData, error: estimatesError } = await supabase
           .from('estimates')
           .select(`
             *,
@@ -188,7 +181,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           workplaceId: e.workplace_id,
           workplaceName: e.workplace_name || '',
           projectName: e.project_name || '',
-          title: e.project_name || '',
           status: e.status || '작성중',
           validUntil: e.valid_until || '',
           totalAmount: e.total_amount || 0,
@@ -207,7 +199,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setEstimates(mappedEstimates);
 
         // Invoices 로딩
-        const { data: invoicesData, error: invoicesError } = await supabase!
+        const { data: invoicesData, error: invoicesError } = await supabase
           .from('invoices')
           .select(`
             *,
@@ -247,7 +239,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setInvoices(mappedInvoices);
 
         // Company Info 로딩
-        const { data: companyData, error: companyError } = await supabase!
+        const { data: companyData, error: companyError } = await supabase
           .from('company_info')
           .select('*')
           .eq('user_id', userId)
@@ -255,7 +247,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
         if (!companyError && companyData) {
           setCompanyInfo({
-            name: companyData.company_name,
+            name: companyData.name,
             businessNumber: companyData.business_number || '',
             address: companyData.address || '',
             phone: companyData.phone || '',
@@ -266,7 +258,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           });
         }
 
-        // 도장 이미지 로딩
+        // Stamp Image 로딩
         const { loadStampImage } = await import('../utils/imageStorage');
         const loadedImage = await loadStampImage();
         setStampImage(loadedImage);
@@ -277,16 +269,230 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setError(err instanceof Error ? err.message : '데이터 로딩 중 오류가 발생했습니다');
       } finally {
         setLoading(false);
-        // 초기 로딩 완료 표시
-        setTimeout(() => setIsInitialLoad(false), INITIAL_LOAD_GRACE_PERIOD_MS);
       }
     };
 
     loadData();
   }, [userId]);
 
-  const getCompletedWorkItems = (): WorkItem[] => workItems.filter(i => i.status === '완료');
+  // Company Info 저장
+  useEffect(() => {
+    if (!userId || !supabase || loading) return;
 
+    const saveCompanyInfo = async () => {
+      try {
+        await supabase
+          .from('company_info')
+          .upsert({
+            user_id: userId,
+            name: companyInfo.name,
+            business_number: companyInfo.businessNumber,
+            address: companyInfo.address,
+            phone: companyInfo.phone,
+            email: companyInfo.email,
+            representative: companyInfo.representative,
+            bank_account: companyInfo.bankAccount,
+            account_holder: companyInfo.accountHolder
+          }, { onConflict: 'user_id' });
+      } catch (err) {
+        console.error('회사 정보 저장 실패:', err);
+      }
+    };
+
+    saveCompanyInfo();
+  }, [companyInfo, userId, loading]);
+
+  // Clients 저장
+  useEffect(() => {
+    if (!userId || !supabase || loading) return;
+
+    const saveClients = async () => {
+      try {
+        // 기존 데이터 삭제 후 재생성 (간단한 동기화)
+        await supabase.from('clients').delete().eq('user_id', userId);
+
+        if (clients.length > 0) {
+          const dbClients = clients.map(c => ({
+            user_id: userId,
+            client_id: typeof c.id === 'number' ? c.id : parseInt(String(c.id)),
+            company_name: c.companyName,
+            representative: c.name || null,
+            business_number: c.businessNumber || null,
+            address: c.address || null,
+            email: c.email || null,
+            phone: c.phone || null,
+            contact_person: c.contactPerson || null,
+            type: c.type || 'BUSINESS',
+            notes: c.notes || null,
+            total_billed: c.totalBilled || 0,
+            outstanding: c.outstanding || 0
+          }));
+
+          await supabase.from('clients').insert(dbClients);
+        }
+      } catch (err) {
+        console.error('건축주 저장 실패:', err);
+      }
+    };
+
+    saveClients();
+  }, [clients, userId, loading]);
+
+  // Work Items 저장
+  useEffect(() => {
+    if (!userId || !supabase || loading) return;
+
+    const saveWorkItems = async () => {
+      try {
+        await supabase.from('work_items').delete().eq('user_id', userId);
+
+        if (workItems.length > 0) {
+          const dbWorkItems = workItems.map(w => ({
+            user_id: userId,
+            work_item_id: typeof w.id === 'number' ? w.id : parseInt(String(w.id)),
+            client_id: w.clientId,
+            client_name: w.clientName,
+            workplace_id: w.workplaceId,
+            workplace_name: w.workplaceName,
+            project_name: w.projectName,
+            name: w.name,
+            category: w.category || null,
+            default_price: w.defaultPrice || 0,
+            quantity: w.quantity || 0,
+            unit: w.unit || null,
+            description: w.description || null,
+            status: w.status || '예정',
+            date: w.date || null,
+            notes: w.notes || null,
+            labor_persons: w.laborPersons || 0,
+            labor_unit_rate: w.laborUnitRate || 0,
+            labor_persons_general: w.laborPersonsGeneral || 0,
+            labor_unit_rate_general: w.laborUnitRateGeneral || 0
+          }));
+
+          await supabase.from('work_items').insert(dbWorkItems);
+        }
+      } catch (err) {
+        console.error('작업 항목 저장 실패:', err);
+      }
+    };
+
+    saveWorkItems();
+  }, [workItems, userId, loading]);
+
+  // Estimates 저장
+  useEffect(() => {
+    if (!userId || !supabase || loading) return;
+
+    const saveEstimates = async () => {
+      try {
+        await supabase.from('estimate_items').delete().match({ user_id: userId });
+        await supabase.from('estimates').delete().eq('user_id', userId);
+
+        if (estimates.length > 0) {
+          for (const estimate of estimates) {
+            const { data: estimateData } = await supabase
+              .from('estimates')
+              .insert({
+                user_id: userId,
+                estimate_id: estimate.id,
+                client_id: estimate.clientId,
+                client_name: estimate.clientName,
+                workplace_id: estimate.workplaceId,
+                workplace_name: estimate.workplaceName,
+                project_name: estimate.projectName,
+                status: estimate.status,
+                valid_until: estimate.validUntil || null,
+                total_amount: estimate.totalAmount
+              })
+              .select()
+              .single();
+
+            if (estimateData && estimate.items.length > 0) {
+              const items = estimate.items.map(item => ({
+                user_id: userId,
+                estimate_id: estimate.id,
+                name: item.name,
+                category: item.category || null,
+                quantity: item.quantity || 0,
+                unit: item.unit || null,
+                unit_price: item.unitPrice || 0,
+                total: item.total || 0,
+                description: item.description || null,
+                notes: item.notes || null
+              }));
+
+              await supabase.from('estimate_items').insert(items);
+            }
+          }
+        }
+      } catch (err) {
+        console.error('견적서 저장 실패:', err);
+      }
+    };
+
+    saveEstimates();
+  }, [estimates, userId, loading]);
+
+  // Invoices 저장
+  useEffect(() => {
+    if (!userId || !supabase || loading) return;
+
+    const saveInvoices = async () => {
+      try {
+        await supabase.from('invoice_items').delete().match({ user_id: userId });
+        await supabase.from('invoices').delete().eq('user_id', userId);
+
+        if (invoices.length > 0) {
+          for (const invoice of invoices) {
+            const { data: invoiceData } = await supabase
+              .from('invoices')
+              .insert({
+                user_id: userId,
+                invoice_id: invoice.id,
+                client_name: invoice.client,
+                project_name: invoice.project,
+                workplace_address: invoice.workplaceAddress,
+                amount: invoice.amount,
+                status: invoice.status,
+                invoice_date: invoice.date,
+                due_date: invoice.dueDate || null
+              })
+              .select()
+              .single();
+
+            if (invoiceData && invoice.workItems.length > 0) {
+              const items = invoice.workItems.map(item => ({
+                user_id: userId,
+                invoice_id: invoice.id,
+                name: item.name,
+                quantity: item.quantity || 0,
+                unit: item.unit || null,
+                unit_price: item.unitPrice || 0,
+                total: item.total || 0,
+                notes: item.notes || null,
+                date: item.date || null,
+                category: item.category || null,
+                description: item.description || null,
+                labor_persons: item.laborPersons || 0,
+                labor_unit_rate: item.laborUnitRate || 0,
+                labor_persons_general: item.laborPersonsGeneral || 0,
+                labor_unit_rate_general: item.laborUnitRateGeneral || 0
+              }));
+
+              await supabase.from('invoice_items').insert(items);
+            }
+          }
+        }
+      } catch (err) {
+        console.error('청구서 저장 실패:', err);
+      }
+    };
+
+    saveInvoices();
+  }, [invoices, userId, loading]);
+
+  const getCompletedWorkItems = (): WorkItem[] => workItems.filter(i => i.status === '완료');
   const getCompletedWorkItemsByClient = (clientId: number): WorkItem[] =>
     workItems.filter(i => i.clientId === clientId && i.status === '완료');
 
@@ -297,10 +503,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   ) => {
     const finalQuantity = quantity !== null ? quantity : (workItem.quantity ?? 1);
     const finalUnitPrice = unitPrice ?? (workItem.defaultPrice ?? 0);
-    const lp = parseInt(String(workItem.laborPersons ?? 0), 10) || 0;
-    const lr = parseInt(String(workItem.laborUnitRate ?? 0), 10) || 0;
-    const lpg = parseInt(String(workItem.laborPersonsGeneral ?? 0), 10) || 0;
-    const lrg = parseInt(String(workItem.laborUnitRateGeneral ?? 0), 10) || 0;
+    const lpParsed = parseInt(String(workItem.laborPersons ?? 0), 10);
+    const lrParsed = parseInt(String(workItem.laborUnitRate ?? 0), 10);
+    const lpgParsed = parseInt(String(workItem.laborPersonsGeneral ?? 0), 10);
+    const lrgParsed = parseInt(String(workItem.laborUnitRateGeneral ?? 0), 10);
+    const lp = Number.isNaN(lpParsed) ? 0 : lpParsed;
+    const lr = Number.isNaN(lrParsed) ? 0 : lrParsed;
+    const lpg = Number.isNaN(lpgParsed) ? 0 : lpgParsed;
+    const lrg = Number.isNaN(lrgParsed) ? 0 : lrgParsed;
     const laborCost = (lp * lr) + (lpg * lrg);
 
     return {
@@ -322,7 +532,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const convertEstimateToWorkItems = (estimateId: string): WorkItem[] => {
     const estimate = estimates.find(est => est.id === estimateId);
-    if (!estimate) return [];
+    if (estimate === undefined) return [];
 
     const baseMax = Math.max(
       0,
@@ -353,253 +563,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setWorkItems(prev => [...prev, ...newItems]);
     setEstimates(prev =>
       prev.map(est =>
-        est.id === estimateId ? { ...est, status: '작업 전환됨' as any } : est
+        est.id === estimateId ? { ...est, status: '작업 전환됨' } : est
       )
     );
 
     return newItems;
   };
-
-  // Clients 저장 (디바운싱 적용)
-  useEffect(() => {
-    if (!userId || !supabase || loading || isInitialLoad) return;
-
-    const timer = setTimeout(async () => {
-      try {
-        // 기존 데이터 삭제 후 재생성 (간단한 동기화)
-        await supabase!.from('clients').delete().eq('user_id', userId);
-
-        if (clients.length > 0) {
-          const dbClients = clients.map(c => {
-            console.log('💾 Saving client:', c);
-            return {
-              user_id: userId,
-              company_name: c.business?.businessName || c.name,
-              representative: c.business?.representative || '',
-              business_number: c.business?.businessNumber || '',
-              address: c.address || '',
-              email: c.email || '',
-              phone: c.phone || '',
-              contact_person: '',
-              type: c.type || 'BUSINESS',
-              notes: c.notes || '',
-              total_billed: c.totalBilled || 0,
-              outstanding: c.outstanding || 0
-            };
-          });
-
-          console.log('💾 DB Clients to save:', dbClients);
-          const { error } = await supabase!.from('clients').insert(dbClients);
-          if (error) {
-            console.error('건축주 저장 오류:', error);
-          } else {
-            console.log('✅ Clients saved successfully');
-          }
-        }
-      } catch (err) {
-        console.error('건축주 저장 실패:', err);
-      }
-    }, DEBOUNCE_DELAY_MS);
-
-    return () => clearTimeout(timer);
-  }, [clients, userId, loading, isInitialLoad]);
-
-  // Company Info 저장 (디바운싱 적용)
-  useEffect(() => {
-    if (!userId || !supabase || loading || isInitialLoad) return;
-
-    const timer = setTimeout(async () => {
-      try {
-        await supabase!
-          .from('company_info')
-          .upsert({
-            user_id: userId,
-            company_name: companyInfo.name,
-            business_number: companyInfo.businessNumber,
-            address: companyInfo.address,
-            phone: companyInfo.phone,
-            email: companyInfo.email,
-            representative: companyInfo.representative,
-            bank_account: companyInfo.bankAccount,
-            account_holder: companyInfo.accountHolder
-          }, { onConflict: 'user_id' });
-      } catch (err) {
-        console.error('회사 정보 저장 실패:', err);
-      }
-    }, DEBOUNCE_DELAY_MS);
-
-    return () => clearTimeout(timer);
-  }, [companyInfo, userId, loading, isInitialLoad]);
-
-  // Work Items 저장 (디바운싱 적용)
-  useEffect(() => {
-    if (!userId || !supabase || loading || isInitialLoad) return;
-
-    const timer = setTimeout(async () => {
-      try {
-        await supabase!.from('work_items').delete().eq('user_id', userId);
-
-        if (workItems.length > 0) {
-          const dbWorkItems = workItems.map(w => ({
-            user_id: userId,
-            client_id: w.clientId,
-            client_name: w.clientName,
-            workplace_id: w.workplaceId,
-            workplace_name: w.workplaceName,
-            project_name: w.projectName,
-            name: w.name,
-            category: w.category || null,
-            default_price: w.defaultPrice || 0,
-            quantity: w.quantity || 0,
-            unit: w.unit || null,
-            description: w.description || null,
-            status: w.status || '예정',
-            date: w.date || null,
-            notes: w.notes || null,
-            labor_persons: w.laborPersons || 0,
-            labor_unit_rate: w.laborUnitRate || 0,
-            labor_persons_general: w.laborPersonsGeneral || 0,
-            labor_unit_rate_general: w.laborUnitRateGeneral || 0
-          }));
-
-          const { error } = await supabase!.from('work_items').insert(dbWorkItems);
-          if (error) {
-            console.error('작업 항목 저장 오류:', error);
-          }
-        }
-      } catch (err) {
-        console.error('작업 항목 저장 실패:', err);
-      }
-    }, DEBOUNCE_DELAY_MS);
-
-    return () => clearTimeout(timer);
-  }, [workItems, userId, loading, isInitialLoad]);
-
-  // Estimates 저장 (디바운싱 적용)
-  useEffect(() => {
-    if (!userId || !supabase || loading || isInitialLoad) return;
-
-    const timer = setTimeout(async () => {
-      try {
-        await supabase!.from('estimate_items').delete().match({ user_id: userId });
-        await supabase!.from('estimates').delete().eq('user_id', userId);
-
-        if (estimates.length > 0) {
-          for (const estimate of estimates) {
-            const { data: estimateData, error: estError } = await supabase!
-              .from('estimates')
-              .insert({
-                user_id: userId,
-                client_id: estimate.clientId,
-                client_name: estimate.clientName,
-                workplace_id: estimate.workplaceId,
-                workplace_name: estimate.workplaceName,
-                project_name: estimate.projectName,
-                status: estimate.status,
-                valid_until: estimate.validUntil || null,
-                total_amount: estimate.totalAmount
-              })
-              .select()
-              .single();
-
-            if (estError) {
-              console.error('견적서 저장 오류:', estError);
-              continue;
-            }
-
-            if (estimateData && estimate.items.length > 0) {
-              const items = estimate.items.map(item => ({
-                user_id: userId,
-                estimate_id: estimateData.estimate_id,
-                name: item.name,
-                category: item.category || null,
-                quantity: item.quantity || 0,
-                unit: item.unit || null,
-                unit_price: item.unitPrice || 0,
-                total: item.total || 0,
-                description: item.description || null,
-                notes: item.notes || null
-              }));
-
-              const { error: itemsError } = await supabase!.from('estimate_items').insert(items);
-              if (itemsError) {
-                console.error('견적서 항목 저장 오류:', itemsError);
-              }
-            }
-          }
-        }
-      } catch (err) {
-        console.error('견적서 저장 실패:', err);
-      }
-    }, DEBOUNCE_DELAY_MS);
-
-    return () => clearTimeout(timer);
-  }, [estimates, userId, loading, isInitialLoad]);
-
-  // Invoices 저장 (디바운싱 적용)
-  useEffect(() => {
-    if (!userId || !supabase || loading || isInitialLoad) return;
-
-    const timer = setTimeout(async () => {
-      try {
-        await supabase!.from('invoice_items').delete().match({ user_id: userId });
-        await supabase!.from('invoices').delete().eq('user_id', userId);
-
-        if (invoices.length > 0) {
-          for (const invoice of invoices) {
-            const { data: invoiceData, error: invError } = await supabase!
-              .from('invoices')
-              .insert({
-                user_id: userId,
-                client_name: invoice.client,
-                project_name: invoice.project,
-                workplace_address: invoice.workplaceAddress,
-                amount: invoice.amount,
-                status: invoice.status,
-                invoice_date: invoice.date,
-                due_date: invoice.dueDate || null
-              })
-              .select()
-              .single();
-
-            if (invError) {
-              console.error('청구서 저장 오류:', invError);
-              continue;
-            }
-
-            if (invoiceData && invoice.workItems.length > 0) {
-              const items = invoice.workItems.map(item => ({
-                user_id: userId,
-                invoice_id: invoiceData.invoice_id,
-                name: item.name,
-                quantity: item.quantity || 0,
-                unit: item.unit || null,
-                unit_price: item.unitPrice || 0,
-                total: item.total || 0,
-                notes: item.notes || null,
-                date: item.date || null,
-                category: item.category || null,
-                description: item.description || null,
-                labor_persons: item.laborPersons || 0,
-                labor_unit_rate: item.laborUnitRate || 0,
-                labor_persons_general: item.laborPersonsGeneral || 0,
-                labor_unit_rate_general: item.laborUnitRateGeneral || 0
-              }));
-
-              const { error: itemsError } = await supabase!.from('invoice_items').insert(items);
-              if (itemsError) {
-                console.error('청구서 항목 저장 오류:', itemsError);
-              }
-            }
-          }
-        }
-      } catch (err) {
-        console.error('청구서 저장 실패:', err);
-      }
-    }, DEBOUNCE_DELAY_MS);
-
-    return () => clearTimeout(timer);
-  }, [invoices, userId, loading, isInitialLoad]);
 
   const value: AppContextValue = {
     companyInfo,
@@ -625,35 +594,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     loading,
     error
   };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">데이터 로딩 중...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center max-w-md">
-          <div className="text-red-600 text-5xl mb-4">⚠️</div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">오류 발생</h2>
-          <p className="text-gray-600 mb-4">{error}</p>
-          <button
-            onClick={() => window.location.href = '/'}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            다시 시도
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
