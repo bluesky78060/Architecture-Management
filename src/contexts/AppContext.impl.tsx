@@ -515,6 +515,18 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         await supabase!.from('work_items').delete().eq('user_id', userId);
 
         if (workItems.length > 0) {
+          // Status 한글 -> 영어 변환 함수
+          const toDbStatus = (status: string | undefined): string => {
+            if (status === null || status === undefined || status === '') return 'planned';
+            const statusMap: Record<string, string> = {
+              '예정': 'planned',
+              '진행중': 'in_progress',
+              '완료': 'completed',
+              '보류': 'on_hold',
+            };
+            return statusMap[status] ?? 'planned';
+          };
+
           const dbWorkItems = workItems.map(w => ({
             user_id: userId,
             client_id: w.clientId,
@@ -528,8 +540,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             quantity: w.quantity || 0,
             unit: w.unit || null,
             description: w.description || null,
-            status: w.status || '예정',
-            date: w.date || null,
+            status: toDbStatus(w.status),
             notes: w.notes || null,
             labor_persons: w.laborPersons || 0,
             labor_unit_rate: w.laborUnitRate || 0,
