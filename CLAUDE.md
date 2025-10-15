@@ -211,6 +211,78 @@ cp backup_checkpoints/[체크포인트명]/src/components/[파일명] /Users/lee
 - 복원 후 `npm install` 실행하여 의존성 확인
 - 체크포인트는 수동 삭제 필요 (자동 삭제 안됨)
 
+## 배포 프로세스 🚀
+
+### Vercel 자동 배포 워크플로우
+이 프로젝트는 GitHub main 브랜치와 Vercel이 연동되어 자동 배포됩니다.
+
+#### 1. 로컬 개발 → 프로덕션 배포 절차
+```bash
+# 1. 코드 작업 완료 후 Git 커밋
+git add .
+git commit -m "feat: 기능 설명"
+
+# 2. GitHub main 브랜치로 푸시
+git push origin main
+
+# 3. Vercel 자동 배포 (1-2분 소요)
+# - GitHub 푸시 감지
+# - 자동 빌드 시작
+# - 프로덕션 배포 완료
+```
+
+#### 2. 배포 확인 방법
+- **Vercel Dashboard**: https://vercel.com/dashboard
+  - Deployments 탭에서 빌드 상태 확인
+  - 빌드 로그 실시간 모니터링
+  - 배포 완료 시 자동 알림
+
+- **프로덕션 URL**: https://architecture-management.vercel.app
+  - 배포 완료 후 강력 새로고침 (Cmd+Shift+R)
+  - 브라우저 캐시 비활성화 권장
+
+#### 3. 로컬 개발 서버
+```bash
+# 로컬 테스트용 개발 서버 (http://localhost:3000)
+BROWSER=none PORT=3000 npm start
+
+# 또는 기본 실행
+npm start
+```
+
+#### 4. 배포 전 체크리스트
+- ✅ 로컬 개발 서버에서 정상 작동 확인
+- ✅ ESLint 오류 없음 (warnings 무시 가능)
+- ✅ TypeScript 컴파일 오류 없음
+- ✅ 콘솔 에러 없음 (Supabase 연결 정상)
+- ✅ Git status 깔끔 (커밋 안 된 변경사항 없음)
+
+#### 5. 배포 후 검증
+- ✅ Vercel Dashboard에서 배포 성공 확인
+- ✅ 프로덕션 URL 접속 확인
+- ✅ 주요 기능 동작 테스트 (로그인, CRUD)
+- ✅ 브라우저 콘솔 에러 확인
+
+### 배포 환경 설정
+- **Repository**: https://github.com/bluesky78060/Architecture-Management
+- **Branch**: main (자동 배포 트리거)
+- **Framework**: React (Create React App)
+- **Build Command**: `npm run build` (자동)
+- **Output Directory**: `build/` (자동)
+- **Node Version**: 18.x (Vercel 기본값)
+
+### 문제 해결
+**배포가 안 될 때:**
+1. GitHub에 푸시가 정상적으로 됐는지 확인
+2. Vercel Dashboard에서 빌드 로그 확인
+3. `vercel.json` 설정 확인
+4. 환경 변수 설정 확인 (Supabase URL, Anon Key)
+
+**배포는 됐는데 변경사항이 안 보일 때:**
+1. 브라우저 강력 새로고침 (Cmd+Shift+R)
+2. 시크릿 모드에서 접속해보기
+3. 배포 시간 확인 (1-2분 소요)
+
 ## 오류 처리 원칙
 
 ### Claude Code 작업 규칙
