@@ -413,7 +413,7 @@ export default function WorkItems(): JSX.Element {
         return;
       }
         // Integer 필드를 안전하게 변환하는 헬퍼 함수
-        const toIntOrNull = (val: any): number | null => {
+        const toIntOrNull = (val: string | number | null | undefined): number | null => {
           if (val === null || val === undefined || val === '') return null;
           const num = Number(val);
           return isNaN(num) ? null : num;
@@ -490,7 +490,7 @@ export default function WorkItems(): JSX.Element {
         const userId = await getCurrentUserId();
 
         // Integer 필드를 안전하게 변환하는 헬퍼 함수
-        const toIntOrNull = (val: any): number | null => {
+        const toIntOrNull = (val: string | number | null | undefined): number | null => {
           if (val === null || val === undefined || val === '') return null;
           const num = Number(val);
           return isNaN(num) ? null : num;
