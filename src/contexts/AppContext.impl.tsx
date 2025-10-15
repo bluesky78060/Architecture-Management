@@ -360,7 +360,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             email: companyData.email || '',
             representative: companyData.representative || '',
             bankAccount: companyData.bank_account || '',
-            accountHolder: companyData.account_holder || ''
+            accountHolder: ''
           });
         }
 
@@ -478,8 +478,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           phone: companyInfo.phone,
           email: companyInfo.email,
           representative: companyInfo.representative,
-          bank_account: companyInfo.bankAccount,
-          account_holder: companyInfo.accountHolder
+          bank_account: companyInfo.bankAccount
         };
 
         const insertPayload = {
