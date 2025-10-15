@@ -51,6 +51,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo>(defaultCompanyInfo);
   const [clients, setClients] = useState<Client[]>([]);
@@ -272,6 +273,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setError(err instanceof Error ? err.message : '데이터 로딩 중 오류가 발생했습니다');
       } finally {
         setLoading(false);
+        // 초기 로딩 완료 표시
+        setTimeout(() => setIsInitialLoad(false), 100);
       }
     };
 
@@ -355,7 +358,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   // Clients 저장 (디바운싱 적용)
   useEffect(() => {
-    if (!userId || !supabase || loading) return;
+    if (!userId || !supabase || loading || isInitialLoad) return;
 
     const timer = setTimeout(async () => {
       try {
@@ -363,24 +366,30 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         await supabase!.from('clients').delete().eq('user_id', userId);
 
         if (clients.length > 0) {
-          const dbClients = clients.map(c => ({
-            user_id: userId,
-            company_name: c.business?.businessName || c.name,
-            representative: c.business?.representative || '',
-            business_number: c.business?.businessNumber || '',
-            address: c.address || '',
-            email: c.email || '',
-            phone: c.phone || '',
-            contact_person: '',
-            type: c.type || 'BUSINESS',
-            notes: c.notes || '',
-            total_billed: c.totalBilled || 0,
-            outstanding: c.outstanding || 0
-          }));
+          const dbClients = clients.map(c => {
+            console.log('💾 Saving client:', c);
+            return {
+              user_id: userId,
+              company_name: c.business?.businessName || c.name,
+              representative: c.business?.representative || '',
+              business_number: c.business?.businessNumber || '',
+              address: c.address || '',
+              email: c.email || '',
+              phone: c.phone || '',
+              contact_person: '',
+              type: c.type || 'BUSINESS',
+              notes: c.notes || '',
+              total_billed: c.totalBilled || 0,
+              outstanding: c.outstanding || 0
+            };
+          });
 
+          console.log('💾 DB Clients to save:', dbClients);
           const { error } = await supabase!.from('clients').insert(dbClients);
           if (error) {
             console.error('건축주 저장 오류:', error);
+          } else {
+            console.log('✅ Clients saved successfully');
           }
         }
       } catch (err) {
@@ -389,11 +398,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }, 1000); // 1초 디바운스
 
     return () => clearTimeout(timer);
-  }, [clients, userId, loading]);
+  }, [clients, userId, loading, isInitialLoad]);
 
   // Company Info 저장 (디바운싱 적용)
   useEffect(() => {
-    if (!userId || !supabase || loading) return;
+    if (!userId || !supabase || loading || isInitialLoad) return;
 
     const timer = setTimeout(async () => {
       try {
@@ -416,11 +425,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [companyInfo, userId, loading]);
+  }, [companyInfo, userId, loading, isInitialLoad]);
 
   // Work Items 저장 (디바운싱 적용)
   useEffect(() => {
-    if (!userId || !supabase || loading) return;
+    if (!userId || !supabase || loading || isInitialLoad) return;
 
     const timer = setTimeout(async () => {
       try {
@@ -460,11 +469,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [workItems, userId, loading]);
+  }, [workItems, userId, loading, isInitialLoad]);
 
   // Estimates 저장 (디바운싱 적용)
   useEffect(() => {
-    if (!userId || !supabase || loading) return;
+    if (!userId || !supabase || loading || isInitialLoad) return;
 
     const timer = setTimeout(async () => {
       try {
@@ -521,11 +530,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [estimates, userId, loading]);
+  }, [estimates, userId, loading, isInitialLoad]);
 
   // Invoices 저장 (디바운싱 적용)
   useEffect(() => {
-    if (!userId || !supabase || loading) return;
+    if (!userId || !supabase || loading || isInitialLoad) return;
 
     const timer = setTimeout(async () => {
       try {
@@ -586,7 +595,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [invoices, userId, loading]);
+  }, [invoices, userId, loading, isInitialLoad]);
 
   const value: AppContextValue = {
     companyInfo,
