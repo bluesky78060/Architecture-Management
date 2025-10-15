@@ -213,6 +213,18 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
         if (workItemsError) throw workItemsError;
 
+        // Status 영어 -> 한글 변환 함수
+        const fromDbStatus = (status: string): string => {
+          const statusMap: Record<string, string> = {
+            'planned': '예정',
+            'in_progress': '진행중',
+            'completed': '완료',
+            'on_hold': '보류',
+            'cancelled': '취소',
+          };
+          return statusMap[status] ?? '예정';
+        };
+
         const mappedWorkItems: WorkItem[] = (workItemsData || []).map((w: any) => ({
           id: w.work_item_id,
           clientId: w.client_id,
@@ -226,7 +238,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           quantity: w.quantity || 0,
           unit: w.unit || '',
           description: w.description || '',
-          status: w.status || '예정',
+          status: fromDbStatus(w.status),
           date: w.date || '',
           notes: w.notes || '',
           laborPersons: w.labor_persons || 0,

@@ -419,6 +419,17 @@ export default function WorkItems(): JSX.Element {
           return isNaN(num) ? null : num;
         };
 
+        // Status 한글 -> 영어 변환 함수
+        const toDbStatus = (status: string): string => {
+          const statusMap: Record<string, string> = {
+            '예정': 'planned',
+            '진행중': 'in_progress',
+            '완료': 'completed',
+            '보류': 'on_hold',
+          };
+          return statusMap[status] ?? 'planned';
+        };
+
         const { error } = await supabase
           .from('work_items')
           .update({
@@ -431,7 +442,7 @@ export default function WorkItems(): JSX.Element {
             quantity: toIntOrNull(updated.quantity) ?? 0,
             unit: updated.unit ?? '',
             default_price: toIntOrNull(updated.defaultPrice) ?? 0,
-            status: updated.status,
+            status: toDbStatus(updated.status),
             notes: updated.notes ?? '',
             labor_persons: toIntOrNull(updated.laborPersons) ?? 0,
             labor_unit_rate: toIntOrNull(updated.laborUnitRate) ?? 0,
@@ -496,6 +507,17 @@ export default function WorkItems(): JSX.Element {
           return isNaN(num) ? null : num;
         };
 
+        // Status 한글 -> 영어 변환 함수
+        const toDbStatus = (status: string): string => {
+          const statusMap: Record<string, string> = {
+            '예정': 'planned',
+            '진행중': 'in_progress',
+            '완료': 'completed',
+            '보류': 'on_hold',
+          };
+          return statusMap[status] ?? 'planned';
+        };
+
         const { error } = await supabase
           .from('work_items')
           .insert({
@@ -510,7 +532,7 @@ export default function WorkItems(): JSX.Element {
             quantity: toIntOrNull(created.quantity) ?? 0,
             unit: created.unit ?? '',
             default_price: toIntOrNull(created.defaultPrice) ?? 0,
-            status: created.status,
+            status: toDbStatus(created.status),
             notes: created.notes ?? '',
             labor_persons: toIntOrNull(created.laborPersons) ?? 0,
             labor_unit_rate: toIntOrNull(created.laborUnitRate) ?? 0,
