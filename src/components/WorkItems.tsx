@@ -520,15 +520,75 @@ export default function WorkItems(): JSX.Element {
         labor_unit_rate_general: toIntOrNull(item.laborUnitRateGeneral) ?? 0,
       }));
 
-      const { error } = await supabase
+      const { data: insertedData, error } = await supabase
         .from('work_items')
-        .insert(dbWorkItems);
+        .insert(dbWorkItems)
+        .select(`
+          *,
+          clients!client_id (
+            company_name,
+            workplaces
+          )
+        `);
 
       if (error !== null && error !== undefined) {
         setWorkItems(previousWorkItems);
         setClients(previousClients);
         alert(`작업 항목 생성 중 오류가 발생했습니다: ${error.message}`);
         return;
+      }
+
+      // DB에서 반환된 실제 데이터로 UI 업데이트
+      if ((insertedData !== null && insertedData !== undefined) && insertedData.length > 0) {
+        const fromDbStatus = (status: string): '예정' | '진행중' | '완료' | '보류' => {
+          const statusMap: Record<string, '예정' | '진행중' | '완료' | '보류'> = {
+            'planned': '예정',
+            'in_progress': '진행중',
+            'completed': '완료',
+            'on_hold': '보류',
+            'cancelled': '보류',
+          };
+          return statusMap[status] ?? '예정';
+        };
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const actualCreatedItems: WorkItem[] = insertedData.map((w: any) => {
+          const clientName = (w.clients?.company_name !== null && w.clients?.company_name !== undefined) ? String(w.clients.company_name) : '';
+          const workplaces = (w.clients?.workplaces !== null && w.clients?.workplaces !== undefined) ? w.clients.workplaces : [];
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const workplace = workplaces.find((wp: any) => (wp.id !== null && wp.id !== undefined) && wp.id === w.workplace_id);
+          const workplaceName = (workplace?.name !== null && workplace?.name !== undefined) ? String(workplace.name) : '';
+
+          return {
+            id: w.work_item_id,
+            clientId: w.client_id,
+            clientName,
+            workplaceId: w.workplace_id,
+            workplaceName,
+            projectName: (w.project_name !== null && w.project_name !== undefined) ? String(w.project_name) : '',
+            name: w.name,
+            category: (w.category !== null && w.category !== undefined) ? String(w.category) : '',
+            defaultPrice: (w.default_price !== null && w.default_price !== undefined) ? Number(w.default_price) : 0,
+            quantity: (w.quantity !== null && w.quantity !== undefined) ? Number(w.quantity) : 0,
+            unit: (w.unit !== null && w.unit !== undefined) ? String(w.unit) : '',
+            description: (w.description !== null && w.description !== undefined) ? String(w.description) : '',
+            status: fromDbStatus(w.status),
+            date: (w.start_date !== null && w.start_date !== undefined) ? String(w.start_date) : '',
+            notes: (w.notes !== null && w.notes !== undefined) ? String(w.notes) : '',
+            laborPersons: (w.labor_persons !== null && w.labor_persons !== undefined) ? Number(w.labor_persons) : 0,
+            laborUnitRate: (w.labor_unit_rate !== null && w.labor_unit_rate !== undefined) ? Number(w.labor_unit_rate) : 0,
+            laborPersonsGeneral: (w.labor_persons_general !== null && w.labor_persons_general !== undefined) ? Number(w.labor_persons_general) : 0,
+            laborUnitRateGeneral: (w.labor_unit_rate_general !== null && w.labor_unit_rate_general !== undefined) ? Number(w.labor_unit_rate_general) : 0
+          };
+        });
+
+        // 실제 DB 데이터로 다시 업데이트
+        setWorkItems(prev => {
+          const withoutOptimistic = prev.filter(item =>
+            !createdItems.some(created => created.id === item.id)
+          );
+          return [...withoutOptimistic, ...actualCreatedItems];
+        });
       }
     } catch (err) {
       setWorkItems(previousWorkItems);
