@@ -170,9 +170,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         const { data: clientsData, error: clientsError } = await supabase!
           .from('clients')
           .select('*')
+          .eq('user_id', userId)
           .order('created_at', { ascending: false });
 
-        if (clientsError) throw clientsError;
+        if (clientsError) {
+          console.error('❌ Clients 로딩 실패:', clientsError);
+          throw clientsError;
+        }
 
         const mappedClients: Client[] = (clientsData || []).map((c: any) => ({
           id: c.client_id,

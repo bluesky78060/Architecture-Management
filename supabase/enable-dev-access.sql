@@ -12,6 +12,15 @@ ALTER TABLE invoice_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE work_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE company_info ENABLE ROW LEVEL SECURITY;
 
+-- 기존 정책 삭제 (있는 경우)
+DROP POLICY IF EXISTS "Enable all access for all users" ON clients;
+DROP POLICY IF EXISTS "Enable all access for all users" ON estimates;
+DROP POLICY IF EXISTS "Enable all access for all users" ON estimate_items;
+DROP POLICY IF EXISTS "Enable all access for all users" ON invoices;
+DROP POLICY IF EXISTS "Enable all access for all users" ON invoice_items;
+DROP POLICY IF EXISTS "Enable all access for all users" ON work_items;
+DROP POLICY IF EXISTS "Enable all access for all users" ON company_info;
+
 -- 개발 환경: 모든 사용자 읽기/쓰기 가능
 CREATE POLICY "Enable all access for all users" ON clients FOR ALL USING (true);
 CREATE POLICY "Enable all access for all users" ON estimates FOR ALL USING (true);
