@@ -1,5 +1,26 @@
 # Claude Code 프로젝트 기록
 
+## 🤖 자동 세션 관리 규칙 (중요!)
+
+### Context 자동 저장 규칙
+**CRITICAL**: Claude는 다음 상황에서 **반드시** 자동으로 `/sc:save`를 실행해야 합니다:
+- ✅ **Context left until auto-compact ≤ 1%** 일 때
+- ✅ 중요한 작업 완료 후 (기능 구현, 버그 수정)
+- ✅ 사용자가 명시적으로 요청할 때
+- ✅ 복잡한 변경사항 완료 후
+
+### 세션 자동 로드 규칙
+**CRITICAL**: Claude는 다음 상황에서 **반드시** `/sc:load`를 실행해야 합니다:
+- ✅ **새 세션 시작 시** (Context가 리셋된 후)
+- ✅ 사용자가 "이전 작업 내용 로드" 또는 "계속" 요청 시
+- ✅ 프로젝트 상태를 모를 때
+
+### 실행 패턴
+```
+세션 시작 → /sc:load → 작업 진행 → Context < 1% → /sc:save (자동) → 세션 종료
+새 세션 → /sc:load → 이전 작업 이어서 계속
+```
+
 ## 체크포인트 시스템
 
 ### 자동 체크포인트 생성 규칙
@@ -63,7 +84,43 @@ cp backup_checkpoints/[체크포인트명]/src/components/[파일명] /Users/lee
 
 ## 프로젝트 진행 기록
 
-### 2025.10.15 - 클라이언트 필드 완성 및 Vercel 배포 수정 ✨
+### 2025.10.15 - UI 개선 및 데이터 격리 보안 강화 🔒✨
+- **작업 내용**: 작업 항목 UI 개선, 데이터 보안 강화, Supabase 쿼리 오류 수정
+- **UI/UX 개선**:
+  - ✅ 일괄 작업 항목 추가 데이터 Supabase 저장 구현
+  - ✅ 수량/단가 입력란 포커스 시 자동 선택 (onFocus select)
+  - ✅ 수량/단가 기본값 제거 (1, 0 → 빈 값)
+  - ✅ 비고(notes) 입력란 추가 - 작업정보 섹션 내 배치
+  - ✅ 취소/추가 버튼을 모달 헤더로 이동
+  - ✅ 헤더-콘텐츠 간격 조정 (pt-6→pt-5, pb-6→pb-3)
+- **보안 강화** (중요!):
+  - ✅ **데이터 격리**: 모든 쿼리에 user_id 필터 추가
+    - clients 테이블: .eq('user_id', userId)
+    - work_items 테이블: .eq('user_id', userId)
+    - estimates 테이블: .eq('user_id', userId)
+    - invoices 테이블: .eq('user_id', userId)
+    - company_info 테이블: .eq('user_id', userId)
+  - 🔒 이전에는 모든 사용자 데이터가 섞여 표시됨
+  - 🔒 수정 후: 각 사용자는 자신의 데이터만 조회 가능
+- **Supabase 쿼리 오류 수정**:
+  - ❌ 406 오류: company_info .single() → .maybeSingle() 변경
+  - ❌ 400 오류: upsert() → 명시적 INSERT/UPDATE 로직으로 변경
+  - ✅ 존재 여부 확인 후 UPDATE/INSERT 분기 처리
+- **Git 문제 해결**:
+  - ✅ SuperClaude_Framework submodule 제거
+  - ✅ .gitignore에 추가하여 향후 충돌 방지
+  - ✅ Vercel 배포 시 submodule 경고 해결
+
+### Git 커밋 (2025.10.15)
+- `833cb70` - feat: relocate notes field to work info section under labor fields
+- `685d91a` - feat: move action buttons to modal header
+- `ff8e515` - style: reduce spacing between header and content section
+- `2ad71f0` - fix: add user_id filter to all data queries for data isolation
+- `414c097` - fix: resolve company_info query errors (406 and 400)
+- `766aafe` - fix: replace upsert with explicit insert/update for company_info
+- `8502a80` - fix: remove SuperClaude_Framework submodule and add to gitignore
+
+### 2025.10.15 - 클라이언트 필드 완성 및 Vercel 배포 수정
 - **작업 내용**: 클라이언트 데이터 완전 저장 구현 및 빌드 환경 최적화
 - **문제 진단**:
   - 콘솔 로그: 데이터가 완전히 준비되었으나 일부 필드만 저장됨
