@@ -436,7 +436,18 @@ export default function Invoices(): JSX.Element {
       if (invError !== null && invError !== undefined) {
         // 오류 발생 시 롤백
         setInvoices(previousInvoices);
-        alert(`청구서 생성 중 오류가 발생했습니다: ${invError.message}`);
+        console.error('청구서 저장 오류:', invError);
+        console.error('청구서 데이터:', {
+          invoice_id: created.id,
+          user_id: userId,
+          client_id: created.clientId,
+          project_name: created.project ?? '',
+          workplace_address: created.workplaceAddress ?? '',
+          date: created.date,
+          status: created.status,
+          total_amount: created.amount,
+        });
+        alert(`청구서 생성 중 오류가 발생했습니다: ${invError.message}\n코드: ${invError.code}\n상세: ${invError.details}`);
         return;
       }
 
@@ -466,7 +477,9 @@ export default function Invoices(): JSX.Element {
       if (itemsError !== null && itemsError !== undefined) {
         // 오류 발생 시 롤백
         setInvoices(previousInvoices);
-        alert(`청구서 항목 생성 중 오류가 발생했습니다: ${itemsError.message}`);
+        console.error('청구서 항목 저장 오류:', itemsError);
+        console.error('항목 데이터:', itemsToInsert);
+        alert(`청구서 항목 생성 중 오류가 발생했습니다: ${itemsError.message}\n코드: ${itemsError.code}\n상세: ${itemsError.details}`);
         return;
       }
     } catch (err) {
