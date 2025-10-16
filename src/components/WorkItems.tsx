@@ -590,7 +590,7 @@ export default function WorkItems(): JSX.Element {
             quantity: (w.quantity !== null && w.quantity !== undefined) ? Number(w.quantity) : 0,
             unit: (w.unit !== null && w.unit !== undefined) ? String(w.unit) : '',
             description: (w.description !== null && w.description !== undefined) ? String(w.description) : '',
-            status: fromDbStatus(w.status as string),
+            status: fromDbStatus(w.status as string) as WorkStatus,
             date: (w.start_date !== null && w.start_date !== undefined) ? String(w.start_date) : '',
             notes: (w.notes !== null && w.notes !== undefined) ? String(w.notes) : '',
             laborPersons: (w.labor_persons !== null && w.labor_persons !== undefined) ? Number(w.labor_persons) : 0,
@@ -1058,8 +1058,8 @@ export default function WorkItems(): JSX.Element {
         // DB에서 반환된 실제 데이터로 업데이트 (work_item_id 포함)
         if (insertedData !== null && insertedData !== undefined) {
           const actualCreatedItems: WorkItem[] = insertedData.map((w: Record<string, unknown>) => {
-            const fromDbStatus = (dbStatus: string): string => {
-              const statusMap: Record<string, string> = {
+            const fromDbStatus = (dbStatus: string): WorkStatus => {
+              const statusMap: Record<string, WorkStatus> = {
                 'planned': '예정',
                 'in_progress': '진행중',
                 'completed': '완료',
