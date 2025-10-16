@@ -115,7 +115,7 @@ export default function Invoices(): JSX.Element {
       const { error } = await supabase
         .from('invoices')
         .delete()
-        .eq('invoice_id', pendingDeleteId);
+        .eq('invoice_number', pendingDeleteId);
 
       if (error !== null && error !== undefined) {
         // 오류 발생
@@ -143,7 +143,7 @@ export default function Invoices(): JSX.Element {
       const { error } = await supabase
         .from('invoices')
         .delete()
-        .in('invoice_id', selection.selected);
+        .in('invoice_number', selection.selected);
 
       if (error !== null && error !== undefined) {
         // 오류 발생
