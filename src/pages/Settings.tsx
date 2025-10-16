@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   UserCircleIcon,
@@ -39,18 +39,18 @@ const Settings: React.FC = () => {
   const [passwordSuccess, setPasswordSuccess] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
-  useEffect(() => {
-    loadUserInfo();
-  }, []);
-
-  const loadUserInfo = async () => {
-    if (supabase === null) return;
+  const loadUserInfo = useCallback(async () => {
+    if (supabase === null) {
+      setLoading(false);
+      return;
+    }
 
     try {
       const { data: { user }, error } = await supabase.auth.getUser();
 
       if (error !== null) {
         console.error('사용자 정보 로딩 실패:', error);
+        setLoading(false);
         return;
       }
 
@@ -67,7 +67,11 @@ const Settings: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadUserInfo();
+  }, [loadUserInfo]);
 
   const handleUpdateName = async (e: React.FormEvent) => {
     e.preventDefault();
