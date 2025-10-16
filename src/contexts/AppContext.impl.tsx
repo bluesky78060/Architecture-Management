@@ -668,6 +668,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 quantity: item.quantity || 0,
                 unit_price: item.unitPrice || 0,
                 sort_order: index,
+                date: item.date ?? null,
+                notes: item.notes ?? null,
                 labor_persons: typeof item.laborPersons === 'number' ? item.laborPersons : 0,
                 labor_unit_rate: typeof item.laborUnitRate === 'number' ? item.laborUnitRate : 0,
                 labor_persons_general: typeof item.laborPersonsGeneral === 'number' ? item.laborPersonsGeneral : 0,
