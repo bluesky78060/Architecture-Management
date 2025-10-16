@@ -284,7 +284,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         if (estimatesError) throw estimatesError;
 
         const mappedEstimates: Estimate[] = (estimatesData || []).map((e: any) => ({
-          id: e.estimate_id,
+          id: e.estimate_number || `EST-${e.estimate_id}`,
           clientId: e.client_id,
           clientName: e.clients?.company_name || '',
           workplaceId: e.workplace_id,
@@ -560,6 +560,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             const { data: estimateData, error: estError } = await supabase!
               .from('estimates')
               .insert({
+                estimate_number: estimate.id,
                 user_id: userId,
                 client_id: estimate.clientId,
                 client_name: estimate.clientName,

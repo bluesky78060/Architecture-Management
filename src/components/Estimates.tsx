@@ -336,7 +336,7 @@ const Estimates: React.FC = () => {
       }
 
         // 1. estimates 테이블 업데이트
-        const { error: estError } = await supabase
+        const { data: updatedEstimate, error: estError } = await supabase
           .from('estimates')
           .update({
             client_id: estimateData.clientId,
@@ -349,7 +349,9 @@ const Estimates: React.FC = () => {
             notes: estimateData.notes ?? '',
             total_amount: estimateData.totalAmount,
           })
-          .eq('estimate_id', estimateData.id);
+          .eq('estimate_number', estimateData.id)
+          .select('estimate_id')
+          .single();
 
         if (estError !== null && estError !== undefined) {
           // 오류 발생 시 롤백
@@ -359,15 +361,21 @@ const Estimates: React.FC = () => {
         }
 
         // 2. 기존 estimate_items 삭제
+        if (updatedEstimate === null || updatedEstimate === undefined) {
+          setEstimates(previousEstimates);
+          alert('견적서 수정 중 오류가 발생했습니다.');
+          return;
+        }
+
         await supabase
           .from('estimate_items')
           .delete()
-          .eq('estimate_id', estimateData.id);
+          .eq('estimate_id', updatedEstimate.estimate_id);
 
         // 3. 새로운 estimate_items 삽입
         const FIRST_INDEX = 1;
         const itemsToInsert = estimateData.items.map((item, index) => ({
-          estimate_id: estimateData.id,
+          estimate_id: updatedEstimate.estimate_id,
           item_id: index + FIRST_INDEX,
           category: item.category ?? '',
           name: item.name,
@@ -415,10 +423,10 @@ const Estimates: React.FC = () => {
         const userId = await getCurrentUserId();
 
         // 1. estimates 테이블 삽입
-        const { error: estError } = await supabase
+        const { data: insertedEstimate, error: estError } = await supabase
           .from('estimates')
           .insert({
-            estimate_id: estimateData.id,
+            estimate_number: estimateData.id,
             user_id: userId,
             client_id: estimateData.clientId,
             workplace_id: estimateData.workplaceId,
@@ -429,7 +437,9 @@ const Estimates: React.FC = () => {
             status: estimateData.status,
             notes: estimateData.notes ?? '',
             total_amount: estimateData.totalAmount,
-          });
+          })
+          .select('estimate_id')
+          .single();
 
         if (estError !== null && estError !== undefined) {
           // 오류 발생 시 롤백
@@ -439,9 +449,15 @@ const Estimates: React.FC = () => {
         }
 
         // 2. estimate_items 삽입
+        if (insertedEstimate === null || insertedEstimate === undefined) {
+          setEstimates(previousEstimates);
+          alert('견적서 생성 중 오류가 발생했습니다.');
+          return;
+        }
+
         const FIRST_INDEX_INSERT = 1;
         const itemsToInsert = estimateData.items.map((item, index) => ({
-          estimate_id: estimateData.id,
+          estimate_id: insertedEstimate.estimate_id,
           item_id: index + FIRST_INDEX_INSERT,
           category: item.category ?? '',
           name: item.name,
@@ -551,7 +567,7 @@ const Estimates: React.FC = () => {
       const { error} = await supabase
         .from('estimates')
         .delete()
-        .in('estimate_id', uiState.selectedIds);
+        .in('estimate_number', uiState.selectedIds);
 
       if (error !== null && error !== undefined) {
         // 오류 발생
@@ -579,7 +595,7 @@ const Estimates: React.FC = () => {
       const { error } = await supabase
         .from('estimates')
         .delete()
-        .eq('estimate_id', pendingDeleteId);
+        .eq('estimate_number', pendingDeleteId);
 
       if (error !== null && error !== undefined) {
         // 오류 발생
