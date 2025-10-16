@@ -362,11 +362,17 @@ export default function Invoices(): JSX.Element {
     }
     const newId = `INV-${new Date().getFullYear()}-${String(invoices.length + 1).padStart(INVOICE_ID_PAD_LENGTH, PAD_CHAR)}`;
     const MIN_VALUE = 0;
+
+    // 🔍 DEBUG: workplace_id 값 추적
+    console.log('📋 청구서 생성 - form.workplaceId:', form.workplaceId, 'type:', typeof form.workplaceId);
+    const workplaceIdNumber = Number(form.workplaceId);
+    console.log('📋 청구서 생성 - Number 변환 후:', workplaceIdNumber, 'isNaN:', isNaN(workplaceIdNumber));
+
     const created: Invoice = {
       id: newId,
       clientId: Number(form.clientId),
       client: form.client,
-      workplaceId: Number(form.workplaceId),
+      workplaceId: workplaceIdNumber,
       project: form.project,
       workplaceAddress: form.workplaceAddress,
       amount: getFormTotal(),
@@ -421,18 +427,28 @@ export default function Invoices(): JSX.Element {
         const userId = await getCurrentUserId();
 
       // 1. invoices 테이블 삽입
+      // workplace_id: 0 또는 NaN은 null로 변환
+      const validWorkplaceId = (typeof created.workplaceId === 'number' && created.workplaceId > 0 && !isNaN(created.workplaceId))
+        ? created.workplaceId
+        : null;
+
+      const invoiceInsertData = {
+        invoice_number: created.id,
+        user_id: userId,
+        client_id: created.clientId,
+        workplace_id: validWorkplaceId,
+        title: created.project ?? '',
+        date: created.date,
+        status: created.status,
+        amount: created.amount,
+      };
+
+      // 🔍 DEBUG: Supabase에 전송할 데이터
+      console.log('💾 Supabase INSERT - workplace_id:', invoiceInsertData.workplace_id, 'created.workplaceId:', created.workplaceId, 'validWorkplaceId:', validWorkplaceId);
+
       const { data: invoiceData, error: invError } = await supabase
         .from('invoices')
-        .insert({
-          invoice_number: created.id,
-          user_id: userId,
-          client_id: created.clientId,
-          workplace_id: created.workplaceId ?? null,
-          title: created.project ?? '',
-          date: created.date,
-          status: created.status,
-          amount: created.amount,
-        })
+        .insert(invoiceInsertData)
         .select()
         .single();
 

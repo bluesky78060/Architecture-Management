@@ -638,19 +638,30 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           };
 
           for (const invoice of validInvoices) {
+            // 🔍 DEBUG: workplace_id 값 추적
+            console.log('🔄 AppContext 청구서 동기화 - invoice.workplaceId:', invoice.workplaceId, 'type:', typeof invoice.workplaceId);
+
+            // workplace_id: 0 또는 NaN은 null로 변환
+            const validWorkplaceId = (typeof invoice.workplaceId === 'number' && invoice.workplaceId > 0 && !isNaN(invoice.workplaceId))
+              ? invoice.workplaceId
+              : null;
+
+            const invoiceSyncData = {
+              invoice_number: invoice.id,
+              user_id: userId,
+              client_id: invoice.clientId,
+              workplace_id: validWorkplaceId,
+              title: invoice.project,
+              amount: invoice.amount,
+              status: toDbStatus(invoice.status),
+              date: invoice.date
+            };
+
+            console.log('💾 AppContext Supabase INSERT - workplace_id:', invoiceSyncData.workplace_id, 'validWorkplaceId:', validWorkplaceId);
 
             const { data: invoiceData, error: invError } = await supabase!
               .from('invoices')
-              .insert({
-                invoice_number: invoice.id,
-                user_id: userId,
-                client_id: invoice.clientId,
-                workplace_id: invoice.workplaceId ?? null,
-                title: invoice.project,
-                amount: invoice.amount,
-                status: toDbStatus(invoice.status),
-                date: invoice.date
-              })
+              .insert(invoiceSyncData)
               .select()
               .single();
 
