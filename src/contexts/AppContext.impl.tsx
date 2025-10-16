@@ -616,11 +616,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           return isValid;
         });
 
-        // 삭제된 청구서가 있으면 상태 업데이트
+        // 삭제된 청구서가 있으면 상태 업데이트 후 종료 (다음 사이클에서 정리된 데이터 저장)
         if (validInvoices.length !== invoices.length) {
           const deletedCount = invoices.length - validInvoices.length;
-          console.info(`${deletedCount}개의 유효하지 않은 청구서가 삭제되었습니다.`);
+          console.info(`${deletedCount}개의 유효하지 않은 청구서가 삭제되었습니다. 다음 저장 시 정리된 데이터가 반영됩니다.`);
           setInvoices(validInvoices);
+          return; // 이번 사이클은 건너뛰고 다음 사이클에서 정리된 데이터 저장
         }
 
         if (validInvoices.length > 0) {
