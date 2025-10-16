@@ -133,12 +133,12 @@ describe('InvoiceDetailTable Component', () => {
   describe('인부임 표시', () => {
     it('인부임이 계산되어 표시됨', () => {
       render(<InvoiceDetailTable {...defaultProps} />);
-      // 일반: 3명 × 100,000원 = 300,000원
-      // 숙련: 2명 × 150,000원 = 300,000원
+      // 3명 × 100,000원 = 300,000원
+      // 2명 × 150,000원 = 300,000원
       // 총 인부임: 600,000원
       expect(screen.getByText(/인부임:/)).toBeInTheDocument();
-      expect(screen.getByText(/일반: 3명 × 100,000원/)).toBeInTheDocument();
-      expect(screen.getByText(/숙련: 2명 × 150,000원/)).toBeInTheDocument();
+      expect(screen.getByText(/3명 × 100,000원/)).toBeInTheDocument();
+      expect(screen.getByText(/2명 × 150,000원/)).toBeInTheDocument();
       expect(screen.getByText(/600,000원/)).toBeInTheDocument();
     });
 
@@ -167,8 +167,7 @@ describe('InvoiceDetailTable Component', () => {
         }
       ];
       render(<InvoiceDetailTable {...defaultProps} items={itemsWithGeneralOnly} />);
-      expect(screen.getByText(/일반: 2명 × 100,000원/)).toBeInTheDocument();
-      expect(screen.queryByText(/숙련:/)).not.toBeInTheDocument();
+      expect(screen.getByText(/2명 × 100,000원/)).toBeInTheDocument();
     });
 
     it('숙련 인부임만 있을 때 표시됨', () => {
@@ -182,8 +181,7 @@ describe('InvoiceDetailTable Component', () => {
         }
       ];
       render(<InvoiceDetailTable {...defaultProps} items={itemsWithSkilledOnly} />);
-      expect(screen.getByText(/숙련: 2명 × 150,000원/)).toBeInTheDocument();
-      expect(screen.queryByText(/일반:/)).not.toBeInTheDocument();
+      expect(screen.getByText(/2명 × 150,000원/)).toBeInTheDocument();
     });
   });
 

@@ -70,8 +70,8 @@ export default function InvoiceDetailTable({ items, format, totalAmount }: Props
                   <div className="text-xs text-blue-600 mt-1">
                     <span className="font-medium">인부임:</span>{' '}
                     {[
-                      gen > 0 ? `일반: ${laborPersonsGeneral}명 × ${laborUnitRateGeneral.toLocaleString()}원` : null,
-                      sk > 0 ? `숙련: ${laborPersons}명 × ${laborUnitRate.toLocaleString()}원` : null,
+                      gen > 0 ? `${laborPersonsGeneral}명 × ${laborUnitRateGeneral.toLocaleString()}원` : null,
+                      sk > 0 ? `${laborPersons}명 × ${laborUnitRate.toLocaleString()}원` : null,
                     ].filter(Boolean).join(', ')} = {laborTotal.toLocaleString()}원
                   </div>
                 )}
