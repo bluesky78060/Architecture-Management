@@ -340,7 +340,9 @@ const Estimates: React.FC = () => {
           .from('estimates')
           .update({
             client_id: estimateData.clientId,
+            client_name: estimateData.clientName ?? '',
             workplace_id: estimateData.workplaceId,
+            workplace_name: estimateData.workplaceName ?? '',
             project_name: estimateData.projectName ?? '',
             title: estimateData.title ?? '',
             date: estimateData.date,
@@ -429,7 +431,9 @@ const Estimates: React.FC = () => {
             estimate_number: estimateData.id,
             user_id: userId,
             client_id: estimateData.clientId,
+            client_name: estimateData.clientName ?? '',
             workplace_id: estimateData.workplaceId,
+            workplace_name: estimateData.workplaceName ?? '',
             project_name: estimateData.projectName ?? '',
             title: estimateData.title ?? '',
             date: estimateData.date,
