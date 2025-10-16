@@ -363,6 +363,7 @@ const Estimates: React.FC = () => {
         if (estError !== null && estError !== undefined) {
           // 오류 발생 시 롤백
           setEstimates(previousEstimates);
+          // eslint-disable-next-line no-console
           console.error('견적서 수정 오류 상세:', {
             message: estError.message,
             details: estError.details,
@@ -478,6 +479,7 @@ const Estimates: React.FC = () => {
         if (estError !== null && estError !== undefined) {
           // 오류 발생 시 롤백
           setEstimates(previousEstimates);
+          // eslint-disable-next-line no-console
           console.error('견적서 생성 오류 상세:', {
             message: estError.message,
             details: estError.details,
