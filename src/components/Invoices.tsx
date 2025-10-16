@@ -453,7 +453,7 @@ export default function Invoices(): JSX.Element {
         return;
       }
 
-      if (!invoiceData) {
+      if (invoiceData === null || invoiceData === undefined) {
         setInvoices(previousInvoices);
         alert('청구서 생성에 실패했습니다.');
         return;
