@@ -607,13 +607,24 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         await supabase!.from('invoice_items').delete().match({ user_id: userId });
         await supabase!.from('invoices').delete().eq('user_id', userId);
 
-        if (invoices.length > 0) {
-          for (const invoice of invoices) {
-            // clientId 검증: 유효하지 않은 청구서는 Supabase에 저장하지 않음
-            if (invoice.clientId === null || invoice.clientId === undefined || invoice.clientId === 0) {
-              console.warn('청구서에 유효한 client_id가 없어 Supabase 저장을 건너뜁니다:', invoice.id);
-              continue;
-            }
+        // 유효하지 않은 청구서 필터링 및 자동 삭제
+        const validInvoices = invoices.filter(inv => {
+          const isValid = inv.clientId !== null && inv.clientId !== undefined && inv.clientId !== 0;
+          if (!isValid) {
+            console.warn('유효하지 않은 청구서 자동 삭제:', inv.id);
+          }
+          return isValid;
+        });
+
+        // 삭제된 청구서가 있으면 상태 업데이트
+        if (validInvoices.length !== invoices.length) {
+          const deletedCount = invoices.length - validInvoices.length;
+          console.info(`${deletedCount}개의 유효하지 않은 청구서가 삭제되었습니다.`);
+          setInvoices(validInvoices);
+        }
+
+        if (validInvoices.length > 0) {
+          for (const invoice of validInvoices) {
 
             const { data: invoiceData, error: invError } = await supabase!
               .from('invoices')
