@@ -992,7 +992,7 @@ export default function WorkItems(): JSX.Element {
         if ((matchedClient !== null && matchedClient !== undefined) && (it?.workplaceName !== null && it?.workplaceName !== undefined && it.workplaceName !== '')) {
           const workplace = matchedClient.workplaces?.find(wp => wp.name === it.workplaceName);
           if (workplace !== null && workplace !== undefined) {
-            matchedWorkplaceId = workplace.id;
+            matchedWorkplaceId = typeof workplace.id === 'number' ? workplace.id : Number(workplace.id);
           } else {
             // 건축주는 있지만 해당 작업장이 없는 경우
             notFoundWorkplaces.push(`${it.clientName} - ${it.workplaceName}`);
@@ -1001,7 +1001,7 @@ export default function WorkItems(): JSX.Element {
 
         return {
           id: currentMax + idx + 1,
-          clientId: (matchedClient !== null && matchedClient !== undefined) ? matchedClient.id : 0,
+          clientId: (matchedClient !== null && matchedClient !== undefined) ? (typeof matchedClient.id === 'number' ? matchedClient.id : Number(matchedClient.id)) : 0,
           clientName: it?.clientName ?? '',
           workplaceId: matchedWorkplaceId,
           workplaceName: it?.workplaceName ?? '',
