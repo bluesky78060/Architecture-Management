@@ -231,7 +231,7 @@ export default function WorkItems(): JSX.Element {
       return;
     }
     const client = clients.find(c => Number(c.id) === workItem.clientId);
-    const workplace = client?.workplaces?.find(w => w.id === workItem.workplaceId);
+    const workplace = client?.workplaces?.find(w => Number(w.id) === Number(workItem.workplaceId));
     const newInvoiceId = `INV-${new Date().getFullYear()}-${String(invoices.length + 1).padStart(INVOICE_ID_PADDING, '0')}`;
     const items = unbilledItems.map(toInvoiceItem);
     const totalAmount = items.reduce((s, it) => s + ((it.total !== 0) ? it.total : 0), 0);
@@ -912,7 +912,7 @@ export default function WorkItems(): JSX.Element {
       return;
     }
     const client = clients.find(c => Number(c.id) === first.clientId);
-    const workplace = client?.workplaces?.find(w => w.id === first.workplaceId);
+    const workplace = client?.workplaces?.find(w => Number(w.id) === Number(first.workplaceId));
     const newInvoiceId = `INV-${new Date().getFullYear()}-${String(invoices.length + 1).padStart(INVOICE_ID_PADDING, '0')}`;
     const items = selectedItems.map(toInvoiceItem);
     const totalAmount = items.reduce((s, it) => s + ((it.total !== 0) ? it.total : 0), 0);

@@ -239,7 +239,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
           // workplace 정보 찾기
           const workplaces = w.clients?.workplaces || [];
-          const workplace = workplaces.find((wp: any) => wp.id === w.workplace_id);
+          const workplace = workplaces.find((wp: any) => Number(wp.id) === Number(w.workplace_id));
           const workplaceName = workplace?.name || '';
 
           return {
@@ -328,7 +328,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         const mappedInvoices: Invoice[] = (invoicesData || []).map((inv: any) => {
           // workplace 정보 찾기
           const workplaces = inv.clients?.workplaces || [];
-          const workplace = workplaces.find((wp: any) => wp.id === inv.workplace_id);
+          const workplace = workplaces.find((wp: any) => Number(wp.id) === Number(inv.workplace_id));
           const workplaceAddress = workplace?.address || '';
 
           return {
