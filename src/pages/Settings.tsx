@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   UserCircleIcon,
@@ -10,16 +10,11 @@ import {
 } from '@heroicons/react/24/outline';
 import { supabase } from '../services/supabase';
 
-interface UserInfo {
-  email: string;
-  name: string;
-}
-
 const Settings: React.FC = () => {
   const navigate = useNavigate();
-  const [userInfo, setUserInfo] = useState<UserInfo>({ email: '', name: '' });
+  const [userEmail, setUserEmail] = useState('');
+  const [userName, setUserName] = useState('');
   const [loading, setLoading] = useState(true);
-  const [mounted, setMounted] = useState(false);
 
   // 이름 변경
   const [newName, setNewName] = useState('');
@@ -40,51 +35,57 @@ const Settings: React.FC = () => {
   const [passwordSuccess, setPasswordSuccess] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
-  const loadUserInfo = useCallback(async () => {
-    try {
-      if (supabase === null || supabase === undefined) {
-        console.warn('Supabase not initialized');
-        setLoading(false);
-        return;
-      }
-
-      const { data, error } = await supabase.auth.getUser();
-
-      if (error !== null && error !== undefined) {
-        console.error('사용자 정보 로딩 실패:', error);
-        setLoading(false);
-        return;
-      }
-
-      const user = data?.user;
-      if (user !== null && user !== undefined) {
-        const metadata = user.user_metadata || {};
-        setUserInfo({
-          email: user.email || '',
-          name: metadata.name || ''
-        });
-        setNewName(metadata.name || '');
-        setNewEmail(user.email || '');
-      }
-    } catch (err) {
-      console.error('사용자 정보 로딩 중 오류:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
+  // 초기 로딩 - 한 번만 실행
   useEffect(() => {
-    setMounted(true);
-    loadUserInfo();
+    let cancelled = false;
+
+    const loadUser = async () => {
+      try {
+        if (supabase === null || supabase === undefined) {
+          if (!cancelled) setLoading(false);
+          return;
+        }
+
+        const { data, error } = await supabase.auth.getUser();
+
+        if (cancelled) return;
+
+        if (error !== null && error !== undefined) {
+          console.error('사용자 정보 로딩 실패:', error);
+          setLoading(false);
+          return;
+        }
+
+        const user = data?.user;
+        if (user !== null && user !== undefined) {
+          const email = user.email || '';
+          const name = user.user_metadata?.name || '';
+
+          setUserEmail(email);
+          setUserName(name);
+          setNewName(name);
+          setNewEmail(email);
+        }
+
+        setLoading(false);
+      } catch (err) {
+        if (!cancelled) {
+          console.error('사용자 정보 로딩 중 오류:', err);
+          setLoading(false);
+        }
+      }
+    };
+
+    loadUser();
 
     return () => {
-      setMounted(false);
+      cancelled = true;
     };
-  }, [loadUserInfo]);
+  }, []); // 빈 배열 - 한 번만 실행
 
   const handleUpdateName = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (supabase === null) return;
+    if (supabase === null || supabase === undefined) return;
 
     setNameLoading(true);
     setNameError('');
@@ -101,11 +102,11 @@ const Settings: React.FC = () => {
         data: { name: newName }
       });
 
-      if (error !== null) {
+      if (error !== null && error !== undefined) {
         setNameError(error.message);
       } else {
         setNameSuccess('이름이 성공적으로 변경되었습니다.');
-        setUserInfo(prev => ({ ...prev, name: newName }));
+        setUserName(newName);
       }
     } catch (err) {
       setNameError('이름 변경 중 오류가 발생했습니다.');
@@ -116,7 +117,7 @@ const Settings: React.FC = () => {
 
   const handleUpdateEmail = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (supabase === null) return;
+    if (supabase === null || supabase === undefined) return;
 
     setEmailLoading(true);
     setEmailError('');
@@ -128,7 +129,7 @@ const Settings: React.FC = () => {
       return;
     }
 
-    if (newEmail === userInfo.email) {
+    if (newEmail === userEmail) {
       setEmailError('현재 이메일과 동일합니다.');
       setEmailLoading(false);
       return;
@@ -139,7 +140,7 @@ const Settings: React.FC = () => {
         email: newEmail
       });
 
-      if (error !== null) {
+      if (error !== null && error !== undefined) {
         setEmailError(error.message);
       } else {
         setEmailSuccess('이메일 변경 확인 메일이 발송되었습니다. 새 이메일에서 확인해주세요.');
@@ -153,7 +154,7 @@ const Settings: React.FC = () => {
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (supabase === null) return;
+    if (supabase === null || supabase === undefined) return;
 
     setPasswordLoading(true);
     setPasswordError('');
@@ -177,7 +178,7 @@ const Settings: React.FC = () => {
         password: newPassword
       });
 
-      if (error !== null) {
+      if (error !== null && error !== undefined) {
         setPasswordError(error.message);
       } else {
         setPasswordSuccess('비밀번호가 성공적으로 변경되었습니다.');
@@ -192,7 +193,7 @@ const Settings: React.FC = () => {
   };
 
   const handleLogout = async () => {
-    if (supabase === null) return;
+    if (supabase === null || supabase === undefined) return;
 
     if (!window.confirm('로그아웃 하시겠습니까?')) {
       return;
@@ -200,7 +201,7 @@ const Settings: React.FC = () => {
 
     try {
       const { error } = await supabase.auth.signOut();
-      if (error !== null) {
+      if (error !== null && error !== undefined) {
         alert('로그아웃 실패: ' + error.message);
       } else {
         navigate('/login');
@@ -209,14 +210,6 @@ const Settings: React.FC = () => {
       alert('로그아웃 중 오류가 발생했습니다.');
     }
   };
-
-  if (!mounted) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-gray-500">초기화 중...</div>
-      </div>
-    );
-  }
 
   if (loading) {
     return (
@@ -242,11 +235,11 @@ const Settings: React.FC = () => {
         <div className="space-y-3">
           <div className="flex items-center">
             <span className="font-medium text-gray-700 w-24">이름:</span>
-            <span className="text-gray-900">{userInfo.name || '(없음)'}</span>
+            <span className="text-gray-900">{userName || '(없음)'}</span>
           </div>
           <div className="flex items-center">
             <span className="font-medium text-gray-700 w-24">이메일:</span>
-            <span className="text-gray-900">{userInfo.email}</span>
+            <span className="text-gray-900">{userEmail}</span>
           </div>
         </div>
       </div>
