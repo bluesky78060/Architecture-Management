@@ -309,6 +309,10 @@ export default function WorkItems(): JSX.Element {
             quantity: item.quantity,
             unit_price: item.unitPrice,
             sort_order: index,
+            labor_persons: typeof item.laborPersons === 'number' ? item.laborPersons : (typeof item.laborPersons === 'string' && item.laborPersons !== '' ? Number(item.laborPersons) : 0),
+            labor_unit_rate: typeof item.laborUnitRate === 'number' ? item.laborUnitRate : (typeof item.laborUnitRate === 'string' && item.laborUnitRate !== '' ? Number(item.laborUnitRate) : 0),
+            labor_persons_general: typeof item.laborPersonsGeneral === 'number' ? item.laborPersonsGeneral : (typeof item.laborPersonsGeneral === 'string' && item.laborPersonsGeneral !== '' ? Number(item.laborPersonsGeneral) : 0),
+            labor_unit_rate_general: typeof item.laborUnitRateGeneral === 'number' ? item.laborUnitRateGeneral : (typeof item.laborUnitRateGeneral === 'string' && item.laborUnitRateGeneral !== '' ? Number(item.laborUnitRateGeneral) : 0),
           }));
 
           const { error: itemsError } = await supabase

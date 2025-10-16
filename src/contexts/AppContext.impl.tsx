@@ -667,7 +667,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 unit: item.unit ?? '',
                 quantity: item.quantity || 0,
                 unit_price: item.unitPrice || 0,
-                sort_order: index
+                sort_order: index,
+                labor_persons: typeof item.laborPersons === 'number' ? item.laborPersons : 0,
+                labor_unit_rate: typeof item.laborUnitRate === 'number' ? item.laborUnitRate : 0,
+                labor_persons_general: typeof item.laborPersonsGeneral === 'number' ? item.laborPersonsGeneral : 0,
+                labor_unit_rate_general: typeof item.laborUnitRateGeneral === 'number' ? item.laborUnitRateGeneral : 0
               }));
 
               const { error: itemsError } = await supabase!.from('invoice_items').insert(items);
