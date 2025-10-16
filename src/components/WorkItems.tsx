@@ -988,6 +988,20 @@ export default function WorkItems(): JSX.Element {
         laborUnitRateGeneral: it?.laborUnitRateGeneral ?? '',
       } as WorkItem));
 
+      // 건축주 ID 검증
+      const invalidItems = remapped.filter(item => {
+        const clientExists = clients.some(c => Number(c.id) === Number(item.clientId));
+        return !clientExists;
+      });
+
+      if (invalidItems.length > 0) {
+        setWorkItems(previousWorkItems);
+        const invalidClientIds = Array.from(new Set(invalidItems.map(item => item.clientId)));
+        alert(`엑셀 파일에 등록되지 않은 건축주 ID가 있습니다.\n\n존재하지 않는 건축주 ID: ${invalidClientIds.join(', ')}\n\n먼저 건축주 관리에서 해당 건축주를 등록해주세요.`);
+        (e.target as HTMLInputElement).value = '';
+        return;
+      }
+
       // UI 즉시 업데이트 (낙관적 업데이트)
       setWorkItems(prev => [...prev, ...remapped]);
 
