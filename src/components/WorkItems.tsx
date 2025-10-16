@@ -218,6 +218,12 @@ export default function WorkItems(): JSX.Element {
     const SECONDS_PER_MINUTE = 60;
     const MS_PER_SECOND = 1000;
 
+    // clientId 유효성 검증
+    if (workItem.clientId === null || workItem.clientId === undefined || workItem.clientId === 0) {
+      alert('유효한 건축주 정보가 없습니다. 작업 항목에 건축주를 먼저 설정해주세요.');
+      return;
+    }
+
     const completedItems = workItems.filter(i => i.clientId === workItem.clientId && i.status === '완료');
     const unbilledItems = completedItems; // 간단 처리: 고유 검사 생략
     if (unbilledItems.length === 0) {
@@ -892,6 +898,12 @@ export default function WorkItems(): JSX.Element {
     const selectedItems = workItems.filter(i => selection.selected.includes(i.id) && i.status === '완료');
     if (selectedItems.length === 0) { alert('완료된 항목이 없습니다.'); return; }
     const first = selectedItems[0];
+
+    // clientId 유효성 검증
+    if (first.clientId === null || first.clientId === undefined || first.clientId === 0) {
+      alert('유효한 건축주 정보가 없습니다. 작업 항목에 건축주를 먼저 설정해주세요.');
+      return;
+    }
     const client = clients.find(c => Number(c.id) === first.clientId);
     const workplace = client?.workplaces?.find(w => w.id === first.workplaceId);
     const newInvoiceId = `INV-${new Date().getFullYear()}-${String(invoices.length + 1).padStart(INVOICE_ID_PADDING, '0')}`;
@@ -900,6 +912,7 @@ export default function WorkItems(): JSX.Element {
     const dueDateTime = Date.now() + (DAYS_UNTIL_DUE * HOURS_PER_DAY * MINUTES_PER_HOUR * SECONDS_PER_MINUTE * MS_PER_SECOND);
     const newInvoice = {
       id: newInvoiceId,
+      clientId: first.clientId,
       client: first.clientName ?? '',
       project: first.projectName ?? '',
       workplaceAddress: workplace?.address ?? '',
