@@ -625,6 +625,17 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         }
 
         if (validInvoices.length > 0) {
+          // Status 변환 함수 (한글 → 영어)
+          const toDbStatus = (status: string): string => {
+            const statusMap: Record<string, string> = {
+              '발송대기': 'pending',
+              '발송됨': 'pending',
+              '미결제': 'overdue',
+              '결제완료': 'paid',
+            };
+            return statusMap[status] ?? 'pending';
+          };
+
           for (const invoice of validInvoices) {
 
             const { data: invoiceData, error: invError } = await supabase!
@@ -635,7 +646,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 client_id: invoice.clientId,
                 title: invoice.project,
                 amount: invoice.amount,
-                status: invoice.status,
+                status: toDbStatus(invoice.status),
                 date: invoice.date
               })
               .select()
