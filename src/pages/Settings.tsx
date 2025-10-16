@@ -19,6 +19,7 @@ const Settings: React.FC = () => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState<UserInfo>({ email: '', name: '' });
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   // 이름 변경
   const [newName, setNewName] = useState('');
@@ -40,27 +41,30 @@ const Settings: React.FC = () => {
   const [passwordError, setPasswordError] = useState('');
 
   const loadUserInfo = useCallback(async () => {
-    if (supabase === null) {
-      setLoading(false);
-      return;
-    }
-
     try {
-      const { data: { user }, error } = await supabase.auth.getUser();
+      if (supabase === null || supabase === undefined) {
+        console.warn('Supabase not initialized');
+        setLoading(false);
+        return;
+      }
 
-      if (error !== null) {
+      const { data, error } = await supabase.auth.getUser();
+
+      if (error !== null && error !== undefined) {
         console.error('사용자 정보 로딩 실패:', error);
         setLoading(false);
         return;
       }
 
-      if (user !== null) {
+      const user = data?.user;
+      if (user !== null && user !== undefined) {
+        const metadata = user.user_metadata || {};
         setUserInfo({
-          email: user.email ?? '',
-          name: user.user_metadata?.name ?? ''
+          email: user.email || '',
+          name: metadata.name || ''
         });
-        setNewName(user.user_metadata?.name ?? '');
-        setNewEmail(user.email ?? '');
+        setNewName(metadata.name || '');
+        setNewEmail(user.email || '');
       }
     } catch (err) {
       console.error('사용자 정보 로딩 중 오류:', err);
@@ -70,7 +74,12 @@ const Settings: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    setMounted(true);
     loadUserInfo();
+
+    return () => {
+      setMounted(false);
+    };
   }, [loadUserInfo]);
 
   const handleUpdateName = async (e: React.FormEvent) => {
@@ -200,6 +209,14 @@ const Settings: React.FC = () => {
       alert('로그아웃 중 오류가 발생했습니다.');
     }
   };
+
+  if (!mounted) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-gray-500">초기화 중...</div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
