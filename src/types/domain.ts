@@ -109,6 +109,7 @@ export interface Invoice {
   id: string; // INV-YYYY-###
   clientId?: number; // 일부 화면에서 사용
   client: string; // 표시용 건축주명
+  workplaceId?: number; // 작업장 ID
   project?: string;
   workplaceAddress?: string;
   amount: CurrencyAmount; // 총액
