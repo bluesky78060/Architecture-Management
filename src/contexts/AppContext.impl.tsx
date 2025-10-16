@@ -330,10 +330,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           client: inv.clients?.company_name || '',
           project: inv.project_name || '',
           workplaceAddress: inv.workplace_address || '',
-          amount: inv.amount || 0,
+          amount: inv.total_amount || 0,
           status: inv.status || '발송대기',
-          date: inv.invoice_date || '',
-          dueDate: inv.due_date || '',
+          date: inv.date || '',
           workItems: (inv.invoice_items || []).map((item: any) => ({
             name: item.name,
             quantity: item.quantity || 0,
@@ -618,10 +617,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 client_id: invoice.clientId,
                 project_name: invoice.project,
                 workplace_address: invoice.workplaceAddress,
-                amount: invoice.amount,
+                total_amount: invoice.amount,
                 status: invoice.status,
-                invoice_date: invoice.date,
-                due_date: invoice.dueDate || null
+                date: invoice.date
               })
               .select()
               .single();
