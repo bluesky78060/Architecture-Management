@@ -658,22 +658,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             }
 
             if (invoiceData && invoice.workItems.length > 0) {
-              const items = invoice.workItems.map(item => ({
+              const items = invoice.workItems.map((item, index) => ({
                 user_id: userId,
                 invoice_id: invoiceData.invoice_id,
+                category: item.category ?? '',
                 name: item.name,
+                description: item.description ?? '',
+                unit: item.unit ?? '',
                 quantity: item.quantity || 0,
-                unit: item.unit || null,
                 unit_price: item.unitPrice || 0,
-                total: item.total || 0,
-                notes: item.notes || null,
-                date: item.date || null,
-                category: item.category || null,
-                description: item.description || null,
-                labor_persons: item.laborPersons || 0,
-                labor_unit_rate: item.laborUnitRate || 0,
-                labor_persons_general: item.laborPersonsGeneral || 0,
-                labor_unit_rate_general: item.laborUnitRateGeneral || 0
+                sort_order: index
               }));
 
               const { error: itemsError } = await supabase!.from('invoice_items').insert(items);
