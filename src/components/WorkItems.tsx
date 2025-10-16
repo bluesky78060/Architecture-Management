@@ -574,12 +574,14 @@ export default function WorkItems(): JSX.Element {
           const workplaces = (clients?.workplaces !== null && clients?.workplaces !== undefined) ? clients.workplaces as Array<Record<string, unknown>> : [];
           const workplace = workplaces.find((wp: Record<string, unknown>) => (wp.id !== null && wp.id !== undefined) && wp.id === w.workplace_id);
           const workplaceName = (workplace?.name !== null && workplace?.name !== undefined) ? String(workplace.name) : '';
+          const rawWorkplaceId = w.workplace_id as number | null | undefined;
+          const workplaceId = (rawWorkplaceId !== null && rawWorkplaceId !== undefined) ? rawWorkplaceId : '';
 
           return {
             id: w.work_item_id as number,
             clientId: w.client_id as number,
             clientName,
-            workplaceId: w.workplace_id as number | null,
+            workplaceId,
             workplaceName,
             projectName: (w.project_name !== null && w.project_name !== undefined) ? String(w.project_name) : '',
             name: w.name as string,
@@ -1067,7 +1069,8 @@ export default function WorkItems(): JSX.Element {
             };
 
             const clientId = w.client_id as number;
-            const workplaceId = w.workplace_id as number | null;
+            const rawWorkplaceId = w.workplace_id as number | null | undefined;
+            const workplaceId = (rawWorkplaceId !== null && rawWorkplaceId !== undefined) ? rawWorkplaceId : '';
             return {
               id: w.work_item_id as number,
               clientId,
