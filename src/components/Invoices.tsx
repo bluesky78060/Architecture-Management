@@ -365,9 +365,6 @@ export default function Invoices(): JSX.Element {
 
     const workplaceIdNumber = Number(form.workplaceId);
 
-    // 🔍 임시 디버깅: workplaceId 값 확인
-    alert(`디버깅:\nform.workplaceId = ${form.workplaceId} (${typeof form.workplaceId})\nworkplaceIdNumber = ${workplaceIdNumber}\nisNaN = ${isNaN(workplaceIdNumber)}\n> 0 = ${workplaceIdNumber > 0}`);
-
     const created: Invoice = {
       id: newId,
       clientId: Number(form.clientId),
@@ -431,9 +428,6 @@ export default function Invoices(): JSX.Element {
       const validWorkplaceId = (typeof created.workplaceId === 'number' && created.workplaceId > 0 && !isNaN(created.workplaceId))
         ? created.workplaceId
         : null;
-
-      // 🔍 임시 디버깅: validWorkplaceId 값 확인
-      alert(`Supabase 저장 직전:\ncreated.workplaceId = ${created.workplaceId}\nvalidWorkplaceId = ${validWorkplaceId}`);
 
       const invoiceInsertData = {
         invoice_number: created.id,
