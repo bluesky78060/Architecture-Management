@@ -363,10 +363,7 @@ export default function Invoices(): JSX.Element {
     const newId = `INV-${new Date().getFullYear()}-${String(invoices.length + 1).padStart(INVOICE_ID_PAD_LENGTH, PAD_CHAR)}`;
     const MIN_VALUE = 0;
 
-    // 🔍 DEBUG: workplace_id 값 추적
-    console.log('📋 청구서 생성 - form.workplaceId:', form.workplaceId, 'type:', typeof form.workplaceId);
     const workplaceIdNumber = Number(form.workplaceId);
-    console.log('📋 청구서 생성 - Number 변환 후:', workplaceIdNumber, 'isNaN:', isNaN(workplaceIdNumber));
 
     const created: Invoice = {
       id: newId,
@@ -442,9 +439,6 @@ export default function Invoices(): JSX.Element {
         status: created.status,
         amount: created.amount,
       };
-
-      // 🔍 DEBUG: Supabase에 전송할 데이터
-      console.log('💾 Supabase INSERT - workplace_id:', invoiceInsertData.workplace_id, 'created.workplaceId:', created.workplaceId, 'validWorkplaceId:', validWorkplaceId);
 
       const { data: invoiceData, error: invError } = await supabase
         .from('invoices')
