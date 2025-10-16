@@ -170,37 +170,89 @@ const Clients: React.FC = () => {
   const handleImportFromExcel = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file !== null && file !== undefined) {
+      // 이전 상태 백업 (롤백용)
+      const previousClients = clients;
+
       try {
         const importedClients = await importFromExcel.clients(file);
-        setClients(prev => {
-          const baseMax = prev.length > 0 ? Math.max(...prev.map(c => (Number(c.id) !== 0 ? Number(c.id) : 0))) : 0;
-          const normalized = (importedClients !== null && importedClients !== undefined ? importedClients : []).map((c: Partial<Client>, idx: number) => {
-            const workplaces = Array.isArray(c?.workplaces)
-              ? c.workplaces.map((wp: Partial<Workplace>, i: number) => ({
-                  id: Number(wp?.id ?? i + 1),
-                  name: String(wp?.name !== '' && wp?.name !== null && wp?.name !== undefined ? wp.name : ''),
-                  address: wp?.address !== '' && wp?.address !== null && wp?.address !== undefined ? wp.address : '',
-                  description: wp?.description !== '' && wp?.description !== null && wp?.description !== undefined ? wp.description : '',
-                }))
-              : [];
-            return {
-              id: Number(c?.id ?? baseMax + idx + 1),
-              name: String(c?.name !== '' && c?.name !== null && c?.name !== undefined ? c.name : ''),
-              phone: c?.phone !== '' && c?.phone !== null && c?.phone !== undefined ? c.phone : '',
-              mobile: c?.mobile !== '' && c?.mobile !== null && c?.mobile !== undefined ? c.mobile : '',
-              email: c?.email !== '' && c?.email !== null && c?.email !== undefined ? c.email : '',
-              address: c?.address !== '' && c?.address !== null && c?.address !== undefined ? c.address : '',
-              type: c?.type,
-              business: c?.business,
-              workplaces,
-              projects: Array.isArray(c?.projects) ? c.projects.map((p: unknown) => String(p !== '' && p !== null && p !== undefined ? p : '').trim()).filter((s): s is string => s !== '') : [],
-              totalBilled: Number(c?.totalBilled !== 0 && c?.totalBilled !== null && c?.totalBilled !== undefined ? c.totalBilled : 0),
-              outstanding: Number(c?.outstanding !== 0 && c?.outstanding !== null && c?.outstanding !== undefined ? c.outstanding : 0),
-              notes: c?.notes !== '' && c?.notes !== null && c?.notes !== undefined ? c.notes : '',
-            } as Client;
-          });
-          return [...prev, ...normalized];
+        const baseMax = clients.length > 0 ? Math.max(...clients.map(c => (Number(c.id) !== 0 ? Number(c.id) : 0))) : 0;
+        const normalized = (importedClients !== null && importedClients !== undefined ? importedClients : []).map((c: Partial<Client>, idx: number) => {
+          const workplaces = Array.isArray(c?.workplaces)
+            ? c.workplaces.map((wp: Partial<Workplace>, i: number) => ({
+                id: Number(wp?.id ?? i + 1),
+                name: String(wp?.name !== '' && wp?.name !== null && wp?.name !== undefined ? wp.name : ''),
+                address: wp?.address !== '' && wp?.address !== null && wp?.address !== undefined ? wp.address : '',
+                description: wp?.description !== '' && wp?.description !== null && wp?.description !== undefined ? wp.description : '',
+              }))
+            : [];
+          return {
+            id: Number(c?.id ?? baseMax + idx + 1),
+            name: String(c?.name !== '' && c?.name !== null && c?.name !== undefined ? c.name : ''),
+            phone: c?.phone !== '' && c?.phone !== null && c?.phone !== undefined ? c.phone : '',
+            mobile: c?.mobile !== '' && c?.mobile !== null && c?.mobile !== undefined ? c.mobile : '',
+            email: c?.email !== '' && c?.email !== null && c?.email !== undefined ? c.email : '',
+            address: c?.address !== '' && c?.address !== null && c?.address !== undefined ? c.address : '',
+            type: c?.type,
+            business: c?.business,
+            workplaces,
+            projects: Array.isArray(c?.projects) ? c.projects.map((p: unknown) => String(p !== '' && p !== null && p !== undefined ? p : '').trim()).filter((s): s is string => s !== '') : [],
+            totalBilled: Number(c?.totalBilled !== 0 && c?.totalBilled !== null && c?.totalBilled !== undefined ? c.totalBilled : 0),
+            outstanding: Number(c?.outstanding !== 0 && c?.outstanding !== null && c?.outstanding !== undefined ? c.outstanding : 0),
+            notes: c?.notes !== '' && c?.notes !== null && c?.notes !== undefined ? c.notes : '',
+          } as Client;
         });
+
+        // UI 즉시 업데이트 (낙관적 업데이트)
+        setClients(prev => [...prev, ...normalized]);
+
+        // Supabase에 저장
+        try {
+          const { supabase } = await import('../services/supabase');
+          if (supabase === null || supabase === undefined) {
+            setClients(previousClients);
+            alert('데이터베이스 연결에 실패했습니다.');
+            e.target.value = '';
+            return;
+          }
+          const { getCurrentUserId } = await import('../services/supabase');
+          const userId = await getCurrentUserId();
+
+          // 대량 INSERT를 위한 데이터 배열 생성
+          const dbClients = normalized.map(client => ({
+            user_id: userId,
+            company_name: client.name,
+            representative: client.business?.representative ?? '',
+            business_number: client.business?.businessNumber ?? '',
+            address: client.address ?? '',
+            email: client.email ?? '',
+            phone: client.phone ?? '',
+            mobile: client.mobile ?? '',
+            contact_person: client.type === 'PERSON' ? client.name : (client.business?.representative ?? ''),
+            type: client.type ?? 'BUSINESS',
+            notes: client.notes ?? '',
+            total_billed: client.totalBilled ?? 0,
+            outstanding: client.outstanding ?? 0,
+            workplaces: client.workplaces ?? [],
+            projects: client.projects ?? []
+          }));
+
+          const { error: insertError } = await supabase
+            .from('clients')
+            .insert(dbClients);
+
+          if (insertError !== null && insertError !== undefined) {
+            setClients(previousClients);
+            alert(`Supabase 저장 중 오류가 발생했습니다: ${insertError.message}`);
+            e.target.value = '';
+            return;
+          }
+        } catch (err) {
+          setClients(previousClients);
+          alert('건축주 저장 중 예상치 못한 오류가 발생했습니다.');
+          e.target.value = '';
+          return;
+        }
+
         alert(`${importedClients.length}개의 건축주 정보를 가져왔습니다.`);
       } catch (error: unknown) {
         const msg = error instanceof Error ? error.message : String(error);
