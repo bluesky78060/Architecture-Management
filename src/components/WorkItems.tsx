@@ -224,8 +224,13 @@ export default function WorkItems(): JSX.Element {
       return;
     }
 
-    const completedItems = workItems.filter(i => i.clientId === workItem.clientId && i.status === '완료');
-    const unbilledItems = completedItems; // 간단 처리: 고유 검사 생략
+    const completedItems = workItems.filter(i =>
+      i.clientId === workItem.clientId &&
+      Number(i.workplaceId) === Number(workItem.workplaceId) &&
+      i.projectName === workItem.projectName &&
+      i.status === '완료'
+    );
+    const unbilledItems = completedItems;
     if (unbilledItems.length === 0) {
       alert('청구 가능한 완료된 작업 항목이 없습니다.');
       return;
@@ -909,6 +914,18 @@ export default function WorkItems(): JSX.Element {
     // clientId 유효성 검증
     if (first.clientId === null || first.clientId === undefined || first.clientId === 0) {
       alert('유효한 건축주 정보가 없습니다. 작업 항목에 건축주를 먼저 설정해주세요.');
+      return;
+    }
+
+    // 같은 건축주, 작업장, 프로젝트인지 확인
+    const hasDifferentProject = selectedItems.some(item =>
+      item.clientId !== first.clientId ||
+      Number(item.workplaceId) !== Number(first.workplaceId) ||
+      item.projectName !== first.projectName
+    );
+
+    if (hasDifferentProject) {
+      alert('선택한 항목들은 모두 같은 건축주, 작업장, 프로젝트여야 합니다.');
       return;
     }
     const client = clients.find(c => Number(c.id) === first.clientId);
