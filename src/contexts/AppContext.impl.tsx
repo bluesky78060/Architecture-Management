@@ -536,7 +536,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             quantity: item.quantity ?? 0,
             unit: item.unit ?? '',
             description: item.description ?? '',
-            status: toDbWorkItemStatus(item.status),
+            status: toDbWorkItemStatus(item.status ?? '예정'),
             start_date: item.date,
             notes: item.notes ?? '',
             labor_persons: 0,
