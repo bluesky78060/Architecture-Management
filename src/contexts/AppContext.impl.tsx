@@ -315,7 +315,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             *,
             clients!client_id (
               client_id,
-              company_name
+              company_name,
+              workplaces
             ),
             invoice_items (*)
           `)
@@ -324,32 +325,39 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
         if (invoicesError) throw invoicesError;
 
-        const mappedInvoices: Invoice[] = (invoicesData || []).map((inv: any) => ({
-          id: inv.invoice_number || `INV-${inv.invoice_id}`,
-          clientId: inv.client_id,
-          client: inv.clients?.company_name || '',
-          workplaceId: inv.workplace_id,
-          project: inv.title || '',
-          workplaceAddress: '',
-          amount: inv.amount || 0,
-          status: inv.status || '발송대기',
-          date: inv.date || '',
-          workItems: (inv.invoice_items || []).map((item: any) => ({
-            name: item.name,
-            quantity: item.quantity || 0,
-            unit: item.unit || '',
-            unitPrice: item.unit_price || 0,
-            total: item.total || 0,
-            notes: item.notes || '',
-            date: item.date || '',
-            category: item.category || '',
-            description: item.description || '',
-            laborPersons: item.labor_persons || 0,
-            laborUnitRate: item.labor_unit_rate || 0,
-            laborPersonsGeneral: item.labor_persons_general || 0,
-            laborUnitRateGeneral: item.labor_unit_rate_general || 0
-          }))
-        }));
+        const mappedInvoices: Invoice[] = (invoicesData || []).map((inv: any) => {
+          // workplace 정보 찾기
+          const workplaces = inv.clients?.workplaces || [];
+          const workplace = workplaces.find((wp: any) => wp.id === inv.workplace_id);
+          const workplaceAddress = workplace?.address || '';
+
+          return {
+            id: inv.invoice_number || `INV-${inv.invoice_id}`,
+            clientId: inv.client_id,
+            client: inv.clients?.company_name || '',
+            workplaceId: inv.workplace_id,
+            project: inv.title || '',
+            workplaceAddress,
+            amount: inv.amount || 0,
+            status: inv.status || '발송대기',
+            date: inv.date || '',
+            workItems: (inv.invoice_items || []).map((item: any) => ({
+              name: item.name,
+              quantity: item.quantity || 0,
+              unit: item.unit || '',
+              unitPrice: item.unit_price || 0,
+              total: item.total || 0,
+              notes: item.notes || '',
+              date: item.date || '',
+              category: item.category || '',
+              description: item.description || '',
+              laborPersons: item.labor_persons || 0,
+              laborUnitRate: item.labor_unit_rate || 0,
+              laborPersonsGeneral: item.labor_persons_general || 0,
+              laborUnitRateGeneral: item.labor_unit_rate_general || 0
+            }))
+          };
+        });
 
         setInvoices(mappedInvoices);
 
