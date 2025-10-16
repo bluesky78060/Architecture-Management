@@ -966,38 +966,56 @@ export default function WorkItems(): JSX.Element {
       const imported = await importFromExcel.workItems(file);
       const currentMax = (workItems.length > 0) ? Math.max(...workItems.map(i => Number(i.id) ?? 0)) : 0;
       const importedArray = imported ?? [];
-      const remapped = importedArray.map((it: Partial<WorkItem>, idx: number) => ({
-        id: currentMax + idx + 1,
-        clientId: Number(it?.clientId ?? 0),
-        clientName: it?.clientName,
-        workplaceId: (it?.workplaceId === '' || it?.workplaceId === null || it?.workplaceId === undefined) ? '' : Number(it.workplaceId),
-        workplaceName: it?.workplaceName,
-        projectName: it?.projectName,
-        name: String(it?.name ?? ''),
-        category: it?.category,
-        unit: it?.unit,
-        quantity: typeof it?.quantity === 'number' ? it.quantity : 0,
-        defaultPrice: typeof it?.defaultPrice === 'number' ? it.defaultPrice : 0,
-        description: it?.description,
-        notes: it?.notes,
-        status: it?.status,
-        date: it?.date,
-        laborPersons: it?.laborPersons ?? '',
-        laborUnitRate: it?.laborUnitRate ?? '',
-        laborPersonsGeneral: it?.laborPersonsGeneral ?? '',
-        laborUnitRateGeneral: it?.laborUnitRateGeneral ?? '',
-      } as WorkItem));
 
-      // 건축주 ID 검증
-      const invalidItems = remapped.filter(item => {
-        const clientExists = clients.some(c => Number(c.id) === Number(item.clientId));
-        return !clientExists;
+      // 건축주 이름으로 ID 매칭 및 검증
+      const notFoundClients: string[] = [];
+      const remapped = importedArray.map((it: Partial<WorkItem>, idx: number) => {
+        // 건축주 이름으로 ID 찾기
+        let matchedClient: Client | undefined;
+        if (it?.clientName) {
+          matchedClient = clients.find(c => c.name === it.clientName);
+          if (!matchedClient) {
+            notFoundClients.push(it.clientName);
+          }
+        }
+
+        // 작업장 이름으로 ID 찾기 (해당 건축주 내에서)
+        let matchedWorkplaceId: number | '' = '';
+        if (matchedClient && it?.workplaceName) {
+          const workplace = matchedClient.workplaces?.find(wp => wp.name === it.workplaceName);
+          if (workplace) {
+            matchedWorkplaceId = workplace.id;
+          }
+        }
+
+        return {
+          id: currentMax + idx + 1,
+          clientId: matchedClient ? matchedClient.id : 0,
+          clientName: it?.clientName ?? '',
+          workplaceId: matchedWorkplaceId,
+          workplaceName: it?.workplaceName ?? '',
+          projectName: it?.projectName ?? '',
+          name: String(it?.name ?? ''),
+          category: it?.category ?? '',
+          unit: it?.unit ?? '',
+          quantity: typeof it?.quantity === 'number' ? it.quantity : 0,
+          defaultPrice: typeof it?.defaultPrice === 'number' ? it.defaultPrice : 0,
+          description: it?.description ?? '',
+          notes: it?.notes ?? '',
+          status: (it?.status as WorkStatus) ?? '예정',
+          date: it?.date ?? new Date().toISOString().split('T')[0],
+          laborPersons: it?.laborPersons ?? '',
+          laborUnitRate: it?.laborUnitRate ?? '',
+          laborPersonsGeneral: it?.laborPersonsGeneral ?? '',
+          laborUnitRateGeneral: it?.laborUnitRateGeneral ?? '',
+        } as WorkItem;
       });
 
-      if (invalidItems.length > 0) {
+      // 등록되지 않은 건축주 확인
+      if (notFoundClients.length > 0) {
         setWorkItems(previousWorkItems);
-        const invalidClientIds = Array.from(new Set(invalidItems.map(item => item.clientId)));
-        alert(`엑셀 파일에 등록되지 않은 건축주 ID가 있습니다.\n\n존재하지 않는 건축주 ID: ${invalidClientIds.join(', ')}\n\n먼저 건축주 관리에서 해당 건축주를 등록해주세요.`);
+        const uniqueNames = Array.from(new Set(notFoundClients));
+        alert(`엑셀 파일에 등록되지 않은 건축주가 있습니다.\n\n등록되지 않은 건축주: ${uniqueNames.join(', ')}\n\n먼저 건축주 관리에서 해당 건축주를 등록해주세요.`);
         (e.target as HTMLInputElement).value = '';
         return;
       }
