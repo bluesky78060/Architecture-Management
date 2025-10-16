@@ -427,7 +427,7 @@ export default function Invoices(): JSX.Element {
           user_id: userId,
           client_id: created.clientId,
           title: created.project ?? '',
-          data: created.date,
+          date: created.date,
           status: created.status,
           amount: created.amount,
         });
@@ -443,7 +443,7 @@ export default function Invoices(): JSX.Element {
           user_id: userId,
           client_id: created.clientId,
           title: created.project ?? '',
-          data: created.date,
+          date: created.date,
           status: created.status,
           amount: created.amount,
         });

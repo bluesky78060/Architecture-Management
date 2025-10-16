@@ -332,7 +332,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           workplaceAddress: '',
           amount: inv.amount || 0,
           status: inv.status || '발송대기',
-          date: inv.data || '',
+          date: inv.date || '',
           workItems: (inv.invoice_items || []).map((item: any) => ({
             name: item.name,
             quantity: item.quantity || 0,
@@ -618,7 +618,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 title: invoice.project,
                 amount: invoice.amount,
                 status: invoice.status,
-                data: invoice.date
+                date: invoice.date
               })
               .select()
               .single();
