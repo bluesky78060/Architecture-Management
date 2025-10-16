@@ -428,6 +428,10 @@ const Clients: React.FC = () => {
               company_name: (updatedClient.business?.businessName !== '' && updatedClient.business?.businessName !== null && updatedClient.business?.businessName !== undefined) ? updatedClient.business.businessName : (updatedClient.name !== '' && updatedClient.name !== null && updatedClient.name !== undefined ? updatedClient.name : ''),
               representative: (updatedClient.business?.representative !== '' && updatedClient.business?.representative !== null && updatedClient.business?.representative !== undefined) ? updatedClient.business.representative : '',
               business_number: (updatedClient.business?.businessNumber !== '' && updatedClient.business?.businessNumber !== null && updatedClient.business?.businessNumber !== undefined) ? updatedClient.business.businessNumber : '',
+              business_type: (updatedClient.business?.businessType !== '' && updatedClient.business?.businessType !== null && updatedClient.business?.businessType !== undefined) ? updatedClient.business.businessType : '',
+              business_item: (updatedClient.business?.businessItem !== '' && updatedClient.business?.businessItem !== null && updatedClient.business?.businessItem !== undefined) ? updatedClient.business.businessItem : '',
+              business_address: (updatedClient.business?.businessAddress !== '' && updatedClient.business?.businessAddress !== null && updatedClient.business?.businessAddress !== undefined) ? updatedClient.business.businessAddress : '',
+              tax_email: (updatedClient.business?.taxEmail !== '' && updatedClient.business?.taxEmail !== null && updatedClient.business?.taxEmail !== undefined) ? updatedClient.business.taxEmail : '',
               address: (updatedClient.address !== '' && updatedClient.address !== null && updatedClient.address !== undefined) ? updatedClient.address : '',
               email: (updatedClient.email !== '' && updatedClient.email !== null && updatedClient.email !== undefined) ? updatedClient.email : '',
               phone: (updatedClient.phone !== '' && updatedClient.phone !== null && updatedClient.phone !== undefined) ? updatedClient.phone : '',
@@ -489,6 +493,10 @@ const Clients: React.FC = () => {
               company_name: (payload.business?.businessName !== '' && payload.business?.businessName !== null && payload.business?.businessName !== undefined) ? payload.business.businessName : (payload.name !== '' && payload.name !== null && payload.name !== undefined ? payload.name : ''),
               representative: (payload.business?.representative !== '' && payload.business?.representative !== null && payload.business?.representative !== undefined) ? payload.business.representative : '',
               business_number: (payload.business?.businessNumber !== '' && payload.business?.businessNumber !== null && payload.business?.businessNumber !== undefined) ? payload.business.businessNumber : '',
+              business_type: (payload.business?.businessType !== '' && payload.business?.businessType !== null && payload.business?.businessType !== undefined) ? payload.business.businessType : '',
+              business_item: (payload.business?.businessItem !== '' && payload.business?.businessItem !== null && payload.business?.businessItem !== undefined) ? payload.business.businessItem : '',
+              business_address: (payload.business?.businessAddress !== '' && payload.business?.businessAddress !== null && payload.business?.businessAddress !== undefined) ? payload.business.businessAddress : '',
+              tax_email: (payload.business?.taxEmail !== '' && payload.business?.taxEmail !== null && payload.business?.taxEmail !== undefined) ? payload.business.taxEmail : '',
               address: (payload.address !== '' && payload.address !== null && payload.address !== undefined) ? payload.address : '',
               email: (payload.email !== '' && payload.email !== null && payload.email !== undefined) ? payload.email : '',
               phone: (payload.phone !== '' && payload.phone !== null && payload.phone !== undefined) ? payload.phone : '',
@@ -1031,10 +1039,17 @@ const Clients: React.FC = () => {
                               onChange={(e) => {
                                 const checked = e.target.checked;
                                 setShowAltAddress(checked);
-                                if (checked === true) {
+                                if (checked === false) {
+                                  // 체크 해제 시: 사업장 주소와 동기화
                                   setNewClient(prev => ({
                                     ...prev,
                                     address: (prev.business?.businessAddress !== '' && prev.business?.businessAddress !== null && prev.business?.businessAddress !== undefined) ? prev.business.businessAddress : ''
+                                  }));
+                                } else {
+                                  // 체크 시: 빈 문자열로 초기화하여 별도 입력 가능하게
+                                  setNewClient(prev => ({
+                                    ...prev,
+                                    address: ''
                                   }));
                                 }
                               }}

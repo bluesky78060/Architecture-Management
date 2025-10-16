@@ -204,10 +204,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             businessName: c.company_name || '',
             representative: c.representative || '',
             businessNumber: c.business_number || '',
-            businessType: '',
-            businessItem: '',
-            businessAddress: c.address || '',
-            taxEmail: c.email || ''
+            businessType: c.business_type || '',
+            businessItem: c.business_item || '',
+            businessAddress: c.business_address || '',
+            taxEmail: c.tax_email || ''
           } : undefined,
           workplaces: c.workplaces || [],
           projects: c.projects || [],
