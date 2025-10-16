@@ -568,28 +568,27 @@ export default function WorkItems(): JSX.Element {
           return statusMap[status] ?? '예정';
         };
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const actualCreatedItems: WorkItem[] = insertedData.map((w: any) => {
-          const clientName = (w.clients?.company_name !== null && w.clients?.company_name !== undefined) ? String(w.clients.company_name) : '';
-          const workplaces = (w.clients?.workplaces !== null && w.clients?.workplaces !== undefined) ? w.clients.workplaces : [];
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const workplace = workplaces.find((wp: any) => (wp.id !== null && wp.id !== undefined) && wp.id === w.workplace_id);
+        const actualCreatedItems: WorkItem[] = insertedData.map((w: Record<string, unknown>) => {
+          const clients = w.clients as Record<string, unknown> | null | undefined;
+          const clientName = (clients?.company_name !== null && clients?.company_name !== undefined) ? String(clients.company_name) : '';
+          const workplaces = (clients?.workplaces !== null && clients?.workplaces !== undefined) ? clients.workplaces as Array<Record<string, unknown>> : [];
+          const workplace = workplaces.find((wp: Record<string, unknown>) => (wp.id !== null && wp.id !== undefined) && wp.id === w.workplace_id);
           const workplaceName = (workplace?.name !== null && workplace?.name !== undefined) ? String(workplace.name) : '';
 
           return {
-            id: w.work_item_id,
-            clientId: w.client_id,
+            id: w.work_item_id as number,
+            clientId: w.client_id as number,
             clientName,
-            workplaceId: w.workplace_id,
+            workplaceId: w.workplace_id as number | null,
             workplaceName,
             projectName: (w.project_name !== null && w.project_name !== undefined) ? String(w.project_name) : '',
-            name: w.name,
+            name: w.name as string,
             category: (w.category !== null && w.category !== undefined) ? String(w.category) : '',
             defaultPrice: (w.default_price !== null && w.default_price !== undefined) ? Number(w.default_price) : 0,
             quantity: (w.quantity !== null && w.quantity !== undefined) ? Number(w.quantity) : 0,
             unit: (w.unit !== null && w.unit !== undefined) ? String(w.unit) : '',
             description: (w.description !== null && w.description !== undefined) ? String(w.description) : '',
-            status: fromDbStatus(w.status),
+            status: fromDbStatus(w.status as string),
             date: (w.start_date !== null && w.start_date !== undefined) ? String(w.start_date) : '',
             notes: (w.notes !== null && w.notes !== undefined) ? String(w.notes) : '',
             laborPersons: (w.labor_persons !== null && w.labor_persons !== undefined) ? Number(w.labor_persons) : 0,
@@ -1056,7 +1055,7 @@ export default function WorkItems(): JSX.Element {
 
         // DB에서 반환된 실제 데이터로 업데이트 (work_item_id 포함)
         if (insertedData !== null && insertedData !== undefined) {
-          const actualCreatedItems: WorkItem[] = insertedData.map((w: any) => {
+          const actualCreatedItems: WorkItem[] = insertedData.map((w: Record<string, unknown>) => {
             const fromDbStatus = (dbStatus: string): string => {
               const statusMap: Record<string, string> = {
                 'planned': '예정',
@@ -1067,28 +1066,28 @@ export default function WorkItems(): JSX.Element {
               return statusMap[dbStatus] ?? '예정';
             };
 
-            const clientId = w.client_id;
-            const workplaceId = w.workplace_id;
+            const clientId = w.client_id as number;
+            const workplaceId = w.workplace_id as number | null;
             return {
-              id: w.work_item_id,
+              id: w.work_item_id as number,
               clientId,
-              clientName: w.client_name ?? '',
+              clientName: (w.client_name ?? '') as string,
               workplaceId,
-              workplaceName: w.workplace_name ?? '',
-              projectName: w.project_name ?? '',
-              name: w.name,
-              category: w.category ?? '',
-              defaultPrice: w.default_price ?? 0,
-              quantity: w.quantity ?? 0,
-              unit: w.unit ?? '',
-              description: w.description ?? '',
-              status: fromDbStatus(w.status),
-              date: w.start_date ?? '',
-              notes: w.notes ?? '',
-              laborPersons: w.labor_persons ?? 0,
-              laborUnitRate: w.labor_unit_rate ?? 0,
-              laborPersonsGeneral: w.labor_persons_general ?? 0,
-              laborUnitRateGeneral: w.labor_unit_rate_general ?? 0
+              workplaceName: (w.workplace_name ?? '') as string,
+              projectName: (w.project_name ?? '') as string,
+              name: w.name as string,
+              category: (w.category ?? '') as string,
+              defaultPrice: (w.default_price ?? 0) as number,
+              quantity: (w.quantity ?? 0) as number,
+              unit: (w.unit ?? '') as string,
+              description: (w.description ?? '') as string,
+              status: fromDbStatus(w.status as string),
+              date: (w.start_date ?? '') as string,
+              notes: (w.notes ?? '') as string,
+              laborPersons: (w.labor_persons ?? 0) as number,
+              laborUnitRate: (w.labor_unit_rate ?? 0) as number,
+              laborPersonsGeneral: (w.labor_persons_general ?? 0) as number,
+              laborUnitRateGeneral: (w.labor_unit_rate_general ?? 0) as number
             };
           });
 
