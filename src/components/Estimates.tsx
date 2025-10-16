@@ -129,6 +129,18 @@ const Estimates: React.FC = () => {
 
   const statuses = ['검토중', '승인됨', '거부됨', '수정 요청', '작업 전환됨'];
 
+  // 한국어 status를 데이터베이스 영어 값으로 변환
+  const toDbStatus = (koreanStatus: string): string => {
+    const statusMap: Record<string, string> = {
+      '검토중': 'draft',
+      '승인됨': 'approved',
+      '거부됨': 'rejected',
+      '수정 요청': 'sent',
+      '작업 전환됨': 'approved',
+    };
+    return statusMap[koreanStatus] ?? 'draft';
+  };
+
   // Auto-reset modalState.printEstimate state to prevent UI issues
   useEffect(() => {
     if (modalState.printEstimate === null || modalState.printEstimate === undefined) return;
@@ -352,7 +364,7 @@ const Estimates: React.FC = () => {
             title: estimateData.title ?? '',
             date: estimateData.date,
             valid_until: estimateData.validUntil ?? null,
-            status: estimateData.status,
+            status: toDbStatus(estimateData.status),
             notes: estimateData.notes ?? '',
             total_amount: estimateData.totalAmount,
           })
@@ -469,7 +481,7 @@ const Estimates: React.FC = () => {
             title: estimateData.title ?? '',
             date: estimateData.date,
             valid_until: estimateData.validUntil ?? null,
-            status: estimateData.status,
+            status: toDbStatus(estimateData.status),
             notes: estimateData.notes ?? '',
             total_amount: estimateData.totalAmount,
           })

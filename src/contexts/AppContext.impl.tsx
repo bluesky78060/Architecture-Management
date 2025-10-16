@@ -7,6 +7,18 @@ import type { CompanyInfo, Client, WorkItem, Invoice, Estimate, UnitName, Catego
 const INITIAL_LOAD_GRACE_PERIOD_MS = 100;
 const DEBOUNCE_DELAY_MS = 1000;
 
+// 한국어 status를 데이터베이스 영어 값으로 변환
+const toDbEstimateStatus = (koreanStatus: string): string => {
+  const statusMap: Record<string, string> = {
+    '검토중': 'draft',
+    '승인됨': 'approved',
+    '거부됨': 'rejected',
+    '수정 요청': 'sent',
+    '작업 전환됨': 'approved',
+  };
+  return statusMap[koreanStatus] ?? 'draft';
+};
+
 export interface AppContextValue {
   companyInfo: CompanyInfo;
   setCompanyInfo: React.Dispatch<React.SetStateAction<CompanyInfo>>;
@@ -574,7 +586,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 project_name: estimate.projectName,
                 title: estimate.title || '',
                 date: estimate.date || new Date().toISOString().split('T')[0],
-                status: estimate.status,
+                status: toDbEstimateStatus(estimate.status),
                 valid_until: estimate.validUntil || null,
                 notes: estimate.notes || '',
                 total_amount: estimate.totalAmount
