@@ -328,11 +328,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           id: inv.invoice_id,
           clientId: inv.client_id,
           client: inv.clients?.company_name || '',
-          project: inv.project_name || '',
-          workplaceAddress: inv.workplace_address || '',
-          amount: inv.total_amount || 0,
+          project: inv.title || '',
+          workplaceAddress: '',
+          amount: inv.amount || 0,
           status: inv.status || '발송대기',
-          date: inv.date || '',
+          date: inv.data || '',
           workItems: (inv.invoice_items || []).map((item: any) => ({
             name: item.name,
             quantity: item.quantity || 0,
@@ -615,11 +615,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 invoice_id: invoice.id,
                 user_id: userId,
                 client_id: invoice.clientId,
-                project_name: invoice.project,
-                workplace_address: invoice.workplaceAddress,
-                total_amount: invoice.amount,
+                title: invoice.project,
+                amount: invoice.amount,
                 status: invoice.status,
-                date: invoice.date
+                data: invoice.date
               })
               .select()
               .single();

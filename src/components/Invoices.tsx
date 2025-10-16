@@ -426,11 +426,10 @@ export default function Invoices(): JSX.Element {
           invoice_id: created.id,
           user_id: userId,
           client_id: created.clientId,
-          project_name: created.project ?? '',
-          workplace_address: created.workplaceAddress ?? '',
-          date: created.date,
+          title: created.project ?? '',
+          data: created.date,
           status: created.status,
-          total_amount: created.amount,
+          amount: created.amount,
         });
 
       if (invError !== null && invError !== undefined) {
@@ -443,11 +442,10 @@ export default function Invoices(): JSX.Element {
           invoice_id: created.id,
           user_id: userId,
           client_id: created.clientId,
-          project_name: created.project ?? '',
-          workplace_address: created.workplaceAddress ?? '',
-          date: created.date,
+          title: created.project ?? '',
+          data: created.date,
           status: created.status,
-          total_amount: created.amount,
+          amount: created.amount,
         });
         alert(`청구서 생성 중 오류가 발생했습니다: ${invError.message}\n코드: ${invError.code}\n상세: ${invError.details}`);
         return;
