@@ -557,6 +557,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
         if (estimates.length > 0) {
           for (const estimate of estimates) {
+            // workplace_id: 0 또는 NaN은 null로 변환
+            const validWorkplaceId = (typeof estimate.workplaceId === 'number' && estimate.workplaceId > 0 && !isNaN(estimate.workplaceId))
+              ? estimate.workplaceId
+              : null;
+
             const { data: estimateData, error: estError } = await supabase!
               .from('estimates')
               .insert({
@@ -564,11 +569,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 user_id: userId,
                 client_id: estimate.clientId,
                 client_name: estimate.clientName,
-                workplace_id: estimate.workplaceId,
+                workplace_id: validWorkplaceId,
                 workplace_name: estimate.workplaceName,
                 project_name: estimate.projectName,
+                title: estimate.title || '',
+                date: estimate.date || new Date().toISOString().split('T')[0],
                 status: estimate.status,
                 valid_until: estimate.validUntil || null,
+                notes: estimate.notes || '',
                 total_amount: estimate.totalAmount
               })
               .select()

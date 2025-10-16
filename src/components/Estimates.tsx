@@ -336,12 +336,17 @@ const Estimates: React.FC = () => {
       }
 
         // 1. estimates 테이블 업데이트
+        // workplace_id: 0 또는 NaN은 null로 변환
+        const validWorkplaceId = (typeof estimateData.workplaceId === 'number' && estimateData.workplaceId > 0 && !isNaN(estimateData.workplaceId))
+          ? estimateData.workplaceId
+          : null;
+
         const { data: updatedEstimate, error: estError } = await supabase
           .from('estimates')
           .update({
             client_id: estimateData.clientId,
             client_name: estimateData.clientName ?? '',
-            workplace_id: estimateData.workplaceId,
+            workplace_id: validWorkplaceId,
             workplace_name: estimateData.workplaceName ?? '',
             project_name: estimateData.projectName ?? '',
             title: estimateData.title ?? '',
@@ -425,6 +430,11 @@ const Estimates: React.FC = () => {
         const userId = await getCurrentUserId();
 
         // 1. estimates 테이블 삽입
+        // workplace_id: 0 또는 NaN은 null로 변환
+        const validWorkplaceId = (typeof estimateData.workplaceId === 'number' && estimateData.workplaceId > 0 && !isNaN(estimateData.workplaceId))
+          ? estimateData.workplaceId
+          : null;
+
         const { data: insertedEstimate, error: estError } = await supabase
           .from('estimates')
           .insert({
@@ -432,7 +442,7 @@ const Estimates: React.FC = () => {
             user_id: userId,
             client_id: estimateData.clientId,
             client_name: estimateData.clientName ?? '',
-            workplace_id: estimateData.workplaceId,
+            workplace_id: validWorkplaceId,
             workplace_name: estimateData.workplaceName ?? '',
             project_name: estimateData.projectName ?? '',
             title: estimateData.title ?? '',
