@@ -1051,7 +1051,16 @@ export default function WorkItems(): JSX.Element {
 
         if (insertError !== null && insertError !== undefined) {
           setWorkItems(previousWorkItems);
-          alert(`Supabase 저장 중 오류가 발생했습니다: ${insertError.message}`);
+          // eslint-disable-next-line no-console
+          console.error('엑셀 가져오기 Supabase 저장 오류 상세:', {
+            message: insertError.message,
+            details: insertError.details,
+            hint: insertError.hint,
+            code: insertError.code,
+            데이터개수: dbWorkItems.length,
+            첫번째항목: dbWorkItems[0]
+          });
+          alert(`Supabase 저장 중 오류가 발생했습니다: ${insertError.message}\n\n콘솔(F12)을 열어 상세 정보를 확인하세요.`);
           return;
         }
 
