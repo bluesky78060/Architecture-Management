@@ -17,11 +17,23 @@ const formatKRW = (n: number) => {
 const formatDate = (dateStr: string) => {
   if (dateStr.trim() === '') return '';
   const date = new Date(dateStr);
-  return date.toLocaleDateString('ko-KR', { 
-    year: 'numeric', 
-    month: '2-digit', 
-    day: '2-digit' 
+  return date.toLocaleDateString('ko-KR', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
   }).replace(/\./g, '.').replace(/\s/g, '');
+};
+const fromDbStatus = (dbStatus: string): string => {
+  const statusMap: Record<string, string> = {
+    'draft': '검토중',
+    'sent': '발송됨',
+    'approved': '승인됨',
+    'rejected': '거부됨',
+    'pending': '발송대기',
+    'paid': '결제완료',
+    'overdue': '미결제'
+  };
+  return statusMap[dbStatus] ?? dbStatus;
 };
 
 // Constants
@@ -78,17 +90,20 @@ interface StatusChipProps {
   status: string;
 }
 
-const StatusChip: React.FC<StatusChipProps> = ({ status }) => (
-  <span className={`inline-flex items-center px-3 py-1.5 rounded-2xl text-xs font-semibold ${
-    status === '결제완료' ? 'bg-success-100 text-success-700 shadow-sm' :
-    status === '발송됨' ? 'bg-primary-100 text-primary-700 shadow-sm' :
-    status === '발송대기' ? 'bg-warning-100 text-warning-700 shadow-sm' :
-    status === '미결제' ? 'bg-danger-100 text-danger-700 shadow-sm' :
-    'bg-gray-100 text-gray-700 shadow-sm'
-  }`}>
-    {status}
-  </span>
-);
+const StatusChip: React.FC<StatusChipProps> = ({ status }) => {
+  const koreanStatus = fromDbStatus(status);
+  return (
+    <span className={`inline-flex items-center px-3 py-1.5 rounded-2xl text-xs font-semibold ${
+      koreanStatus === '결제완료' ? 'bg-success-100 text-success-700 shadow-sm' :
+      koreanStatus === '발송됨' ? 'bg-primary-100 text-primary-700 shadow-sm' :
+      koreanStatus === '발송대기' ? 'bg-warning-100 text-warning-700 shadow-sm' :
+      koreanStatus === '미결제' ? 'bg-danger-100 text-danger-700 shadow-sm' :
+      'bg-gray-100 text-gray-700 shadow-sm'
+    }`}>
+      {koreanStatus}
+    </span>
+  );
+};
 
 interface ListCardProps {
   title: string;
@@ -116,7 +131,7 @@ const ListCard: React.FC<ListCardProps> = ({ title, icon: Icon, children }) => (
 );
 
 export default function Dashboard() {
-  const { invoices, estimates } = useApp();
+  const { invoices, estimates, clients } = useApp();
   const RECENT_INVOICES_LIMIT = 5; // eslint-disable-line no-magic-numbers
   const RECENT_ESTIMATES_LIMIT = 3; // eslint-disable-line no-magic-numbers
   const recentInvoices = useMemo(() => {
@@ -160,7 +175,7 @@ export default function Dashboard() {
     },
     {
       label: '등록된 건축주',
-      value: '4명',
+      value: `${clients.length}명`,
       icon: UsersIcon,
       tone: 'violet' as const
     }
@@ -195,21 +210,24 @@ export default function Dashboard() {
       {/* Enhanced Recent Activity */}
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <ListCard title="최근 견적" icon={CalculatorIcon}>
-          {recentEstimates.map((estimate) => (
-            <div key={estimate.id} className="flex items-center justify-between py-2 px-4 bg-white/50 rounded-2xl border border-gray-100/50 hover:bg-white/80 hover:shadow-sm transition-all duration-200">
-              <div>
-                <p className="text-sm font-semibold text-gray-900">{estimate.id} · {estimate.clientName}</p>
-                <p className="text-xs text-gray-600">{formatDate(estimate.date ?? '')} | {estimate.projectName}</p>
+          {recentEstimates.map((estimate) => {
+            const koreanStatus = fromDbStatus(estimate.status);
+            return (
+              <div key={estimate.id} className="flex items-center justify-between py-2 px-4 bg-white/50 rounded-2xl border border-gray-100/50 hover:bg-white/80 hover:shadow-sm transition-all duration-200">
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">{estimate.id} · {estimate.clientName}</p>
+                  <p className="text-xs text-gray-600">{formatDate(estimate.date ?? '')} | {estimate.projectName}</p>
+                </div>
+                <span className={`text-xs font-medium px-3 py-1 rounded-full ${
+                  koreanStatus === '승인됨' ? 'text-success-600 bg-success-50' :
+                  koreanStatus === '검토중' ? 'text-warning-600 bg-warning-50' :
+                  'text-gray-600 bg-gray-50'
+                }`}>
+                  {koreanStatus}
+                </span>
               </div>
-              <span className={`text-xs font-medium px-3 py-1 rounded-full ${
-                estimate.status === '승인됨' ? 'text-success-600 bg-success-50' :
-                estimate.status === '검토중' ? 'text-warning-600 bg-warning-50' :
-                'text-gray-600 bg-gray-50'
-              }`}>
-                {estimate.status}
-              </span>
-            </div>
-          ))}
+            );
+          })}
         </ListCard>
 
         <ListCard title="최근 청구서" icon={CurrencyDollarIcon}>
