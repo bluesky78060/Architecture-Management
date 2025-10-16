@@ -38,8 +38,11 @@ CREATE INDEX IF NOT EXISTS idx_clients_type ON clients(type);
 CREATE TABLE IF NOT EXISTS estimates (
   estimate_id SERIAL PRIMARY KEY,
   estimate_number VARCHAR(50) NOT NULL UNIQUE,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   client_id INTEGER NOT NULL,
+  client_name VARCHAR(255),
   workplace_id INTEGER,
+  workplace_name VARCHAR(255),
   project_name VARCHAR(255),
   title VARCHAR(255) NOT NULL,
   date DATE,
@@ -53,6 +56,7 @@ CREATE TABLE IF NOT EXISTS estimates (
 );
 
 -- 인덱스
+CREATE INDEX IF NOT EXISTS idx_estimates_user_id ON estimates(user_id);
 CREATE INDEX IF NOT EXISTS idx_estimates_client_id ON estimates(client_id);
 CREATE INDEX IF NOT EXISTS idx_estimates_number ON estimates(estimate_number);
 CREATE INDEX IF NOT EXISTS idx_estimates_client_date ON estimates(client_id, date);
@@ -73,6 +77,8 @@ CREATE TABLE IF NOT EXISTS estimate_items (
   quantity DECIMAL(10, 2),
   unit_price DECIMAL(15, 2),
   amount DECIMAL(15, 2) GENERATED ALWAYS AS (quantity * unit_price) STORED,
+  total DECIMAL(15, 2),
+  notes TEXT,
   sort_order INTEGER DEFAULT 0,
   CONSTRAINT fk_estimate_items_estimate FOREIGN KEY (estimate_id) REFERENCES estimates(estimate_id) ON DELETE CASCADE
 );

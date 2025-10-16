@@ -363,7 +363,27 @@ const Estimates: React.FC = () => {
         if (estError !== null && estError !== undefined) {
           // 오류 발생 시 롤백
           setEstimates(previousEstimates);
-          alert(`견적서 수정 중 오류가 발생했습니다: ${estError.message}`);
+          console.error('견적서 수정 오류 상세:', {
+            message: estError.message,
+            details: estError.details,
+            hint: estError.hint,
+            code: estError.code,
+            전송데이터: {
+              estimate_number: estimateData.id,
+              client_id: estimateData.clientId,
+              client_name: estimateData.clientName,
+              workplace_id: validWorkplaceId,
+              workplace_name: estimateData.workplaceName,
+              project_name: estimateData.projectName,
+              title: estimateData.title,
+              date: estimateData.date,
+              valid_until: estimateData.validUntil,
+              status: estimateData.status,
+              notes: estimateData.notes,
+              total_amount: estimateData.totalAmount,
+            }
+          });
+          alert(`견적서 수정 중 오류가 발생했습니다: ${estError.message}\n\n콘솔(F12)을 열어 상세 정보를 확인하세요.`);
           return;
         }
 
@@ -458,7 +478,28 @@ const Estimates: React.FC = () => {
         if (estError !== null && estError !== undefined) {
           // 오류 발생 시 롤백
           setEstimates(previousEstimates);
-          alert(`견적서 생성 중 오류가 발생했습니다: ${estError.message}`);
+          console.error('견적서 생성 오류 상세:', {
+            message: estError.message,
+            details: estError.details,
+            hint: estError.hint,
+            code: estError.code,
+            전송데이터: {
+              estimate_number: estimateData.id,
+              user_id: userId,
+              client_id: estimateData.clientId,
+              client_name: estimateData.clientName,
+              workplace_id: validWorkplaceId,
+              workplace_name: estimateData.workplaceName,
+              project_name: estimateData.projectName,
+              title: estimateData.title,
+              date: estimateData.date,
+              valid_until: estimateData.validUntil,
+              status: estimateData.status,
+              notes: estimateData.notes,
+              total_amount: estimateData.totalAmount,
+            }
+          });
+          alert(`견적서 생성 중 오류가 발생했습니다: ${estError.message}\n\n콘솔(F12)을 열어 상세 정보를 확인하세요.`);
           return;
         }
 
