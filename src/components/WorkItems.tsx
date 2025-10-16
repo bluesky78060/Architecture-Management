@@ -969,6 +969,9 @@ export default function WorkItems(): JSX.Element {
 
       // 건축주 이름으로 ID 매칭 및 검증
       const notFoundClients: string[] = [];
+      const notFoundWorkplaces: string[] = [];
+      const missingWorkplaces: string[] = [];
+
       const remapped = importedArray.map((it: Partial<WorkItem>, idx: number) => {
         // 건축주 이름으로 ID 찾기
         let matchedClient: Client | undefined;
@@ -979,12 +982,20 @@ export default function WorkItems(): JSX.Element {
           }
         }
 
+        // 작업장 이름 필수 검증
+        if (!it?.workplaceName || it.workplaceName.trim() === '') {
+          missingWorkplaces.push(`${it?.clientName ?? '(건축주 없음)'} - ${it?.name ?? '(항목명 없음)'}`);
+        }
+
         // 작업장 이름으로 ID 찾기 (해당 건축주 내에서)
         let matchedWorkplaceId: number | '' = '';
         if (matchedClient && it?.workplaceName) {
           const workplace = matchedClient.workplaces?.find(wp => wp.name === it.workplaceName);
           if (workplace) {
             matchedWorkplaceId = workplace.id;
+          } else {
+            // 건축주는 있지만 해당 작업장이 없는 경우
+            notFoundWorkplaces.push(`${it.clientName} - ${it.workplaceName}`);
           }
         }
 
@@ -1011,11 +1022,26 @@ export default function WorkItems(): JSX.Element {
         } as WorkItem;
       });
 
-      // 등록되지 않은 건축주 확인
+      // 검증 오류 확인
+      const errors: string[] = [];
+
       if (notFoundClients.length > 0) {
-        setWorkItems(previousWorkItems);
         const uniqueNames = Array.from(new Set(notFoundClients));
-        alert(`엑셀 파일에 등록되지 않은 건축주가 있습니다.\n\n등록되지 않은 건축주: ${uniqueNames.join(', ')}\n\n먼저 건축주 관리에서 해당 건축주를 등록해주세요.`);
+        errors.push(`❌ 등록되지 않은 건축주:\n   ${uniqueNames.join(', ')}`);
+      }
+
+      if (missingWorkplaces.length > 0) {
+        errors.push(`❌ 작업장 정보가 누락된 항목:\n   ${missingWorkplaces.slice(0, 5).join('\n   ')}${missingWorkplaces.length > 5 ? `\n   ... 외 ${missingWorkplaces.length - 5}개` : ''}`);
+      }
+
+      if (notFoundWorkplaces.length > 0) {
+        const uniqueWorkplaces = Array.from(new Set(notFoundWorkplaces));
+        errors.push(`❌ 등록되지 않은 작업장:\n   ${uniqueWorkplaces.slice(0, 5).join('\n   ')}${uniqueWorkplaces.length > 5 ? `\n   ... 외 ${uniqueWorkplaces.length - 5}개` : ''}`);
+      }
+
+      if (errors.length > 0) {
+        setWorkItems(previousWorkItems);
+        alert(`엑셀 가져오기 실패\n\n${errors.join('\n\n')}\n\n해결 방법:\n1. 건축주 관리에서 건축주를 먼저 등록\n2. 건축주의 작업장을 등록\n3. 엑셀 파일의 "건축주"와 "작업장" 컬럼을 정확히 입력`);
         (e.target as HTMLInputElement).value = '';
         return;
       }
