@@ -493,12 +493,70 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       notes: item.notes ?? ''
     }));
 
+    // UI 상태 업데이트
     setWorkItems(prev => [...prev, ...newItems]);
     setEstimates(prev =>
       prev.map(est =>
         est.id === estimateId ? { ...est, status: '작업 전환됨' as any } : est
       )
     );
+
+    // Supabase에 즉시 저장
+    (async () => {
+      if (!userId || !supabase) return;
+
+      try {
+        // 한글 status를 영어로 변환
+        const toDbWorkItemStatus = (koreanStatus: string): string => {
+          const statusMap: Record<string, string> = {
+            '예정': 'planned',
+            '진행중': 'in_progress',
+            '완료': 'completed',
+            '보류': 'on_hold',
+          };
+          return statusMap[koreanStatus] ?? 'planned';
+        };
+
+        // Work Items 저장
+        for (const item of newItems) {
+          const validWorkplaceId = (typeof item.workplaceId === 'number' && item.workplaceId > 0 && !isNaN(item.workplaceId))
+            ? item.workplaceId
+            : null;
+
+          await supabase!.from('work_items').insert({
+            user_id: userId,
+            client_id: item.clientId,
+            client_name: item.clientName,
+            workplace_id: validWorkplaceId,
+            workplace_name: item.workplaceName,
+            project_name: item.projectName,
+            name: item.name,
+            category: item.category ?? '',
+            default_price: item.defaultPrice ?? 0,
+            quantity: item.quantity ?? 0,
+            unit: item.unit ?? '',
+            description: item.description ?? '',
+            status: toDbWorkItemStatus(item.status),
+            start_date: item.date,
+            notes: item.notes ?? '',
+            labor_persons: 0,
+            labor_unit_rate: 0,
+            labor_persons_general: 0,
+            labor_unit_rate_general: 0
+          });
+        }
+
+        // Estimate status 업데이트
+        await supabase!
+          .from('estimates')
+          .update({ status: toDbEstimateStatus('작업 전환됨') })
+          .eq('estimate_number', estimateId)
+          .eq('user_id', userId);
+
+      } catch (err) {
+        console.error('견적서 → 작업 항목 변환 중 Supabase 저장 실패:', err);
+      }
+    })();
 
     return newItems;
   };
