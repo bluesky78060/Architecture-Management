@@ -609,6 +609,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
         if (invoices.length > 0) {
           for (const invoice of invoices) {
+            // clientId 검증: 유효하지 않은 청구서는 Supabase에 저장하지 않음
+            if (invoice.clientId === null || invoice.clientId === undefined || invoice.clientId === 0) {
+              console.warn('청구서에 유효한 client_id가 없어 Supabase 저장을 건너뜁니다:', invoice.id);
+              continue;
+            }
+
             const { data: invoiceData, error: invError } = await supabase!
               .from('invoices')
               .insert({
