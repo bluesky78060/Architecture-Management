@@ -436,7 +436,9 @@ export default function Invoices(): JSX.Element {
       if (invError !== null && invError !== undefined) {
         // 오류 발생 시 롤백
         setInvoices(previousInvoices);
+        // eslint-disable-next-line no-console
         console.error('청구서 저장 오류:', invError);
+        // eslint-disable-next-line no-console
         console.error('청구서 데이터:', {
           invoice_id: created.id,
           user_id: userId,
@@ -477,7 +479,9 @@ export default function Invoices(): JSX.Element {
       if (itemsError !== null && itemsError !== undefined) {
         // 오류 발생 시 롤백
         setInvoices(previousInvoices);
+        // eslint-disable-next-line no-console
         console.error('청구서 항목 저장 오류:', itemsError);
+        // eslint-disable-next-line no-console
         console.error('항목 데이터:', itemsToInsert);
         alert(`청구서 항목 생성 중 오류가 발생했습니다: ${itemsError.message}\n코드: ${itemsError.code}\n상세: ${itemsError.details}`);
         return;
