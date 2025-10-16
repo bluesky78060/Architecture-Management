@@ -9,12 +9,13 @@ import {
   XCircleIcon
 } from '@heroicons/react/24/outline';
 import { supabase } from '../services/supabase';
+import { useUser } from '../contexts/UserContext';
 
 const Settings: React.FC = () => {
   const navigate = useNavigate();
+  const { currentUser } = useUser();
   const [userEmail, setUserEmail] = useState('');
   const [userName, setUserName] = useState('');
-  const [loading, setLoading] = useState(true);
 
   // 이름 변경
   const [newName, setNewName] = useState('');
@@ -35,53 +36,18 @@ const Settings: React.FC = () => {
   const [passwordSuccess, setPasswordSuccess] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
-  // 초기 로딩 - 한 번만 실행
+  // UserContext에서 사용자 정보 가져오기
   useEffect(() => {
-    let cancelled = false;
+    if (currentUser !== null && currentUser !== undefined) {
+      const email = currentUser.username || '';
+      const name = currentUser.name || '';
 
-    const loadUser = async () => {
-      try {
-        if (supabase === null || supabase === undefined) {
-          if (!cancelled) setLoading(false);
-          return;
-        }
-
-        const { data, error } = await supabase.auth.getUser();
-
-        if (cancelled) return;
-
-        if (error !== null && error !== undefined) {
-          console.error('사용자 정보 로딩 실패:', error);
-          setLoading(false);
-          return;
-        }
-
-        const user = data?.user;
-        if (user !== null && user !== undefined) {
-          const email = user.email || '';
-          const name = user.user_metadata?.name || '';
-
-          setUserEmail(email);
-          setUserName(name);
-          setNewName(name);
-          setNewEmail(email);
-        }
-
-        setLoading(false);
-      } catch (err) {
-        if (!cancelled) {
-          console.error('사용자 정보 로딩 중 오류:', err);
-          setLoading(false);
-        }
-      }
-    };
-
-    loadUser();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []); // 빈 배열 - 한 번만 실행
+      setUserEmail(email);
+      setUserName(name);
+      setNewName(name);
+      setNewEmail(email);
+    }
+  }, [currentUser]); // currentUser 변경 시에만 실행
 
   const handleUpdateName = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -210,14 +176,6 @@ const Settings: React.FC = () => {
       alert('로그아웃 중 오류가 발생했습니다.');
     }
   };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-gray-500">로딩 중...</div>
-      </div>
-    );
-  }
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
