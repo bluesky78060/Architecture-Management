@@ -206,9 +206,12 @@ const Clients: React.FC = () => {
         setClients(prev => [...prev, ...normalized]);
 
         // Supabase에 저장
+        /* eslint-disable no-console */
         try {
+          console.log('🔵 [Clients Excel Import] Starting Supabase save...');
           const { supabase } = await import('../services/supabase');
           if (supabase === null || supabase === undefined) {
+            console.error('❌ [Clients Excel Import] Supabase connection failed');
             setClients(previousClients);
             alert('데이터베이스 연결에 실패했습니다.');
             e.target.value = '';
@@ -216,6 +219,7 @@ const Clients: React.FC = () => {
           }
           const { getCurrentUserId } = await import('../services/supabase');
           const userId = await getCurrentUserId();
+          console.log('🔵 [Clients Excel Import] User ID:', userId);
 
           // 대량 INSERT를 위한 데이터 배열 생성
           const dbClients = normalized.map(client => ({
@@ -236,22 +240,29 @@ const Clients: React.FC = () => {
             projects: client.projects ?? []
           }));
 
+          console.log('🔵 [Clients Excel Import] Data to insert:', dbClients);
+
           const { error: insertError } = await supabase
             .from('clients')
             .insert(dbClients);
 
           if (insertError !== null && insertError !== undefined) {
+            console.error('❌ [Clients Excel Import] Insert error:', insertError);
             setClients(previousClients);
             alert(`Supabase 저장 중 오류가 발생했습니다: ${insertError.message}`);
             e.target.value = '';
             return;
           }
+
+          console.log('✅ [Clients Excel Import] Successfully saved to Supabase');
         } catch (err) {
+          console.error('❌ [Clients Excel Import] Unexpected error:', err);
           setClients(previousClients);
           alert('건축주 저장 중 예상치 못한 오류가 발생했습니다.');
           e.target.value = '';
           return;
         }
+        /* eslint-enable no-console */
 
         alert(`${importedClients.length}개의 건축주 정보를 가져왔습니다.`);
       } catch (error: unknown) {
