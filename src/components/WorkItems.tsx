@@ -10,7 +10,7 @@ import ItemFormModal from './work-items/ItemFormModal';
 import BulkFormModal from './work-items/BulkFormModal';
 import ConfirmDialog from './ConfirmDialog';
 import { exportToExcel, importFromExcel, createTemplate } from '../utils/excelUtils';
-import type { WorkItem, WorkStatus } from '../types/domain';
+import type { WorkItem, WorkStatus, Client } from '../types/domain';
 import type { Id } from '../hooks/useSelection';
 
 type NewItem = WorkItem;
