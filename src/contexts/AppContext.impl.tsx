@@ -272,6 +272,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           .from('estimates')
           .select(`
             *,
+            clients!client_id (
+              client_id,
+              company_name
+            ),
             estimate_items (*)
           `)
           .eq('user_id', userId)
@@ -282,7 +286,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         const mappedEstimates: Estimate[] = (estimatesData || []).map((e: any) => ({
           id: e.estimate_id,
           clientId: e.client_id,
-          clientName: e.client_name || '',
+          clientName: e.clients?.company_name || '',
           workplaceId: e.workplace_id,
           workplaceName: e.workplace_name || '',
           projectName: e.project_name || '',
@@ -309,6 +313,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           .from('invoices')
           .select(`
             *,
+            clients!client_id (
+              client_id,
+              company_name
+            ),
             invoice_items (*)
           `)
           .eq('user_id', userId)
@@ -318,7 +326,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
         const mappedInvoices: Invoice[] = (invoicesData || []).map((inv: any) => ({
           id: inv.invoice_id,
-          client: inv.client_name || '',
+          clientId: inv.client_id,
+          client: inv.clients?.company_name || '',
           project: inv.project_name || '',
           workplaceAddress: inv.workplace_address || '',
           amount: inv.amount || 0,
@@ -604,8 +613,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             const { data: invoiceData, error: invError } = await supabase!
               .from('invoices')
               .insert({
+                invoice_id: invoice.id,
                 user_id: userId,
-                client_name: invoice.client,
+                client_id: invoice.clientId,
                 project_name: invoice.project,
                 workplace_address: invoice.workplaceAddress,
                 amount: invoice.amount,
