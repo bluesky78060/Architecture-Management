@@ -420,17 +420,19 @@ export default function Invoices(): JSX.Element {
         const userId = await getCurrentUserId();
 
       // 1. invoices 테이블 삽입
-      const { error: invError } = await supabase
+      const { data: invoiceData, error: invError } = await supabase
         .from('invoices')
         .insert({
-          invoice_id: created.id,
+          invoice_number: created.id,
           user_id: userId,
           client_id: created.clientId,
           title: created.project ?? '',
           date: created.date,
           status: created.status,
           amount: created.amount,
-        });
+        })
+        .select()
+        .single();
 
       if (invError !== null && invError !== undefined) {
         // 오류 발생 시 롤백
@@ -439,7 +441,7 @@ export default function Invoices(): JSX.Element {
         console.error('청구서 저장 오류:', invError);
         // eslint-disable-next-line no-console
         console.error('청구서 데이터:', {
-          invoice_id: created.id,
+          invoice_number: created.id,
           user_id: userId,
           client_id: created.clientId,
           title: created.project ?? '',
@@ -451,9 +453,15 @@ export default function Invoices(): JSX.Element {
         return;
       }
 
+      if (!invoiceData) {
+        setInvoices(previousInvoices);
+        alert('청구서 생성에 실패했습니다.');
+        return;
+      }
+
       // 2. invoice_items 삽입
       const itemsToInsert = created.workItems.map((item, index) => ({
-        invoice_id: created.id,
+        invoice_id: invoiceData.invoice_id,
         item_id: index + 1,
         category: item.category ?? '',
         name: item.name,

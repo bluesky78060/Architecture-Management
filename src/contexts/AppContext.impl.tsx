@@ -325,7 +325,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         if (invoicesError) throw invoicesError;
 
         const mappedInvoices: Invoice[] = (invoicesData || []).map((inv: any) => ({
-          id: inv.invoice_id,
+          id: inv.invoice_number || `INV-${inv.invoice_id}`,
           clientId: inv.client_id,
           client: inv.clients?.company_name || '',
           project: inv.title || '',
@@ -612,7 +612,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             const { data: invoiceData, error: invError } = await supabase!
               .from('invoices')
               .insert({
-                invoice_id: invoice.id,
+                invoice_number: invoice.id,
                 user_id: userId,
                 client_id: invoice.clientId,
                 title: invoice.project,
