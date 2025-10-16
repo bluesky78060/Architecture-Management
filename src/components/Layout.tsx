@@ -8,7 +8,8 @@ import {
   WrenchScrewdriverIcon,
   CogIcon,
   CalculatorIcon,
-  UserIcon
+  UserIcon,
+  UserCircleIcon
 } from '@heroicons/react/24/outline';
 
 interface LayoutProps {
@@ -22,6 +23,7 @@ const navigation = [
   { name: '건축주 관리', href: '/clients', icon: UsersIcon },
   { name: '작업 항목 관리', href: '/work-items', icon: WrenchScrewdriverIcon },
   { name: '환경설정', href: '/company-info', icon: CogIcon },
+  { name: '계정 설정', href: '/settings', icon: UserCircleIcon },
 ];
 
 export default function Layout({ children }: LayoutProps) {

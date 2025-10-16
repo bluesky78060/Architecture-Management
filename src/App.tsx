@@ -12,6 +12,7 @@ import WorkItemsPage from './pages/WorkItemsPage';
 import CompanyInfo from './components/CompanyInfo';
 import Migration from './pages/Migration';
 import SupabaseTest from './pages/SupabaseTest';
+import Settings from './pages/Settings';
 
 function AppContent() {
   const { isLoggedIn } = useUser();
@@ -31,6 +32,7 @@ function AppContent() {
         <Route path="/clients" element={<Clients />} />
         <Route path="/work-items" element={<WorkItemsPage />} />
         <Route path="/company-info" element={<CompanyInfo />} />
+        <Route path="/settings" element={<Settings />} />
         <Route path="/migration" element={<Migration />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
