@@ -1,11 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useApp } from '../contexts/AppContext';
-import { checkStorageAvailable, getStorageInfo, imageToBase64, saveStampImage, removeStampImage } from '../utils/imageStorage';
-import { storage } from '../services/storage';
+import { imageToBase64, saveStampImage, removeStampImage } from '../utils/imageStorage';
 import type { CompanyInfo as CompanyInfoType } from '../types/domain';
 import ConfirmDialog from './ConfirmDialog';
-
-type StorageInfo = { used: string; stampImageSize: string; folderPath?: string };
 
 export default function CompanyInfo(): JSX.Element {
   const { companyInfo, setCompanyInfo, units, setUnits, categories, setCategories, stampImage, setStampImage } = useApp();
@@ -14,35 +11,10 @@ export default function CompanyInfo(): JSX.Element {
 
   const [newUnit, setNewUnit] = useState<string>('');
   const [newCategory, setNewCategory] = useState<string>('');
-  const [storageInfo, setStorageInfoState] = useState<StorageInfo>({ used: '0 KB', stampImageSize: '0 KB' });
-  const [dataDir, setDataDir] = useState<string>('');
-  const [browserDirName, setBrowserDirName] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [pendingUnit, setPendingUnit] = useState<string | null>(null);
   const [pendingCategory, setPendingCategory] = useState<string | null>(null);
   const [showConfirmRemoveStamp, setShowConfirmRemoveStamp] = useState<boolean>(false);
-
-  useEffect(() => {
-    (async () => {
-      // 저장소 정보 업데이트
-      if (checkStorageAvailable()) {
-        const info = await getStorageInfo();
-        setStorageInfoState(info);
-      }
-
-      // 데이터 디렉토리 정보
-      try {
-        if (window.cms !== undefined && typeof window.cms.getBaseDir === 'function') {
-          const dir = await window.cms.getBaseDir();
-          if (dir !== undefined) setDataDir(dir);
-        }
-      } catch (_) {}
-      try {
-        const info = await storage.getBrowserDirectoryInfo?.();
-        if (info?.name !== undefined) setBrowserDirName(info.name);
-      } catch (_) {}
-    })();
-  }, [stampImage]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -136,11 +108,6 @@ export default function CompanyInfo(): JSX.Element {
       // 2. IndexedDB에도 백업 저장 (옵션)
       await saveStampImage(imageDataUrl);
 
-      // 저장소 정보 업데이트
-      if (checkStorageAvailable()) {
-        const info = await getStorageInfo();
-        setStorageInfoState(info);
-      }
       alert('도장 이미지가 성공적으로 저장되었습니다.');
     } catch (error) {
       alert('이미지 처리 중 오류가 발생했습니다.\n파일이 손상되었거나 지원하지 않는 형식일 수 있습니다.');
@@ -372,59 +339,6 @@ export default function CompanyInfo(): JSX.Element {
               </div>
             </div>
 
-            {/* 저장소 정보 및 디렉토리 설정 */}
-            <div className="space-y-2">
-              <div className="text-xs text-gray-600">저장소 사용량: {storageInfo.used} | 도장 이미지: {storageInfo.stampImageSize}</div>
-              <div className="space-y-1">
-                {dataDir.length > 0 ? (
-                  <div className="space-y-2">
-                    <div className="text-sm">현재 디렉토리: <span className="font-mono">{dataDir}</span></div>
-                    <button
-                      onClick={async () => {
-                        try {
-                          const dir = await window.cms?.chooseBaseDir?.();
-                          if (dir !== undefined) {
-                            setDataDir(dir);
-                            alert('데이터 저장 위치가 변경되었습니다.');
-                          }
-                        } catch (_) {
-                          alert('디렉토리 선택 중 오류가 발생했습니다.');
-                        }
-                      }}
-                      className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded text-sm"
-                    >
-                      디렉토리 변경(Electron)
-                    </button>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    <div className="text-sm text-gray-600">브라우저 저장 방식</div>
-                    {browserDirName.length > 0 ? (
-                      <div className="text-sm">선택된 폴더: <span className="font-mono bg-gray-50 border rounded px-2 py-1">{browserDirName}</span></div>
-                    ) : (
-                      <div className="text-sm text-gray-500">기본 저장소(localStorage)를 사용 중입니다.</div>
-                    )}
-                    {'showDirectoryPicker' in window ? (
-                      <button
-                        onClick={async () => {
-                          const ok = await storage.chooseBrowserDirectory?.();
-                          if (ok === true) {
-                            const info = await storage.getBrowserDirectoryInfo?.();
-                            setBrowserDirName(info?.name ?? '');
-                            alert('브라우저 폴더가 설정되었습니다.');
-                          }
-                        }}
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded text-sm"
-                      >
-                        브라우저 폴더 선택(Edge/Chrome)
-                      </button>
-                    ) : (
-                      <div className="text-xs text-gray-500">이 브라우저는 폴더 선택을 지원하지 않습니다.</div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
         </div>
       </div>
