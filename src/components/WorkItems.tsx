@@ -957,34 +957,155 @@ export default function WorkItems(): JSX.Element {
     const files = e.target.files;
     const file = (files !== null && files.length > 0) ? files[0] : null;
     if (file === null) return;
+
+    // 이전 상태 백업 (롤백용)
+    const previousWorkItems = workItems;
+
     try {
       const imported = await importFromExcel.workItems(file);
-      setWorkItems(prev => {
-        const currentMax = (prev.length > 0) ? Math.max(...prev.map(i => Number(i.id) ?? 0)) : 0;
-        const importedArray = imported ?? [];
-        const remapped = importedArray.map((it: Partial<WorkItem>, idx: number) => ({
-          id: currentMax + idx + 1,
-          clientId: Number(it?.clientId ?? 0),
-          clientName: it?.clientName,
-          workplaceId: (it?.workplaceId === '' || it?.workplaceId === null || it?.workplaceId === undefined) ? '' : Number(it.workplaceId),
-          workplaceName: it?.workplaceName,
-          projectName: it?.projectName,
-          name: String(it?.name ?? ''),
-          category: it?.category,
-          unit: it?.unit,
-          quantity: typeof it?.quantity === 'number' ? it.quantity : 0,
-          defaultPrice: typeof it?.defaultPrice === 'number' ? it.defaultPrice : 0,
-          description: it?.description,
-          notes: it?.notes,
-          status: it?.status,
-          date: it?.date,
-          laborPersons: it?.laborPersons ?? '',
-          laborUnitRate: it?.laborUnitRate ?? '',
-          laborPersonsGeneral: it?.laborPersonsGeneral ?? '',
-          laborUnitRateGeneral: it?.laborUnitRateGeneral ?? '',
-        } as WorkItem));
-        return [...prev, ...remapped];
-      });
+      const currentMax = (workItems.length > 0) ? Math.max(...workItems.map(i => Number(i.id) ?? 0)) : 0;
+      const importedArray = imported ?? [];
+      const remapped = importedArray.map((it: Partial<WorkItem>, idx: number) => ({
+        id: currentMax + idx + 1,
+        clientId: Number(it?.clientId ?? 0),
+        clientName: it?.clientName,
+        workplaceId: (it?.workplaceId === '' || it?.workplaceId === null || it?.workplaceId === undefined) ? '' : Number(it.workplaceId),
+        workplaceName: it?.workplaceName,
+        projectName: it?.projectName,
+        name: String(it?.name ?? ''),
+        category: it?.category,
+        unit: it?.unit,
+        quantity: typeof it?.quantity === 'number' ? it.quantity : 0,
+        defaultPrice: typeof it?.defaultPrice === 'number' ? it.defaultPrice : 0,
+        description: it?.description,
+        notes: it?.notes,
+        status: it?.status,
+        date: it?.date,
+        laborPersons: it?.laborPersons ?? '',
+        laborUnitRate: it?.laborUnitRate ?? '',
+        laborPersonsGeneral: it?.laborPersonsGeneral ?? '',
+        laborUnitRateGeneral: it?.laborUnitRateGeneral ?? '',
+      } as WorkItem));
+
+      // UI 즉시 업데이트 (낙관적 업데이트)
+      setWorkItems(prev => [...prev, ...remapped]);
+
+      // Supabase에 저장
+      try {
+        const { supabase } = await import('../services/supabase');
+        if (supabase === null || supabase === undefined) {
+          setWorkItems(previousWorkItems);
+          alert('데이터베이스 연결에 실패했습니다.');
+          return;
+        }
+        const { getCurrentUserId } = await import('../services/supabase');
+        const userId = await getCurrentUserId();
+
+        // Integer 필드를 안전하게 변환하는 헬퍼 함수
+        const toIntOrNull = (val: string | number | null | undefined): number | null => {
+          if (val === null || val === undefined || val === '') return null;
+          const num = Number(val);
+          return isNaN(num) ? null : num;
+        };
+
+        // Status 한글 -> 영어 변환 함수
+        const toDbStatus = (status: string | undefined): string => {
+          if (status === null || status === undefined || status === '') return 'planned';
+          const statusMap: Record<string, string> = {
+            '예정': 'planned',
+            '진행중': 'in_progress',
+            '완료': 'completed',
+            '보류': 'on_hold',
+          };
+          return statusMap[status] ?? 'planned';
+        };
+
+        // 대량 INSERT를 위한 데이터 배열 생성
+        const dbWorkItems = remapped.map(item => ({
+          user_id: userId,
+          client_id: toIntOrNull(item.clientId),
+          client_name: item.clientName ?? '',
+          workplace_id: toIntOrNull(item.workplaceId),
+          workplace_name: item.workplaceName ?? '',
+          project_name: item.projectName ?? '',
+          name: item.name,
+          description: item.description ?? '',
+          category: item.category ?? '',
+          quantity: toIntOrNull(item.quantity) ?? 0,
+          unit: item.unit ?? '',
+          default_price: toIntOrNull(item.defaultPrice) ?? 0,
+          status: toDbStatus(item.status),
+          start_date: item.date ?? null,
+          notes: item.notes ?? '',
+          labor_persons: toIntOrNull(item.laborPersons) ?? 0,
+          labor_unit_rate: toIntOrNull(item.laborUnitRate) ?? 0,
+          labor_persons_general: toIntOrNull(item.laborPersonsGeneral) ?? 0,
+          labor_unit_rate_general: toIntOrNull(item.laborUnitRateGeneral) ?? 0,
+        }));
+
+        const { data: insertedData, error: insertError } = await supabase
+          .from('work_items')
+          .insert(dbWorkItems)
+          .select();
+
+        if (insertError !== null && insertError !== undefined) {
+          setWorkItems(previousWorkItems);
+          alert(`Supabase 저장 중 오류가 발생했습니다: ${insertError.message}`);
+          return;
+        }
+
+        // DB에서 반환된 실제 데이터로 업데이트 (work_item_id 포함)
+        if (insertedData !== null && insertedData !== undefined) {
+          const actualCreatedItems: WorkItem[] = insertedData.map((w: any) => {
+            const fromDbStatus = (dbStatus: string): string => {
+              const statusMap: Record<string, string> = {
+                'planned': '예정',
+                'in_progress': '진행중',
+                'completed': '완료',
+                'on_hold': '보류',
+              };
+              return statusMap[dbStatus] ?? '예정';
+            };
+
+            const clientId = w.client_id;
+            const workplaceId = w.workplace_id;
+            return {
+              id: w.work_item_id,
+              clientId,
+              clientName: w.client_name ?? '',
+              workplaceId,
+              workplaceName: w.workplace_name ?? '',
+              projectName: w.project_name ?? '',
+              name: w.name,
+              category: w.category ?? '',
+              defaultPrice: w.default_price ?? 0,
+              quantity: w.quantity ?? 0,
+              unit: w.unit ?? '',
+              description: w.description ?? '',
+              status: fromDbStatus(w.status),
+              date: w.start_date ?? '',
+              notes: w.notes ?? '',
+              laborPersons: w.labor_persons ?? 0,
+              laborUnitRate: w.labor_unit_rate ?? 0,
+              laborPersonsGeneral: w.labor_persons_general ?? 0,
+              laborUnitRateGeneral: w.labor_unit_rate_general ?? 0
+            };
+          });
+
+          // 실제 DB 데이터로 다시 업데이트
+          setWorkItems(prev => {
+            const withoutOptimistic = prev.filter(item =>
+              !remapped.some(created => created.id === item.id)
+            );
+            return [...withoutOptimistic, ...actualCreatedItems];
+          });
+        }
+      } catch (err) {
+        setWorkItems(previousWorkItems);
+        alert('작업 항목 저장 중 예상치 못한 오류가 발생했습니다.');
+        return;
+      }
+
       alert(`${imported.length}개의 작업 항목을 가져왔습니다.`);
     } catch (err) {
       alert('Excel 파일을 가져오는 중 오류가 발생했습니다.');
