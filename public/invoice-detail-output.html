@@ -52,8 +52,8 @@
           <thead class="bg-slate-100">
             <tr>
               <th class="border px-2 py-2 text-center w-12">연번</th>
-              <th class="border px-2 py-2 text-center w-24">일자</th>
-              <th class="border px-2 py-2 text-center w-[26rem]">내&nbsp;&nbsp;&nbsp;&nbsp;용</th>
+              <th class="border px-2 py-2 text-center w-28">일자</th>
+              <th class="border px-2 py-2 text-center w-[25rem]">내&nbsp;&nbsp;&nbsp;&nbsp;용</th>
               <th class="border px-2 py-2 text-center w-16">수량</th>
               <th class="border px-2 py-2 text-center w-16">단위</th>
               <th class="border px-2 py-2 text-center w-28">단&nbsp;&nbsp;&nbsp;가</th>
@@ -121,8 +121,8 @@
           const sk  = (Number(it.laborPersons ?? (it['labor_persons']||0))||0) * (Number(it.laborUnitRate ?? (it['labor_unit_rate']||0))||0);
           const laborTotal = gen + sk;
           const laborParts = [];
-          if (gen > 0) laborParts.push(`일반: ${Number(it.laborPersonsGeneral)}명 × ${Number(it.laborUnitRateGeneral).toLocaleString()}원`);
-          if (sk > 0) laborParts.push(`숙련: ${Number(it.laborPersons)}명 × ${Number(it.laborUnitRate).toLocaleString()}원`);
+          if (gen > 0) laborParts.push(`${Number(it.laborPersonsGeneral)}명 × ${Number(it.laborUnitRateGeneral).toLocaleString()}원`);
+          if (sk > 0) laborParts.push(`${Number(it.laborPersons)}명 × ${Number(it.laborUnitRate).toLocaleString()}원`);
           const laborHTML = laborTotal > 0
             ? `<div class="text-xs text-blue-600 mt-1"><span class="font-medium">인부임:</span> ${laborParts.join(', ')} = ${laborTotal.toLocaleString()}원</div>`
             : '';
