@@ -975,23 +975,23 @@ export default function WorkItems(): JSX.Element {
       const remapped = importedArray.map((it: Partial<WorkItem>, idx: number) => {
         // 건축주 이름으로 ID 찾기
         let matchedClient: Client | undefined;
-        if (it?.clientName) {
+        if (it?.clientName !== null && it?.clientName !== undefined && it.clientName !== '') {
           matchedClient = clients.find(c => c.name === it.clientName);
-          if (!matchedClient) {
+          if (matchedClient === null || matchedClient === undefined) {
             notFoundClients.push(it.clientName);
           }
         }
 
         // 작업장 이름 필수 검증
-        if (!it?.workplaceName || it.workplaceName.trim() === '') {
+        if (it?.workplaceName === null || it?.workplaceName === undefined || it.workplaceName.trim() === '') {
           missingWorkplaces.push(`${it?.clientName ?? '(건축주 없음)'} - ${it?.name ?? '(항목명 없음)'}`);
         }
 
         // 작업장 이름으로 ID 찾기 (해당 건축주 내에서)
         let matchedWorkplaceId: number | '' = '';
-        if (matchedClient && it?.workplaceName) {
+        if ((matchedClient !== null && matchedClient !== undefined) && (it?.workplaceName !== null && it?.workplaceName !== undefined && it.workplaceName !== '')) {
           const workplace = matchedClient.workplaces?.find(wp => wp.name === it.workplaceName);
-          if (workplace) {
+          if (workplace !== null && workplace !== undefined) {
             matchedWorkplaceId = workplace.id;
           } else {
             // 건축주는 있지만 해당 작업장이 없는 경우
@@ -1001,7 +1001,7 @@ export default function WorkItems(): JSX.Element {
 
         return {
           id: currentMax + idx + 1,
-          clientId: matchedClient ? matchedClient.id : 0,
+          clientId: (matchedClient !== null && matchedClient !== undefined) ? matchedClient.id : 0,
           clientName: it?.clientName ?? '',
           workplaceId: matchedWorkplaceId,
           workplaceName: it?.workplaceName ?? '',
@@ -1023,6 +1023,7 @@ export default function WorkItems(): JSX.Element {
       });
 
       // 검증 오류 확인
+      const MAX_ERROR_DISPLAY_COUNT = 5;
       const errors: string[] = [];
 
       if (notFoundClients.length > 0) {
@@ -1031,12 +1032,12 @@ export default function WorkItems(): JSX.Element {
       }
 
       if (missingWorkplaces.length > 0) {
-        errors.push(`❌ 작업장 정보가 누락된 항목:\n   ${missingWorkplaces.slice(0, 5).join('\n   ')}${missingWorkplaces.length > 5 ? `\n   ... 외 ${missingWorkplaces.length - 5}개` : ''}`);
+        errors.push(`❌ 작업장 정보가 누락된 항목:\n   ${missingWorkplaces.slice(0, MAX_ERROR_DISPLAY_COUNT).join('\n   ')}${missingWorkplaces.length > MAX_ERROR_DISPLAY_COUNT ? `\n   ... 외 ${missingWorkplaces.length - MAX_ERROR_DISPLAY_COUNT}개` : ''}`);
       }
 
       if (notFoundWorkplaces.length > 0) {
         const uniqueWorkplaces = Array.from(new Set(notFoundWorkplaces));
-        errors.push(`❌ 등록되지 않은 작업장:\n   ${uniqueWorkplaces.slice(0, 5).join('\n   ')}${uniqueWorkplaces.length > 5 ? `\n   ... 외 ${uniqueWorkplaces.length - 5}개` : ''}`);
+        errors.push(`❌ 등록되지 않은 작업장:\n   ${uniqueWorkplaces.slice(0, MAX_ERROR_DISPLAY_COUNT).join('\n   ')}${uniqueWorkplaces.length > MAX_ERROR_DISPLAY_COUNT ? `\n   ... 외 ${uniqueWorkplaces.length - MAX_ERROR_DISPLAY_COUNT}개` : ''}`);
       }
 
       if (errors.length > 0) {
