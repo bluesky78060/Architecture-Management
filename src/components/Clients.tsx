@@ -417,44 +417,55 @@ const Clients: React.FC = () => {
       };
 
       // Supabase 업데이트 (즉시)
+      /* eslint-disable no-console */
       try {
         const { supabase, getCurrentUserId } = await import('../services/supabase');
         if (supabase !== null && supabase !== undefined) {
           const userId = await getCurrentUserId();
+
+          const updateData = {
+            user_id: userId,
+            company_name: (updatedClient.business?.businessName !== '' && updatedClient.business?.businessName !== null && updatedClient.business?.businessName !== undefined) ? updatedClient.business.businessName : (updatedClient.name !== '' && updatedClient.name !== null && updatedClient.name !== undefined ? updatedClient.name : ''),
+            representative: (updatedClient.business?.representative !== '' && updatedClient.business?.representative !== null && updatedClient.business?.representative !== undefined) ? updatedClient.business.representative : '',
+            business_number: (updatedClient.business?.businessNumber !== '' && updatedClient.business?.businessNumber !== null && updatedClient.business?.businessNumber !== undefined) ? updatedClient.business.businessNumber : '',
+            business_type: (updatedClient.business?.businessType !== '' && updatedClient.business?.businessType !== null && updatedClient.business?.businessType !== undefined) ? updatedClient.business.businessType : '',
+            business_item: (updatedClient.business?.businessItem !== '' && updatedClient.business?.businessItem !== null && updatedClient.business?.businessItem !== undefined) ? updatedClient.business.businessItem : '',
+            business_address: (updatedClient.business?.businessAddress !== '' && updatedClient.business?.businessAddress !== null && updatedClient.business?.businessAddress !== undefined) ? updatedClient.business.businessAddress : '',
+            tax_email: (updatedClient.business?.taxEmail !== '' && updatedClient.business?.taxEmail !== null && updatedClient.business?.taxEmail !== undefined) ? updatedClient.business.taxEmail : '',
+            address: (updatedClient.address !== '' && updatedClient.address !== null && updatedClient.address !== undefined) ? updatedClient.address : '',
+            email: (updatedClient.email !== '' && updatedClient.email !== null && updatedClient.email !== undefined) ? updatedClient.email : '',
+            phone: (updatedClient.phone !== '' && updatedClient.phone !== null && updatedClient.phone !== undefined) ? updatedClient.phone : '',
+            mobile: (updatedClient.mobile !== '' && updatedClient.mobile !== null && updatedClient.mobile !== undefined) ? updatedClient.mobile : '',
+            contact_person: updatedClient.type === 'PERSON' ? (updatedClient.name !== '' && updatedClient.name !== null && updatedClient.name !== undefined ? updatedClient.name : '') : (updatedClient.business?.representative !== '' && updatedClient.business?.representative !== null && updatedClient.business?.representative !== undefined ? updatedClient.business.representative : ''),
+            type: (updatedClient.type !== null && updatedClient.type !== undefined) ? updatedClient.type : 'BUSINESS',
+            notes: (updatedClient.notes !== '' && updatedClient.notes !== null && updatedClient.notes !== undefined) ? updatedClient.notes : '',
+            workplaces: (updatedClient.workplaces !== null && updatedClient.workplaces !== undefined) ? updatedClient.workplaces : [],
+            projects: (updatedClient.projects !== null && updatedClient.projects !== undefined) ? updatedClient.projects : [],
+            total_billed: 0,
+            outstanding: 0
+          };
+
+          console.log('🔵 [Client Update] Data to update:', updateData);
+
           const { error } = await supabase
             .from('clients')
-            .update({
-              user_id: userId,
-              company_name: (updatedClient.business?.businessName !== '' && updatedClient.business?.businessName !== null && updatedClient.business?.businessName !== undefined) ? updatedClient.business.businessName : (updatedClient.name !== '' && updatedClient.name !== null && updatedClient.name !== undefined ? updatedClient.name : ''),
-              representative: (updatedClient.business?.representative !== '' && updatedClient.business?.representative !== null && updatedClient.business?.representative !== undefined) ? updatedClient.business.representative : '',
-              business_number: (updatedClient.business?.businessNumber !== '' && updatedClient.business?.businessNumber !== null && updatedClient.business?.businessNumber !== undefined) ? updatedClient.business.businessNumber : '',
-              business_type: (updatedClient.business?.businessType !== '' && updatedClient.business?.businessType !== null && updatedClient.business?.businessType !== undefined) ? updatedClient.business.businessType : '',
-              business_item: (updatedClient.business?.businessItem !== '' && updatedClient.business?.businessItem !== null && updatedClient.business?.businessItem !== undefined) ? updatedClient.business.businessItem : '',
-              business_address: (updatedClient.business?.businessAddress !== '' && updatedClient.business?.businessAddress !== null && updatedClient.business?.businessAddress !== undefined) ? updatedClient.business.businessAddress : '',
-              tax_email: (updatedClient.business?.taxEmail !== '' && updatedClient.business?.taxEmail !== null && updatedClient.business?.taxEmail !== undefined) ? updatedClient.business.taxEmail : '',
-              address: (updatedClient.address !== '' && updatedClient.address !== null && updatedClient.address !== undefined) ? updatedClient.address : '',
-              email: (updatedClient.email !== '' && updatedClient.email !== null && updatedClient.email !== undefined) ? updatedClient.email : '',
-              phone: (updatedClient.phone !== '' && updatedClient.phone !== null && updatedClient.phone !== undefined) ? updatedClient.phone : '',
-              mobile: (updatedClient.mobile !== '' && updatedClient.mobile !== null && updatedClient.mobile !== undefined) ? updatedClient.mobile : '',
-              contact_person: updatedClient.type === 'PERSON' ? (updatedClient.name !== '' && updatedClient.name !== null && updatedClient.name !== undefined ? updatedClient.name : '') : (updatedClient.business?.representative !== '' && updatedClient.business?.representative !== null && updatedClient.business?.representative !== undefined ? updatedClient.business.representative : ''),
-              type: (updatedClient.type !== null && updatedClient.type !== undefined) ? updatedClient.type : 'BUSINESS',
-              notes: (updatedClient.notes !== '' && updatedClient.notes !== null && updatedClient.notes !== undefined) ? updatedClient.notes : '',
-              workplaces: (updatedClient.workplaces !== null && updatedClient.workplaces !== undefined) ? updatedClient.workplaces : [],
-              projects: (updatedClient.projects !== null && updatedClient.projects !== undefined) ? updatedClient.projects : [],
-              total_billed: 0,
-              outstanding: 0
-            })
+            .update(updateData)
             .eq('client_id', editingClientId);
 
           if (error !== null && error !== undefined) {
-            alert('건축주 수정 중 오류가 발생했습니다: ' + error.message);
+            console.error('❌ [Client Update] Error:', error);
+            alert('건축주 수정 중 오류가 발생했습니다: ' + error.message + '\n\n컬럼이 존재하지 않으면 Supabase 마이그레이션을 실행해주세요.');
             return;
           }
+
+          console.log('✅ [Client Update] Successfully updated');
         }
       } catch (err) {
+        console.error('❌ [Client Update] Unexpected error:', err);
         alert('건축주 수정 실패: ' + String(err));
         return;
       }
+      /* eslint-enable no-console */
 
       setClients(prev => prev.map(client =>
         client.id === editingClientId
