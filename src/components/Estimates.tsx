@@ -81,9 +81,9 @@ const Estimates: React.FC = () => {
         category: '',
         name: '',
         description: '',
-        quantity: 1,
+        quantity: '',
         unit: '',
-        unitPrice: 0,
+        unitPrice: '',
         notes: ''
       }
     ]
@@ -245,9 +245,9 @@ const Estimates: React.FC = () => {
         category: '',
         name: '',
         description: '',
-        quantity: 1,
+        quantity: '',
         unit: '',
-        unitPrice: 0,
+        unitPrice: '',
         notes: ''
       }]
     }));
@@ -574,9 +574,9 @@ const Estimates: React.FC = () => {
           category: '',
           name: '',
           description: '',
-          quantity: 1,
+          quantity: '',
           unit: '',
-          unitPrice: 0,
+          unitPrice: '',
           notes: ''
         }
       ]
@@ -1148,23 +1148,25 @@ const Estimates: React.FC = () => {
 
                         <div className="grid grid-cols-4 gap-2 mb-2">
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">단가</label>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">수량</label>
                             <input
                               type="text"
-                              value={(typeof item.unitPrice === 'number' && item.unitPrice !== 0 && !isNaN(item.unitPrice)) ? format(Number(item.unitPrice)) : ''}
-                              onChange={(e) => handleItemChange(index, 'unitPrice', e.target.value)}
+                              value={item.quantity === '' ? '' : format(Number(item.quantity))}
+                              onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
+                              onFocus={(e) => e.target.select()}
                               placeholder="0"
                               className="w-full border border-gray-200 rounded px-2 py-1 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                               required
                             />
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">수량</label>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">단가</label>
                             <input
                               type="text"
-                              value={item.quantity === '' ? '' : format(Number(item.quantity))}
-                              onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
-                              placeholder="1"
+                              value={(typeof item.unitPrice === 'number' && item.unitPrice !== 0 && !isNaN(item.unitPrice)) ? format(Number(item.unitPrice)) : ''}
+                              onChange={(e) => handleItemChange(index, 'unitPrice', e.target.value)}
+                              onFocus={(e) => e.target.select()}
+                              placeholder="0"
                               className="w-full border border-gray-200 rounded px-2 py-1 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                               required
                             />
