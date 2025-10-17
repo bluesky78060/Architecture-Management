@@ -23,10 +23,18 @@ CREATE INDEX IF NOT EXISTS idx_user_approvals_status ON user_approvals(status);
 ALTER TABLE user_approvals ENABLE ROW LEVEL SECURITY;
 
 -- Policy: Users can read their own approval status
+DROP POLICY IF EXISTS "Users can view their own approval status" ON user_approvals;
 CREATE POLICY "Users can view their own approval status"
   ON user_approvals
   FOR SELECT
   USING (auth.uid() = user_id);
+
+-- Policy: Users can create their own approval record
+DROP POLICY IF EXISTS "Users can create their own approval record" ON user_approvals;
+CREATE POLICY "Users can create their own approval record"
+  ON user_approvals
+  FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
 
 -- Policy: Only approved users can access the system (will be applied to other tables)
 -- This is a helper function to check if user is approved
