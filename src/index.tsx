@@ -110,46 +110,38 @@ function AppGate() {
         }
 
         if (approval === null) {
-          // No approval record - create one for SNS login users
-          const provider = user.app_metadata.provider;
-          const isSocialLogin = provider === 'google' || provider === 'kakao';
+          // No approval record - create one for all new users (email, google, kakao)
+          const provider = user.app_metadata.provider ?? 'email';
+          const userEmail = user.email ?? `${user.id}@user`;
 
           /* eslint-disable no-console */
-          console.log('🔵 [AppGate] No approval record. provider:', provider, 'isSocialLogin:', isSocialLogin);
+          console.log('🔵 [AppGate] No approval record. provider:', provider, 'email:', userEmail);
           /* eslint-enable no-console */
 
-          if (isSocialLogin) {
-            // Create approval record with pending status
-            const userEmail = user.email ?? `${user.id}@kakao.user`;
-            const { error: insertError } = await supabase
-              .from('user_approvals')
-              .insert({
-                user_id: user.id,
-                email: userEmail,
-                provider: provider,
-                status: 'pending',
-              });
+          // Create approval record with pending status for all new users
+          const { error: insertError } = await supabase
+            .from('user_approvals')
+            .insert({
+              user_id: user.id,
+              email: userEmail,
+              provider: provider,
+              status: 'pending',
+            });
 
-            /* eslint-disable no-console */
-            console.log('🔵 [AppGate] Insert approval record result:', insertError !== null ? `ERROR: ${insertError.message}` : 'SUCCESS');
-            /* eslint-enable no-console */
+          /* eslint-disable no-console */
+          console.log('🔵 [AppGate] Insert approval record result:', insertError !== null ? `ERROR: ${insertError.message}` : 'SUCCESS');
+          /* eslint-enable no-console */
 
-            if (insertError !== null) {
-              /* eslint-disable no-console */
-              console.error('❌ [AppGate] insertError:', insertError);
-              /* eslint-enable no-console */
-            }
-
+          if (insertError !== null) {
             /* eslint-disable no-console */
-            console.log('🟡 [AppGate] Setting status to PENDING');
+            console.error('❌ [AppGate] insertError:', insertError);
             /* eslint-enable no-console */
-            setApprovalStatus('pending');
-          } else {
-            /* eslint-disable no-console */
-            console.log('✅ [AppGate] Email/password user - auto-approved');
-            /* eslint-enable no-console */
-            setApprovalStatus('approved');
           }
+
+          /* eslint-disable no-console */
+          console.log('🟡 [AppGate] All new users require approval - Setting status to PENDING');
+          /* eslint-enable no-console */
+          setApprovalStatus('pending');
         } else {
           /* eslint-disable no-console */
           console.log('🔵 [AppGate] Found approval record with status:', approval.status);
