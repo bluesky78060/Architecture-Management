@@ -145,6 +145,38 @@ const AdminApproval: React.FC = () => {
     }
   };
 
+  const handleDelete = async (userId: string): Promise<void> => {
+    if (supabase === null) {
+      return;
+    }
+
+    if (!window.confirm('승인 기록을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) {
+      return;
+    }
+
+    setProcessingId(userId);
+
+    try {
+      const { error } = await supabase
+        .from('user_approvals')
+        .delete()
+        .eq('user_id', userId);
+
+      if (error !== null) {
+        alert('삭제 처리 중 오류가 발생했습니다.');
+        return;
+      }
+
+      // 목록 새로고침
+      await fetchUsers();
+      alert('삭제되었습니다.');
+    } catch (err: unknown) {
+      alert('삭제 처리 중 오류가 발생했습니다.');
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
   // 관리자가 아니면 렌더링하지 않음
   if (!isAdmin) {
     return null;
@@ -256,6 +288,9 @@ const AdminApproval: React.FC = () => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     승인일
                   </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    작업
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -269,6 +304,16 @@ const AdminApproval: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {user.approved_at !== null ? new Date(user.approved_at).toLocaleString('ko-KR') : '-'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button
+                        onClick={() => { void handleDelete(user.user_id); }}
+                        disabled={processingId === user.user_id}
+                        className="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
+                      >
+                        <XCircleIcon className="h-4 w-4 mr-1" />
+                        삭제
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -298,6 +343,9 @@ const AdminApproval: React.FC = () => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     거부일
                   </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    작업
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -311,6 +359,16 @@ const AdminApproval: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {user.rejected_at !== null ? new Date(user.rejected_at).toLocaleString('ko-KR') : '-'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button
+                        onClick={() => { void handleDelete(user.user_id); }}
+                        disabled={processingId === user.user_id}
+                        className="inline-flex items-center px-3 py-1 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
+                      >
+                        <XCircleIcon className="h-4 w-4 mr-1" />
+                        삭제
+                      </button>
                     </td>
                   </tr>
                 ))}
