@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { CheckCircleIcon, XCircleIcon, ClockIcon, ShieldExclamationIcon } from '@heroicons/react/24/outline';
+import { CheckCircleIcon, XCircleIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
 import { supabase } from '../services/supabase';
@@ -41,7 +41,6 @@ const AdminApproval: React.FC = () => {
         .order('created_at', { ascending: false });
 
       if (error !== null) {
-        console.error('사용자 목록 조회 실패:', error);
         return;
       }
 
@@ -49,7 +48,7 @@ const AdminApproval: React.FC = () => {
         setUsers(data);
       }
     } catch (err: unknown) {
-      console.error('사용자 목록 조회 중 오류:', err);
+      // Error handling
     } finally {
       setLoading(false);
     }
@@ -76,7 +75,6 @@ const AdminApproval: React.FC = () => {
         .eq('user_id', userId);
 
       if (error !== null) {
-        console.error('승인 실패:', error);
         alert('승인 처리 중 오류가 발생했습니다.');
         return;
       }
@@ -85,7 +83,6 @@ const AdminApproval: React.FC = () => {
       await fetchUsers();
       alert('승인되었습니다!');
     } catch (err: unknown) {
-      console.error('승인 중 오류:', err);
       alert('승인 처리 중 오류가 발생했습니다.');
     } finally {
       setProcessingId(null);
@@ -113,7 +110,6 @@ const AdminApproval: React.FC = () => {
         .eq('user_id', userId);
 
       if (error !== null) {
-        console.error('거부 실패:', error);
         alert('거부 처리 중 오류가 발생했습니다.');
         return;
       }
@@ -122,7 +118,6 @@ const AdminApproval: React.FC = () => {
       await fetchUsers();
       alert('거부되었습니다.');
     } catch (err: unknown) {
-      console.error('거부 중 오류:', err);
       alert('거부 처리 중 오류가 발생했습니다.');
     } finally {
       setProcessingId(null);
