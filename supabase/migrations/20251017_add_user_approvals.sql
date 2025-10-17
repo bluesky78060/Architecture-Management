@@ -15,9 +15,9 @@ CREATE TABLE IF NOT EXISTS user_approvals (
 );
 
 -- Create index for faster lookups
-CREATE INDEX idx_user_approvals_user_id ON user_approvals(user_id);
-CREATE INDEX idx_user_approvals_email ON user_approvals(email);
-CREATE INDEX idx_user_approvals_status ON user_approvals(status);
+CREATE INDEX IF NOT EXISTS idx_user_approvals_user_id ON user_approvals(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_approvals_email ON user_approvals(email);
+CREATE INDEX IF NOT EXISTS idx_user_approvals_status ON user_approvals(status);
 
 -- Enable RLS
 ALTER TABLE user_approvals ENABLE ROW LEVEL SECURITY;

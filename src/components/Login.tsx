@@ -140,9 +140,6 @@ const Login: React.FC = () => {
     try {
       const { error: signInError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/`,
-        },
       });
 
       if (signInError !== null) {
@@ -169,9 +166,6 @@ const Login: React.FC = () => {
       console.log('🟡 [Kakao] Calling signInWithOAuth...');
       const { data, error: signInError } = await supabase.auth.signInWithOAuth({
         provider: 'kakao',
-        options: {
-          redirectTo: `${window.location.origin}/`,
-        },
       });
 
       console.log('🟡 [Kakao] signInWithOAuth response:', { data, error: signInError });

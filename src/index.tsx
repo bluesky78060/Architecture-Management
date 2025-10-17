@@ -66,13 +66,23 @@ function AppGate() {
 
   useEffect(() => {
     const checkApprovalStatus = async (): Promise<void> => {
+      /* eslint-disable no-console */
+      console.log('🔵 [AppGate] checkApprovalStatus called, isLoggedIn:', isLoggedIn);
+      /* eslint-enable no-console */
+
       if (supabase === null || !isLoggedIn) {
-        setApprovalStatus('approved'); // Skip approval check if login disabled or not logged in
+        /* eslint-disable no-console */
+        console.log('⚪ [AppGate] Skipping approval check (supabase null or not logged in)');
+        /* eslint-enable no-console */
+        setApprovalStatus('approved');
         return;
       }
 
       try {
         const { data: { user } } = await supabase.auth.getUser();
+        /* eslint-disable no-console */
+        console.log('🔵 [AppGate] user:', user ? `id=${user.id}, provider=${user.app_metadata.provider}` : 'null');
+        /* eslint-enable no-console */
 
         if (user === null) {
           setApprovalStatus('approved');
@@ -86,7 +96,14 @@ function AppGate() {
           .eq('user_id', user.id)
           .maybeSingle();
 
+        /* eslint-disable no-console */
+        console.log('🔵 [AppGate] approval query result:', { approval, approvalError });
+        /* eslint-enable no-console */
+
         if (approvalError !== null) {
+          /* eslint-disable no-console */
+          console.error('❌ [AppGate] approvalError:', approvalError);
+          /* eslint-enable no-console */
           setApprovalStatus('approved'); // Default to approved on error to avoid blocking
           return;
         }
@@ -96,9 +113,12 @@ function AppGate() {
           const provider = user.app_metadata.provider;
           const isSocialLogin = provider === 'google' || provider === 'kakao';
 
+          /* eslint-disable no-console */
+          console.log('🔵 [AppGate] No approval record. provider:', provider, 'isSocialLogin:', isSocialLogin);
+          /* eslint-enable no-console */
+
           if (isSocialLogin) {
             // Create approval record with pending status
-            // Use email if available, otherwise use user ID as identifier
             const userEmail = user.email ?? `${user.id}@kakao.user`;
             const { error: insertError } = await supabase
               .from('user_approvals')
@@ -109,20 +129,36 @@ function AppGate() {
                 status: 'pending',
               });
 
+            /* eslint-disable no-console */
+            console.log('🔵 [AppGate] Insert approval record result:', insertError ? `ERROR: ${insertError.message}` : 'SUCCESS');
+            /* eslint-enable no-console */
+
             if (insertError !== null) {
-              // Silent error handling
+              /* eslint-disable no-console */
+              console.error('❌ [AppGate] insertError:', insertError);
+              /* eslint-enable no-console */
             }
 
+            /* eslint-disable no-console */
+            console.log('🟡 [AppGate] Setting status to PENDING');
+            /* eslint-enable no-console */
             setApprovalStatus('pending');
           } else {
-            // Email/password users are auto-approved
+            /* eslint-disable no-console */
+            console.log('✅ [AppGate] Email/password user - auto-approved');
+            /* eslint-enable no-console */
             setApprovalStatus('approved');
           }
         } else {
-          // Has approval record - use its status
+          /* eslint-disable no-console */
+          console.log('🔵 [AppGate] Found approval record with status:', approval.status);
+          /* eslint-enable no-console */
           setApprovalStatus(approval.status as 'approved' | 'pending' | 'rejected');
         }
       } catch (err: unknown) {
+        /* eslint-disable no-console */
+        console.error('❌ [AppGate] Exception:', err);
+        /* eslint-enable no-console */
         setApprovalStatus('approved'); // Default to approved on error
       }
     };
