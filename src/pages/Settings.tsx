@@ -36,18 +36,27 @@ const Settings: React.FC = () => {
   const [passwordSuccess, setPasswordSuccess] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
+  /* eslint-disable no-console */
   // UserContext에서 사용자 정보 가져오기
   useEffect(() => {
+    console.log('🔵 [Settings] Component mounted');
+    console.log('🔵 [Settings] currentUser:', currentUser);
+
     if (currentUser !== null && currentUser !== undefined) {
       const email = currentUser.username || '';
       const name = currentUser.name || '';
+
+      console.log('🔵 [Settings] Setting user info:', { email, name });
 
       setUserEmail(email);
       setUserName(name);
       setNewName(name);
       setNewEmail(email);
+    } else {
+      console.log('⚠️ [Settings] currentUser is null or undefined');
     }
   }, [currentUser]); // currentUser 변경 시에만 실행
+  /* eslint-enable no-console */
 
   const handleUpdateName = async (e: React.FormEvent) => {
     e.preventDefault();
