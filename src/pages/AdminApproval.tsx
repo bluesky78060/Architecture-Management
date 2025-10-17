@@ -31,24 +31,45 @@ const AdminApproval: React.FC = () => {
 
   const fetchUsers = async (): Promise<void> => {
     if (supabase === null) {
+      /* eslint-disable no-console */
+      console.error('❌ [AdminApproval] Supabase is null');
+      /* eslint-enable no-console */
       return;
     }
 
     try {
+      /* eslint-disable no-console */
+      console.log('🔵 [AdminApproval] Fetching user approvals...');
+      /* eslint-enable no-console */
+
       const { data, error } = await supabase
         .from('user_approvals')
         .select('*')
         .order('created_at', { ascending: false });
 
+      /* eslint-disable no-console */
+      console.log('🔵 [AdminApproval] Query result:', { data, error });
+      /* eslint-enable no-console */
+
       if (error !== null) {
+        /* eslint-disable no-console */
+        console.error('❌ [AdminApproval] Error fetching users:', error);
+        /* eslint-enable no-console */
+        alert(`사용자 목록 로딩 실패: ${error.message}`);
         return;
       }
 
       if (data !== null) {
+        /* eslint-disable no-console */
+        console.log('✅ [AdminApproval] Successfully loaded users:', data.length, 'users');
+        /* eslint-enable no-console */
         setUsers(data);
       }
     } catch (err: unknown) {
-      // Error handling
+      /* eslint-disable no-console */
+      console.error('❌ [AdminApproval] Exception:', err);
+      /* eslint-enable no-console */
+      alert('사용자 목록 로딩 중 예외 발생');
     } finally {
       setLoading(false);
     }
