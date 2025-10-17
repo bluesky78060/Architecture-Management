@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ClockIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { supabase } from '../services/supabase';
+import { useUser } from '../contexts/UserContext';
 
 const POLL_INTERVAL_MS = 30000; // 30 seconds
 
@@ -14,10 +15,23 @@ interface ApprovalStatus {
 
 const PendingApproval: React.FC = () => {
   const navigate = useNavigate();
+  const { isLoggedIn } = useUser();
   const [approvalStatus, setApprovalStatus] = useState<ApprovalStatus | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
+  // 로그인되지 않은 상태면 즉시 로그인 페이지로 리다이렉트
   useEffect(() => {
+    if (!isLoggedIn) {
+      navigate('/login', { replace: true });
+    }
+  }, [isLoggedIn, navigate]);
+
+  useEffect(() => {
+    // 로그인되지 않았으면 approval 체크 안 함
+    if (!isLoggedIn) {
+      return;
+    }
+
     const checkApprovalStatus = async (): Promise<void> => {
       if (supabase === null) {
         return;
@@ -27,7 +41,7 @@ const PendingApproval: React.FC = () => {
         const { data: { user } } = await supabase.auth.getUser();
 
         if (user === null) {
-          navigate('/login');
+          navigate('/login', { replace: true });
           return;
         }
 
@@ -65,7 +79,7 @@ const PendingApproval: React.FC = () => {
     }, POLL_INTERVAL_MS);
 
     return () => { clearInterval(interval); };
-  }, [navigate]);
+  }, [isLoggedIn, navigate]);
 
   const handleLogout = async (): Promise<void> => {
     if (supabase === null) {
@@ -75,6 +89,11 @@ const PendingApproval: React.FC = () => {
     await supabase.auth.signOut();
     navigate('/login');
   };
+
+  // 로그인되지 않았으면 리다이렉트 중이므로 아무것도 렌더링하지 않음
+  if (!isLoggedIn) {
+    return null;
+  }
 
   if (loading) {
     return (
