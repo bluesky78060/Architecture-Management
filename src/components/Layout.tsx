@@ -28,7 +28,7 @@ const navigation = [
 
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
-  const { logout } = useUser();
+  const { logout, currentUser } = useUser();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -107,7 +107,9 @@ export default function Layout({ children }: LayoutProps) {
                 <UserIcon className="h-4 w-4 text-white" />
               </div>
               <div className="text-left flex-1">
-                <div className="text-sm font-medium text-gray-900">사용자</div>
+                <div className="text-sm font-medium text-gray-900">
+                  {(currentUser?.name !== null && currentUser?.name !== undefined) ? currentUser.name : '사용자'}
+                </div>
                 <div className="text-xs text-gray-500">v2.0 Enhanced Edition</div>
               </div>
             </button>
