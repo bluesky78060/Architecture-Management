@@ -4,8 +4,6 @@ import { ClockIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import { supabase } from '../services/supabase';
 import { useUser } from '../contexts/UserContext';
 
-const POLL_INTERVAL_MS = 30000; // 30 seconds
-
 interface ApprovalStatus {
   status: 'pending' | 'approved' | 'rejected';
   email: string;
@@ -58,11 +56,6 @@ const PendingApproval: React.FC = () => {
 
         if (approval !== null) {
           setApprovalStatus(approval);
-
-          // If approved, redirect to dashboard
-          if (approval.status === 'approved') {
-            navigate('/');
-          }
         }
       } catch (err: unknown) {
         // Silent error handling
@@ -72,13 +65,6 @@ const PendingApproval: React.FC = () => {
     };
 
     void checkApprovalStatus();
-
-    // Poll every 30 seconds to check if user has been approved
-    const interval = setInterval(() => {
-      void checkApprovalStatus();
-    }, POLL_INTERVAL_MS);
-
-    return () => { clearInterval(interval); };
   }, [isLoggedIn, navigate]);
 
   const handleLogout = async (): Promise<void> => {
@@ -158,6 +144,35 @@ const PendingApproval: React.FC = () => {
 
           {/* Status Content */}
           <div className="px-8 py-10">
+            {approvalStatus?.status === 'approved' && (
+              <>
+                <div className="flex justify-center mb-6">
+                  <div className="bg-green-100 rounded-full p-4">
+                    <svg className="h-16 w-16 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                </div>
+                <h2 className="text-2xl font-bold text-gray-800 text-center mb-4">
+                  승인 완료
+                </h2>
+                <div className="bg-green-50 border-l-4 border-green-400 p-4 mb-6">
+                  <p className="text-sm text-gray-700">
+                    <strong>{approvalStatus.email}</strong> 계정이 승인되었습니다.
+                  </p>
+                  <p className="text-sm text-gray-600 mt-2">
+                    이제 로그인하여 시스템을 사용하실 수 있습니다.
+                  </p>
+                </div>
+                <button
+                  onClick={() => { void handleLogout(); }}
+                  className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 font-medium shadow-md mb-3"
+                >
+                  로그인하기
+                </button>
+              </>
+            )}
+
             {approvalStatus?.status === 'pending' && (
               <>
                 <div className="flex justify-center mb-6">
@@ -173,7 +188,7 @@ const PendingApproval: React.FC = () => {
                     <strong>{approvalStatus.email}</strong> 계정이 등록되었습니다.
                   </p>
                   <p className="text-sm text-gray-600 mt-2">
-                    관리자의 승인을 기다리고 있습니다. 승인이 완료되면 자동으로 로그인됩니다.
+                    관리자의 승인을 기다리고 있습니다.
                   </p>
                   <p className="text-xs text-gray-500 mt-3">
                     로그인 방식: {approvalStatus.provider === 'google' ? 'Google' : approvalStatus.provider === 'kakao' ? 'Kakao' : approvalStatus.provider}
@@ -224,19 +239,14 @@ const PendingApproval: React.FC = () => {
               </>
             )}
 
-            {/* Logout Button */}
-            <button
-              onClick={() => { void handleLogout(); }}
-              className="w-full bg-gradient-to-r from-gray-500 to-gray-600 text-white py-3 rounded-lg hover:from-gray-600 hover:to-gray-700 transition-all duration-200 font-medium shadow-md"
-            >
-              로그아웃
-            </button>
-
-            {/* Auto-refresh info */}
-            {approvalStatus?.status === 'pending' && (
-              <p className="text-xs text-gray-500 text-center mt-4">
-                30초마다 자동으로 승인 상태를 확인합니다.
-              </p>
+            {/* Logout Button - only for pending/rejected/null status */}
+            {approvalStatus?.status !== 'approved' && (
+              <button
+                onClick={() => { void handleLogout(); }}
+                className="w-full bg-gradient-to-r from-gray-500 to-gray-600 text-white py-3 rounded-lg hover:from-gray-600 hover:to-gray-700 transition-all duration-200 font-medium shadow-md"
+              >
+                로그아웃
+              </button>
             )}
           </div>
         </div>
