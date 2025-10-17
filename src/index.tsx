@@ -81,7 +81,7 @@ function AppGate() {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         /* eslint-disable no-console */
-        console.log('🔵 [AppGate] user:', user ? `id=${user.id}, provider=${user.app_metadata.provider}` : 'null');
+        console.log('🔵 [AppGate] user:', user !== null ? `id=${user.id}, provider=${user.app_metadata.provider}` : 'null');
         /* eslint-enable no-console */
 
         if (user === null) {
@@ -130,7 +130,7 @@ function AppGate() {
               });
 
             /* eslint-disable no-console */
-            console.log('🔵 [AppGate] Insert approval record result:', insertError ? `ERROR: ${insertError.message}` : 'SUCCESS');
+            console.log('🔵 [AppGate] Insert approval record result:', insertError !== null ? `ERROR: ${insertError.message}` : 'SUCCESS');
             /* eslint-enable no-console */
 
             if (insertError !== null) {
