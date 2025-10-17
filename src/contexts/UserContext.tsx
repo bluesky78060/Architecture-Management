@@ -120,7 +120,11 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       return;
     }
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    /* eslint-disable no-console */
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('🔵 [UserContext] onAuthStateChange triggered:', event);
+      console.log('🔵 [UserContext] session:', (session?.user !== undefined && session?.user !== null) ? 'has user' : 'no user');
+
       if (session?.user !== undefined && session?.user !== null) {
         const supabaseUser: User = {
           id: 1,
@@ -128,15 +132,18 @@ export const UserProvider = ({ children }: UserProviderProps) => {
           name: session.user.user_metadata?.name ?? session.user.email ?? 'User',
           role: 'admin'
         };
+        console.log('✅ [UserContext] Setting logged in:', supabaseUser.username);
         setCurrentUser(supabaseUser);
         setIsLoggedIn(true);
         try { sessionStorage.setItem('CURRENT_USER', JSON.stringify(supabaseUser)); } catch (e) {}
       } else if (!getLoginDisabled()) {
+        console.log('⚠️ [UserContext] No session, logging out');
         setCurrentUser(null);
         setIsLoggedIn(false);
         try { sessionStorage.removeItem('CURRENT_USER'); } catch (e) {}
       }
     });
+    /* eslint-enable no-console */
 
     return () => {
       subscription.unsubscribe();

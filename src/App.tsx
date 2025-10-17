@@ -19,7 +19,15 @@ function AppContent() {
   const LOGIN_DISABLED = (process.env.REACT_APP_DISABLE_LOGIN === '1') ||
     (typeof window !== 'undefined' && window.localStorage !== null && window.localStorage.getItem('CMS_DISABLE_LOGIN') === '1');
 
+  /* eslint-disable no-console */
+  console.log('🔵 [App] isLoggedIn:', isLoggedIn);
+  console.log('🔵 [App] LOGIN_DISABLED:', LOGIN_DISABLED);
+  /* eslint-enable no-console */
+
   if (LOGIN_DISABLED === false && isLoggedIn === false) {
+    /* eslint-disable no-console */
+    console.log('⚠️ [App] Redirecting to Login page');
+    /* eslint-enable no-console */
     return <Login />;
   }
 
