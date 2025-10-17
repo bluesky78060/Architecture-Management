@@ -74,10 +74,15 @@ export default function Layout({ children }: LayoutProps) {
                 <li key={item.name}>
                   <Link
                     to={item.href}
+                    onClick={() => {
+                      /* eslint-disable no-console */
+                      console.log('🔵 [Layout] Navigation clicked:', item.name, '→', item.href);
+                      /* eslint-enable no-console */
+                    }}
                     className={`
                       flex items-center px-4 py-4 text-base font-medium rounded-xl transition-all duration-200
-                      ${isActive 
-                        ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white' 
+                      ${isActive
+                        ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white'
                         : 'text-gray-700 hover:bg-gray-100'
                       }
                     `}
