@@ -1,5 +1,5 @@
 // React import not required for new JSX transform
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, createHashRouter, RouterProvider, Route, createRoutesFromElements, Outlet, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -10,7 +10,9 @@ import { AppProvider } from './contexts/AppContext.impl';
 import Layout from './components/Layout';
 import Login from './components/Login';
 import ForgotPassword from './components/ForgotPassword';
+import PendingApproval from './components/PendingApproval';
 import { useUser } from './contexts/UserContext';
+import { supabase } from './services/supabase';
 
 // Lazy load components for code splitting
 const Dashboard = lazy(() => import('./pages/Dashboard'));
@@ -58,10 +60,134 @@ const resolveBasename = (): string => {
 
 function AppGate() {
   const { isLoggedIn } = useUser();
+  const [approvalStatus, setApprovalStatus] = useState<'loading' | 'approved' | 'pending' | 'rejected'>('loading');
   const LOGIN_DISABLED = (process.env.REACT_APP_DISABLE_LOGIN === '1') ||
     (typeof window !== 'undefined' && window.localStorage != null && window.localStorage.getItem('CMS_DISABLE_LOGIN') === '1');
 
-  // Check login status - all users auto-approved
+  useEffect(() => {
+    const checkApprovalStatus = async (): Promise<void> => {
+      /* eslint-disable no-console */
+      console.log('🔵 [AppGate] checkApprovalStatus called, isLoggedIn:', isLoggedIn);
+      /* eslint-enable no-console */
+
+      if (supabase === null || !isLoggedIn) {
+        /* eslint-disable no-console */
+        console.log('⚪ [AppGate] Skipping approval check (supabase null or not logged in)');
+        /* eslint-enable no-console */
+        setApprovalStatus('approved');
+        return;
+      }
+
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        /* eslint-disable no-console */
+        console.log('🔵 [AppGate] user:', user !== null ? `id=${user.id}, provider=${user.app_metadata.provider}` : 'null');
+        /* eslint-enable no-console */
+
+        if (user === null) {
+          setApprovalStatus('approved');
+          return;
+        }
+
+        // Check if user has approval record
+        const { data: approval, error: approvalError } = await supabase
+          .from('user_approvals')
+          .select('status')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        /* eslint-disable no-console */
+        console.log('🔵 [AppGate] approval query result:', { approval, approvalError });
+        /* eslint-enable no-console */
+
+        if (approvalError !== null) {
+          /* eslint-disable no-console */
+          console.error('❌ [AppGate] approvalError:', approvalError);
+          /* eslint-enable no-console */
+          setApprovalStatus('approved'); // Default to approved on error to avoid blocking
+          return;
+        }
+
+        if (approval === null) {
+          // No approval record - create one for SNS login users
+          const provider = user.app_metadata.provider;
+          const isSocialLogin = provider === 'google' || provider === 'kakao';
+
+          /* eslint-disable no-console */
+          console.log('🔵 [AppGate] No approval record. provider:', provider, 'isSocialLogin:', isSocialLogin);
+          /* eslint-enable no-console */
+
+          if (isSocialLogin) {
+            // Create approval record with pending status
+            const userEmail = user.email ?? `${user.id}@kakao.user`;
+            const { error: insertError } = await supabase
+              .from('user_approvals')
+              .insert({
+                user_id: user.id,
+                email: userEmail,
+                provider: provider,
+                status: 'pending',
+              });
+
+            /* eslint-disable no-console */
+            console.log('🔵 [AppGate] Insert approval record result:', insertError !== null ? `ERROR: ${insertError.message}` : 'SUCCESS');
+            /* eslint-enable no-console */
+
+            if (insertError !== null) {
+              /* eslint-disable no-console */
+              console.error('❌ [AppGate] insertError:', insertError);
+              /* eslint-enable no-console */
+            }
+
+            /* eslint-disable no-console */
+            console.log('🟡 [AppGate] Setting status to PENDING');
+            /* eslint-enable no-console */
+            setApprovalStatus('pending');
+          } else {
+            /* eslint-disable no-console */
+            console.log('✅ [AppGate] Email/password user - auto-approved');
+            /* eslint-enable no-console */
+            setApprovalStatus('approved');
+          }
+        } else {
+          /* eslint-disable no-console */
+          console.log('🔵 [AppGate] Found approval record with status:', approval.status);
+          /* eslint-enable no-console */
+          setApprovalStatus(approval.status as 'approved' | 'pending' | 'rejected');
+        }
+      } catch (err: unknown) {
+        /* eslint-disable no-console */
+        console.error('❌ [AppGate] Exception:', err);
+        /* eslint-enable no-console */
+        setApprovalStatus('approved'); // Default to approved on error
+      }
+    };
+
+    if (isLoggedIn) {
+      void checkApprovalStatus();
+    } else {
+      setApprovalStatus('approved');
+    }
+  }, [isLoggedIn]);
+
+  // Show loading state while checking approval
+  if (approvalStatus === 'loading') {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+          <p className="mt-4 text-gray-600">확인 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Redirect to pending approval page if not approved
+  if (approvalStatus === 'pending' || approvalStatus === 'rejected') {
+    return <Navigate to="/pending-approval" replace />;
+  }
+
+  // Check login status
   if (LOGIN_DISABLED === false && isLoggedIn === false) {
     return <Navigate to="/login" replace />;
   }
@@ -78,6 +204,7 @@ const routes = createRoutesFromElements(
     {/* Public routes (no authentication required) */}
     <Route path="login" element={<Login />} />
     <Route path="forgot-password" element={<ForgotPassword />} />
+    <Route path="pending-approval" element={<PendingApproval />} />
 
     {/* Protected routes (authentication required) */}
     <Route element={<AppGate />}>
