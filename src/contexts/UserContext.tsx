@@ -3,6 +3,11 @@ import { MS_IN_SECOND, SECONDS_IN_MINUTE } from '../constants/units';
 import { setSecureItem, removeSecureItem, migrateSensitiveData } from '../utils/secureStorageAdapter';
 import { supabase } from '../services/supabase';
 
+// 관리자 이메일 리스트 (환경 변수 또는 직접 지정)
+const ADMIN_EMAILS = (process.env.REACT_APP_ADMIN_EMAILS ?? 'bluesky78060@gmail.com')
+  .split(',')
+  .map(email => email.trim().toLowerCase());
+
 interface User {
   id: number;
   username: string;
@@ -14,6 +19,7 @@ interface User {
 interface UserContextType {
   currentUser: User | null;
   isLoggedIn: boolean;
+  isAdmin: boolean;
   logout: () => void;
   getUserStorageKey: (username: string, key: string) => string;
 }
@@ -178,9 +184,13 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     return `USER_${username}_${key}`;
   };
 
+  // 관리자 여부 확인
+  const isAdmin = currentUser !== null && ADMIN_EMAILS.includes(currentUser.username.toLowerCase());
+
   const value: UserContextType = {
     currentUser,
     isLoggedIn,
+    isAdmin,
     logout,
     getUserStorageKey
   };

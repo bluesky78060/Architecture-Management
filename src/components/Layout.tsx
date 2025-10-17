@@ -18,19 +18,19 @@ interface LayoutProps {
 }
 
 const navigation = [
-  { name: '대시보드', href: '/', icon: HomeIcon },
-  { name: '견적서 관리', href: '/estimates', icon: CalculatorIcon },
-  { name: '청구서 관리', href: '/invoices', icon: DocumentTextIcon },
-  { name: '건축주 관리', href: '/clients', icon: UsersIcon },
-  { name: '작업 항목 관리', href: '/work-items', icon: WrenchScrewdriverIcon },
-  { name: '환경설정', href: '/company-info', icon: CogIcon },
-  { name: '계정 설정', href: '/settings', icon: UserCircleIcon },
-  { name: '사용자 승인', href: '/admin/approvals', icon: ShieldCheckIcon },
+  { name: '대시보드', href: '/', icon: HomeIcon, adminOnly: false },
+  { name: '견적서 관리', href: '/estimates', icon: CalculatorIcon, adminOnly: false },
+  { name: '청구서 관리', href: '/invoices', icon: DocumentTextIcon, adminOnly: false },
+  { name: '건축주 관리', href: '/clients', icon: UsersIcon, adminOnly: false },
+  { name: '작업 항목 관리', href: '/work-items', icon: WrenchScrewdriverIcon, adminOnly: false },
+  { name: '환경설정', href: '/company-info', icon: CogIcon, adminOnly: false },
+  { name: '계정 설정', href: '/settings', icon: UserCircleIcon, adminOnly: false },
+  { name: '사용자 승인', href: '/admin/approvals', icon: ShieldCheckIcon, adminOnly: true },
 ];
 
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
-  const { logout, currentUser } = useUser();
+  const { logout, currentUser, isAdmin } = useUser();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -70,31 +70,33 @@ export default function Layout({ children }: LayoutProps) {
         
         <nav className="mt-10 px-4">
           <ul className="space-y-6">
-            {navigation.map((item) => {
-              const isActive = location.pathname === item.href;
-              return (
-                <li key={item.name}>
-                  <Link
-                    to={item.href}
-                    onClick={() => {
-                      /* eslint-disable no-console */
-                      console.log('🔵 [Layout] Navigation clicked:', item.name, '→', item.href);
-                      /* eslint-enable no-console */
-                    }}
-                    className={`
-                      flex items-center px-4 py-4 text-base font-medium rounded-xl transition-all duration-200
-                      ${isActive
-                        ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white'
-                        : 'text-gray-700 hover:bg-gray-100'
-                      }
-                    `}
-                  >
-                    <item.icon className={`mr-3 h-5 w-5 ${isActive ? 'text-white' : 'text-gray-500'}`} />
-                    <span>{item.name}</span>
-                  </Link>
-                </li>
-              );
-            })}
+            {navigation
+              .filter((item) => !item.adminOnly || isAdmin)
+              .map((item) => {
+                const isActive = location.pathname === item.href;
+                return (
+                  <li key={item.name}>
+                    <Link
+                      to={item.href}
+                      onClick={() => {
+                        /* eslint-disable no-console */
+                        console.log('🔵 [Layout] Navigation clicked:', item.name, '→', item.href);
+                        /* eslint-enable no-console */
+                      }}
+                      className={`
+                        flex items-center px-4 py-4 text-base font-medium rounded-xl transition-all duration-200
+                        ${isActive
+                          ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white'
+                          : 'text-gray-700 hover:bg-gray-100'
+                        }
+                      `}
+                    >
+                      <item.icon className={`mr-3 h-5 w-5 ${isActive ? 'text-white' : 'text-gray-500'}`} />
+                      <span>{item.name}</span>
+                    </Link>
+                  </li>
+                );
+              })}
           </ul>
         </nav>
         

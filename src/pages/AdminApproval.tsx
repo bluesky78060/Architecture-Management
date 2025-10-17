@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { CheckCircleIcon, XCircleIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { CheckCircleIcon, XCircleIcon, ClockIcon, ShieldExclamationIcon } from '@heroicons/react/24/outline';
+import { useNavigate } from 'react-router-dom';
+import { useUser } from '../contexts/UserContext';
 import { supabase } from '../services/supabase';
 
 interface ApprovalUser {
@@ -14,9 +16,18 @@ interface ApprovalUser {
 }
 
 const AdminApproval: React.FC = () => {
+  const navigate = useNavigate();
+  const { isAdmin } = useUser();
   const [users, setUsers] = useState<ApprovalUser[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [processingId, setProcessingId] = useState<string | null>(null);
+
+  // 관리자가 아니면 접근 거부
+  useEffect(() => {
+    if (!isAdmin) {
+      navigate('/', { replace: true });
+    }
+  }, [isAdmin, navigate]);
 
   const fetchUsers = async (): Promise<void> => {
     if (supabase === null) {
@@ -117,6 +128,11 @@ const AdminApproval: React.FC = () => {
       setProcessingId(null);
     }
   };
+
+  // 관리자가 아니면 렌더링하지 않음
+  if (!isAdmin) {
+    return null;
+  }
 
   if (loading) {
     return (
