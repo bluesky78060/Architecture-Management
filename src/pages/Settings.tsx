@@ -16,6 +16,7 @@ const Settings: React.FC = () => {
   const { currentUser, logout } = useUser();
   const [userEmail, setUserEmail] = useState('');
   const [userName, setUserName] = useState('');
+  const [provider, setProvider] = useState<'email' | 'google' | 'kakao' | null>(null);
 
   // 이름 변경
   const [newName, setNewName] = useState('');
@@ -38,13 +39,42 @@ const Settings: React.FC = () => {
 
   // 사용자 정보 로드
   useEffect(() => {
-    if (currentUser !== null && currentUser !== undefined) {
-      setUserEmail((currentUser.username !== null && currentUser.username !== undefined) ? currentUser.username : '');
-      setUserName((currentUser.name !== null && currentUser.name !== undefined) ? currentUser.name : '');
-      setNewName((currentUser.name !== null && currentUser.name !== undefined) ? currentUser.name : '');
-      setNewEmail((currentUser.username !== null && currentUser.username !== undefined) ? currentUser.username : '');
-    }
+    const loadUserInfo = async () => {
+      if (currentUser !== null && currentUser !== undefined) {
+        setUserEmail((currentUser.username !== null && currentUser.username !== undefined) ? currentUser.username : '');
+        setUserName((currentUser.name !== null && currentUser.name !== undefined) ? currentUser.name : '');
+        setNewName((currentUser.name !== null && currentUser.name !== undefined) ? currentUser.name : '');
+        setNewEmail((currentUser.username !== null && currentUser.username !== undefined) ? currentUser.username : '');
+      }
+
+      // Supabase에서 provider 정보 가져오기
+      if (supabase !== null) {
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user !== null && user !== undefined) {
+            const userProvider = user.app_metadata?.provider || 'email';
+            setProvider(userProvider as 'email' | 'google' | 'kakao');
+          }
+        } catch (err) {
+          // 에러 시 기본값 email
+          setProvider('email');
+        }
+      }
+    };
+
+    void loadUserInfo();
   }, [currentUser]);
+
+  // 로그인 방식 표시 이름
+  const getProviderName = (prov: 'email' | 'google' | 'kakao' | null): string => {
+    if (prov === 'google') return 'Google 로그인';
+    if (prov === 'kakao') return 'Kakao 로그인';
+    if (prov === 'email') return '이메일 로그인';
+    return '알 수 없음';
+  };
+
+  // SNS 로그인 여부
+  const isSocialLogin = provider === 'google' || provider === 'kakao';
 
   const handleUpdateName = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -178,13 +208,24 @@ const Settings: React.FC = () => {
         </h2>
         <div className="space-y-3">
           <div className="flex items-center">
-            <span className="font-medium text-gray-700 w-24">이름:</span>
+            <span className="font-medium text-gray-700 w-32">로그인 방식:</span>
+            <span className="text-gray-900">{getProviderName(provider)}</span>
+          </div>
+          <div className="flex items-center">
+            <span className="font-medium text-gray-700 w-32">이름:</span>
             <span className="text-gray-900">{(userName !== '' && userName !== null) ? userName : '(없음)'}</span>
           </div>
           <div className="flex items-center">
-            <span className="font-medium text-gray-700 w-24">이메일:</span>
+            <span className="font-medium text-gray-700 w-32">이메일:</span>
             <span className="text-gray-900">{userEmail}</span>
           </div>
+          {isSocialLogin && (
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+              <p className="text-sm text-blue-700">
+                SNS 로그인 사용자는 {getProviderName(provider)} 계정에서 정보를 관리합니다.
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -234,13 +275,14 @@ const Settings: React.FC = () => {
           </form>
         </div>
 
-        {/* 이메일 변경 */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-            <EnvelopeIcon className="w-6 h-6 mr-2 text-blue-600" />
-            이메일 변경
-          </h2>
-          <form onSubmit={handleUpdateEmail} className="space-y-4">
+        {/* 이메일 변경 - 이메일 로그인 사용자만 */}
+        {!isSocialLogin && (
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+              <EnvelopeIcon className="w-6 h-6 mr-2 text-blue-600" />
+              이메일 변경
+            </h2>
+            <form onSubmit={handleUpdateEmail} className="space-y-4">
             <div>
               <label htmlFor="newEmail" className="block text-sm font-medium text-gray-700 mb-2">
                 새 이메일
@@ -281,14 +323,16 @@ const Settings: React.FC = () => {
             </p>
           </form>
         </div>
+        )}
 
-        {/* 비밀번호 변경 */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-            <LockClosedIcon className="w-6 h-6 mr-2 text-blue-600" />
-            비밀번호 변경
-          </h2>
-          <form onSubmit={handleUpdatePassword} className="space-y-4">
+        {/* 비밀번호 변경 - 이메일 로그인 사용자만 */}
+        {!isSocialLogin && (
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+              <LockClosedIcon className="w-6 h-6 mr-2 text-blue-600" />
+              비밀번호 변경
+            </h2>
+            <form onSubmit={handleUpdatePassword} className="space-y-4">
             <div>
               <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-2">
                 새 비밀번호
@@ -340,6 +384,7 @@ const Settings: React.FC = () => {
             </button>
           </form>
         </div>
+        )}
 
         {/* 로그아웃 */}
         <div className="bg-white rounded-lg shadow-md p-6">
