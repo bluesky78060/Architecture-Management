@@ -22,6 +22,7 @@ const Clients = lazy(() => import('./components/Clients'));
 const WorkItemsPage = lazy(() => import('./pages/WorkItemsPage'));
 const CompanyInfo = lazy(() => import('./components/CompanyInfo'));
 const Settings = lazy(() => import('./pages/Settings'));
+const AdminApproval = lazy(() => import('./pages/AdminApproval'));
 
 // Loading fallback component
 function LoadingFallback() {
@@ -215,6 +216,7 @@ const routes = createRoutesFromElements(
       <Route path="work-items" element={<Suspense fallback={<LoadingFallback />}><WorkItemsPage /></Suspense>} />
       <Route path="company-info" element={<Suspense fallback={<LoadingFallback />}><CompanyInfo /></Suspense>} />
       <Route path="settings" element={<Suspense fallback={<LoadingFallback />}><Settings /></Suspense>} />
+      <Route path="admin/approvals" element={<Suspense fallback={<LoadingFallback />}><AdminApproval /></Suspense>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Route>
   </>
