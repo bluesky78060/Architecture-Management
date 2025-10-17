@@ -84,6 +84,31 @@ cp backup_checkpoints/[체크포인트명]/src/components/[파일명] /Users/lee
 
 ## 프로젝트 진행 기록
 
+### 2025.10.17 - Settings 페이지 무한 리로드 문제 디버깅 🔧🔍
+- **작업 내용**: Settings(계정 설정) 페이지 생성 및 무한 리로드 문제 해결 시도
+- **문제 진단**:
+  - Settings 페이지 접속 시 `/settings` → `/` 로 리다이렉트
+  - 네트워크 탭에서 favicon.ico 계속 요청 (페이지 리로드 반복)
+  - Settings 컴포넌트가 렌더링되지 않음
+- **시도한 해결 방법**:
+  - ❌ useEffect cleanup function 추가 (무한 루프 방지)
+  - ❌ UserContext 사용으로 supabase.auth.getUser() 직접 호출 제거
+  - ❌ Settings 컴포넌트 완전 단순화 (정적 텍스트만 표시)
+  - ✅ 디버그 로그 추가: UserContext, App.tsx, Layout.tsx, Settings.tsx
+- **발견된 원인**:
+  - `/settings` 접속 시 App.tsx의 로그인 체크 로직에서 리다이렉트 발생
+  - UserContext의 `onAuthStateChange` 리스너와 충돌 가능성
+  - `isLoggedIn` 상태가 일시적으로 false가 되면서 Login 페이지로 리다이렉트
+- **현재 상태**: 🔄 디버깅 진행 중
+  - Supabase 로그인은 정상 작동 (SIGNED_IN 이벤트 확인)
+  - `/settings` 라우트는 설정되어 있음
+  - 라우팅 클릭 이벤트는 정상 감지됨
+  - 하지만 Settings 컴포넌트가 렌더링되지 않고 대시보드로 리다이렉트
+- **다음 단계**:
+  - Preserve log로 전체 로그 캡처 필요
+  - isLoggedIn 상태 변화 추적
+  - 라우팅 로직 수정 필요
+
 ### 2025.10.16 - 건축주 사업자 정보 필드 추가 및 엑셀 가져오기 디버깅 🏢📊
 - **작업 내용**: 건축주 사업자 정보 필드 Supabase 저장, 엑셀 가져오기 디버깅, 사업장 주소 체크박스 수정
 - **문제 진단**:
