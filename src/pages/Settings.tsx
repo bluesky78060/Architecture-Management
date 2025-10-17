@@ -52,7 +52,10 @@ const Settings: React.FC = () => {
         try {
           const { data: { user } } = await supabase.auth.getUser();
           if (user !== null && user !== undefined) {
-            const userProvider = user.app_metadata?.provider || 'email';
+            const providerValue = user.app_metadata?.provider;
+            const userProvider = (providerValue !== null && providerValue !== undefined && providerValue !== '')
+              ? providerValue
+              : 'email';
             setProvider(userProvider as 'email' | 'google' | 'kakao');
           }
         } catch (err) {
