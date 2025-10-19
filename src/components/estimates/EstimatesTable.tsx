@@ -20,50 +20,50 @@ type Props = {
 export default function EstimatesTable({ items, allSelected, onToggleAll, onToggleOne, format, getStatusColor, onEdit, onPrint, onDelete, onConvert, onStatusChange, selectedIds, statuses }: Props) {
 
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+      <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead className="bg-gray-50 dark:bg-gray-700">
           <tr>
-            <th className="px-3 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider w-12">
-              <input type="checkbox" className="w-4 h-4 rounded border-gray-300" checked={allSelected} onChange={(e) => onToggleAll(e.target.checked)} title="전체 선택" />
+            <th className="px-3 py-3 text-center text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-12">
+              <input type="checkbox" className="w-4 h-4 rounded border-gray-300 dark:border-gray-600" checked={allSelected} onChange={(e) => onToggleAll(e.target.checked)} title="전체 선택" />
             </th>
-            <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
               견적서 번호
             </th>
-            <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
               건 축 주
             </th>
-            <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
               프로젝트
             </th>
-            <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
               작 업 장
             </th>
-            <th className="px-3 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-3 py-3 text-center text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
               견적 금액
             </th>
-            <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
               상&nbsp;&nbsp;&nbsp;&nbsp;태
             </th>
-            <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
               유효기한
             </th>
-            <th className="px-3 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider w-20">
+            <th className="px-3 py-3 text-center text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-20">
               작&nbsp;&nbsp;&nbsp;&nbsp;업
             </th>
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+        <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
           {items.map((estimate, idx) => (
-            <tr key={`${estimate.id}-${idx}`} className="hover:bg-gray-50">
+            <tr key={`${estimate.id}-${idx}`} className="hover:bg-gray-50 dark:hover:bg-gray-700">
               <td className="px-3 py-2 text-left w-10">
-                <input type="checkbox" className="w-4 h-4 rounded border-gray-300" checked={selectedIds.includes(estimate.id)} onChange={(e) => onToggleOne(estimate.id, e.target.checked)} title="선택" />
+                <input type="checkbox" className="w-4 h-4 rounded border-gray-300 dark:border-gray-600" checked={selectedIds.includes(estimate.id)} onChange={(e) => onToggleOne(estimate.id, e.target.checked)} title="선택" />
               </td>
-              <td className="px-3 py-2 text-sm text-gray-900">{estimate.id}</td>
-              <td className="px-3 py-2 text-sm text-gray-900">{estimate.clientName}</td>
-              <td className="px-3 py-2 text-sm text-gray-900">{estimate.projectName}</td>
-              <td className="px-3 py-2 text-sm text-gray-900">{estimate.workplaceName}</td>
-              <td className="px-3 py-2 text-sm text-gray-900 text-center">{format(estimate.totalAmount)}원</td>
+              <td className="px-3 py-2 text-sm text-gray-900 dark:text-gray-100">{estimate.id}</td>
+              <td className="px-3 py-2 text-sm text-gray-900 dark:text-gray-100">{estimate.clientName}</td>
+              <td className="px-3 py-2 text-sm text-gray-900 dark:text-gray-100">{estimate.projectName}</td>
+              <td className="px-3 py-2 text-sm text-gray-900 dark:text-gray-100">{estimate.workplaceName}</td>
+              <td className="px-3 py-2 text-sm text-gray-900 dark:text-gray-100 text-center">{format(estimate.totalAmount)}원</td>
               <td className="px-3 py-2 whitespace-nowrap">
                 <select
                   className={`px-2 py-1 text-xs font-semibold rounded-full border-0 ${getStatusColor(estimate.status)} focus:outline-none focus:ring-0`}
@@ -76,7 +76,7 @@ export default function EstimatesTable({ items, allSelected, onToggleAll, onTogg
                   ))}
                 </select>
               </td>
-              <td className="px-3 py-2 text-sm text-gray-900">{estimate.validUntil ?? '-'}</td>
+              <td className="px-3 py-2 text-sm text-gray-900 dark:text-gray-100">{estimate.validUntil ?? '-'}</td>
               <td className="px-3 py-2 text-center text-sm font-medium">
                 <div className="flex items-center justify-center">
                   <Tooltip label="편집"><button onClick={() => onEdit(estimate)} className="text-blue-600 hover:text-blue-900 mx-2" title="견적서 편집">✏️</button></Tooltip>

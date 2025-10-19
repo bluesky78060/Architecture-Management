@@ -681,14 +681,14 @@ const Clients: React.FC = () => {
     <div className="p-4">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">건축주 관리</h1>
-          <p className="text-gray-600">건축주 정보를 관리하고 프로젝트 이력을 추적하세요</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">건축주 관리</h1>
+          <p className="text-gray-600 dark:text-gray-300">건축주 정보를 관리하고 프로젝트 이력을 추적하세요</p>
         </div>
         <div className="flex space-x-2">
           {selection.selected.length > 0 && (
             <button
               onClick={() => setShowConfirmDelete(true)}
-              className="flex items-center justify-center px-4 py-2.5 bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md transition-shadow duration-300 text-gray-700 font-medium"
+              className="flex items-center justify-center px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full shadow-sm hover:shadow-md transition-shadow duration-300 text-gray-700 dark:text-gray-300 font-medium"
               title="선택된 건축주 일괄 삭제"
             >
               <span className="text-red-600 mr-2">🗑️</span>
@@ -697,21 +697,21 @@ const Clients: React.FC = () => {
           )}
           <button
             onClick={handleDownloadTemplate}
-            className="flex items-center justify-center px-4 py-2.5 bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md transition-shadow duration-300 text-gray-700 font-medium"
+            className="flex items-center justify-center px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full shadow-sm hover:shadow-md transition-shadow duration-300 text-gray-700 dark:text-gray-300 font-medium"
           >
             <span className="text-gray-500 mr-2">📁</span>
             <span className="text-xs font-semibold">템플릿 다운로드</span>
           </button>
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="flex items-center justify-center px-4 py-2.5 bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md transition-shadow duration-300 text-gray-700 font-medium"
+            className="flex items-center justify-center px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full shadow-sm hover:shadow-md transition-shadow duration-300 text-gray-700 dark:text-gray-300 font-medium"
           >
             <span className="text-blue-500 mr-2">📤</span>
             <span className="text-xs font-semibold">Excel 가져오기</span>
           </button>
           <button
             onClick={handleExportToExcel}
-            className="flex items-center justify-center px-4 py-2.5 bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md transition-shadow duration-300 text-gray-700 font-medium"
+            className="flex items-center justify-center px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full shadow-sm hover:shadow-md transition-shadow duration-300 text-gray-700 dark:text-gray-300 font-medium"
           >
             <span className="text-green-500 mr-2">📥</span>
             <span className="text-xs font-semibold">Excel 내보내기</span>
@@ -737,23 +737,23 @@ const Clients: React.FC = () => {
 
       {/* 통계 카드 */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-blue-100 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100">
+        <div className="bg-blue-100 dark:bg-blue-900 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100 dark:border-gray-600">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <p className="text-xs font-medium text-gray-600 mb-2">총 건축주</p>
-              <p className="text-base font-bold text-gray-900">{clients.length}명</p>
+              <p className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">총 건축주</p>
+              <p className="text-base font-bold text-gray-900 dark:text-gray-100">{clients.length}명</p>
             </div>
             <div className="bg-blue-500 rounded-full p-3 text-white text-xl ml-4 flex items-center justify-center w-12 h-12">
               <UsersIcon className="h-6 w-6" aria-hidden="true" />
             </div>
           </div>
         </div>
-        
-        <div className="bg-green-100 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100">
+
+        <div className="bg-green-100 dark:bg-green-900 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100 dark:border-gray-600">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <p className="text-xs font-medium text-gray-600 mb-2">총 청구금액 :</p>
-              <p className="text-base font-bold text-gray-900">
+              <p className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">총 청구금액 :</p>
+              <p className="text-base font-bold text-gray-900 dark:text-gray-100">
                 {grandTotals.total.toLocaleString()}원
               </p>
             </div>
@@ -762,12 +762,12 @@ const Clients: React.FC = () => {
             </div>
           </div>
         </div>
-        
-        <div className="bg-red-100 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100">
+
+        <div className="bg-red-100 dark:bg-red-900 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100 dark:border-gray-600">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <p className="text-xs font-medium text-gray-600 mb-2">미수금</p>
-              <p className="text-base font-bold text-gray-900">
+              <p className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">미수금</p>
+              <p className="text-base font-bold text-gray-900 dark:text-gray-100">
                 {grandTotals.outstanding.toLocaleString()}원
               </p>
             </div>
@@ -776,12 +776,12 @@ const Clients: React.FC = () => {
             </div>
           </div>
         </div>
-        
-        <div className="bg-orange-100 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100">
+
+        <div className="bg-orange-100 dark:bg-orange-900 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100 dark:border-gray-600">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <p className="text-xs font-medium text-gray-600 mb-2">미수금 건수</p>
-              <p className="text-base font-bold text-gray-900">
+              <p className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">미수금 건수</p>
+              <p className="text-base font-bold text-gray-900 dark:text-gray-100">
                 {clients.filter(c => ((totalsByClientId.get(Number(c.id))?.outstanding !== 0 && totalsByClientId.get(Number(c.id))?.outstanding !== null && totalsByClientId.get(Number(c.id))?.outstanding !== undefined) ? totalsByClientId.get(Number(c.id))!.outstanding : 0) > 0).length}건
               </p>
             </div>
@@ -793,12 +793,12 @@ const Clients: React.FC = () => {
       </div>
 
       {/* 건축주 목록 */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
         <div>
-          <table className="w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+          <table className="w-full divide-y divide-gray-200 dark:divide-gray-600">
+          <thead className="bg-gray-50 dark:bg-gray-700">
             <tr>
-              <th className="px-3 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider w-12">
+              <th className="px-3 py-3 text-center text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-12">
                 <input
                   type="checkbox"
                   className="w-4 h-4 rounded border-gray-300"
@@ -807,32 +807,32 @@ const Clients: React.FC = () => {
                   title="전체 선택"
                 />
               </th>
-              <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider w-40">
+              <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-40">
                 이&nbsp;&nbsp;&nbsp;&nbsp;름
               </th>
-              <th className="px-2 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider w-32">
+              <th className="px-2 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-32">
 연 락 처
               </th>
-              <th className="px-2 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider w-36">
+              <th className="px-2 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-36">
                 주&nbsp;&nbsp;&nbsp;&nbsp;소
               </th>
-              <th className="px-2 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider w-16 whitespace-nowrap">
+              <th className="px-2 py-3 text-center text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-16 whitespace-nowrap">
 프로젝트
               </th>
-              <th className="px-2 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider w-24">
+              <th className="px-2 py-3 text-center text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-24">
                 총 청구액
               </th>
-              <th className="px-2 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider w-20">
+              <th className="px-2 py-3 text-center text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-20">
 미 수 금
               </th>
-              <th className="px-2 py-3 text-center text-sm font-medium text-gray-500 uppercase tracking-wider w-20">
+              <th className="px-2 py-3 text-center text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-20">
                 작&nbsp;&nbsp;&nbsp;&nbsp;업
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-600">
             {clients.map((client) => (
-              <tr key={client.id} className="hover:bg-gray-50">
+              <tr key={client.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                 <td className="px-3 py-3 whitespace-nowrap text-center">
                   <input
                     type="checkbox"
@@ -844,38 +844,38 @@ const Clients: React.FC = () => {
                 </td>
                 <td className="px-3 py-3 whitespace-nowrap">
                   <div className="flex items-center">
-                    <div className="h-8 w-8 bg-gray-300 rounded-full flex items-center justify-center">
-                      <span className="text-xs font-medium text-gray-700">
+                    <div className="h-8 w-8 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center">
+                      <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
                         {client.name.charAt(0)}
                       </span>
                     </div>
                     <div className="ml-2">
-                      <div className="text-sm font-medium text-gray-900">
+                      <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                         {client.name}
                         {client.type === 'BUSINESS' && (
-                          <span className="ml-1 text-xs px-1 py-0.5 rounded bg-yellow-100 text-yellow-800">사업자</span>
+                          <span className="ml-1 text-xs px-1 py-0.5 rounded bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200">사업자</span>
                         )}
                       </div>
-                      <div className="text-xs text-gray-500 truncate">
+                      <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
                         {client.email}
                       </div>
                     </div>
                   </div>
                 </td>
                 <td className="px-2 py-3 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">
+                  <div className="text-sm text-gray-900 dark:text-gray-100">
                     {(client.phone !== '' && client.phone !== null && client.phone !== undefined) && <div className="truncate">{client.phone}</div>}
                     {(client.mobile !== '' && client.mobile !== null && client.mobile !== undefined) && <div className="truncate">{client.mobile}</div>}
                   </div>
                 </td>
                 <td className="px-2 py-3">
-                  <div className="text-sm text-gray-900 truncate max-w-36" title={client.address}>{client.address}</div>
+                  <div className="text-sm text-gray-900 dark:text-gray-100 truncate max-w-36" title={client.address}>{client.address}</div>
                 </td>
                 <td className="px-2 py-3 whitespace-nowrap">
-                  <div className="text-sm text-gray-900 text-center">{((projectCountsByClientId.get(Number(client.id)) !== 0 && projectCountsByClientId.get(Number(client.id)) !== null && projectCountsByClientId.get(Number(client.id)) !== undefined) ? projectCountsByClientId.get(Number(client.id))! : 0)}개</div>
+                  <div className="text-sm text-gray-900 dark:text-gray-100 text-center">{((projectCountsByClientId.get(Number(client.id)) !== 0 && projectCountsByClientId.get(Number(client.id)) !== null && projectCountsByClientId.get(Number(client.id)) !== undefined) ? projectCountsByClientId.get(Number(client.id))! : 0)}개</div>
                 </td>
                 <td className="px-2 py-3 whitespace-nowrap text-right">
-                  <div className="text-sm font-medium text-gray-900">
+                  <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {((totalsByClientId.get(Number(client.id))?.total !== 0 && totalsByClientId.get(Number(client.id))?.total !== null && totalsByClientId.get(Number(client.id))?.total !== undefined) ? totalsByClientId.get(Number(client.id))!.total : 0).toLocaleString()}원
                   </div>
                 </td>
@@ -927,9 +927,9 @@ const Clients: React.FC = () => {
       {/* 선택 삭제 확인 모달 */}
       {showConfirmDelete && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">선택 삭제</h3>
-            <p className="text-sm text-gray-600 mb-4">선택된 {selection.selected.length}명의 건축주를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</p>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-md p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">선택 삭제</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">선택된 {selection.selected.length}명의 건축주를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</p>
             <div className="flex justify-end gap-2">
               <button className="btn-secondary" onClick={() => setShowConfirmDelete(false)}>취소</button>
               <button className="btn-primary bg-red-600 hover:bg-red-700 disabled:opacity-50" disabled={selection.selected.length === 0} onClick={handleBulkDelete}>삭제</button>
@@ -941,24 +941,24 @@ const Clients: React.FC = () => {
       {/* 새 건축주 모달 */}
       {showModal && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-10 mx-auto p-5 border w-4/5 max-w-2xl shadow-lg rounded-md bg-white">
+          <div className="relative top-10 mx-auto p-5 border border-gray-200 dark:border-gray-600 w-4/5 max-w-2xl shadow-lg rounded-md bg-white dark:bg-gray-800">
             <div className="mt-3">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
                 {isEditing ? '건축주 정보 수정' : '새 건축주 추가'}
               </h3>
               <form onSubmit={handleSubmit} className="space-y-3">
                 {/* 섹션: 기본 정보 */}
-                <div className="rounded-xl border border-gray-100 bg-white shadow-sm p-4">
+                <div className="rounded-xl border border-gray-100 dark:border-gray-600 bg-white dark:bg-gray-700 shadow-sm p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-indigo-50">
-                      <ClipboardDocumentListIcon className="h-4 w-4 text-indigo-600" aria-hidden="true" />
+                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-indigo-50 dark:bg-indigo-900">
+                      <ClipboardDocumentListIcon className="h-4 w-4 text-indigo-600 dark:text-indigo-300" aria-hidden="true" />
                     </span>
-                    <h4 className="text-sm font-semibold text-gray-900">기본 정보</h4>
+                    <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">기본 정보</h4>
                   </div>
                   {/* 유형 + 이름/상호 카드 내부 */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">유형</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">유형</label>
                       <div className="flex items-center gap-5">
                         <label className="inline-flex items-center gap-2 text-sm">
                           <input type="radio" name="type" value="PERSON" checked={newClient.type === 'PERSON'} onChange={() => handleTypeChange('PERSON')} />
@@ -972,45 +972,45 @@ const Clients: React.FC = () => {
                     </div>
                     {newClient.type !== 'BUSINESS' && (
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">이름</label>
-                        <input ref={nameInputRef} type="text" name="name" value={newClient.name} onChange={handleInputChange} className="mt-0.5 block w-full border border-gray-300 rounded-md px-3 py-2" required={newClient.type === 'PERSON'} />
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">이름</label>
+                        <input ref={nameInputRef} type="text" name="name" value={newClient.name} onChange={handleInputChange} className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" required={newClient.type === 'PERSON'} />
                       </div>
                     )}
                   </div>
                   {newClient.type === 'BUSINESS' && (
-                    <div className="mt-3 rounded-lg border border-yellow-200 bg-yellow-50 p-3">
-                      <div className="flex items-center gap-2 mb-2 text-yellow-800">
+                    <div className="mt-3 rounded-lg border border-yellow-200 dark:border-yellow-600 bg-yellow-50 dark:bg-yellow-900 p-3">
+                      <div className="flex items-center gap-2 mb-2 text-yellow-800 dark:text-yellow-200">
                         <BuildingOffice2Icon className="h-4 w-4" aria-hidden="true" />
                         <span className="text-sm font-medium">사업자 정보</span>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700">상호</label>
-                        <input ref={bizNameInputRef} type="text" name="businessName" value={newClient.business.businessName} onChange={handleBusinessChange} className="mt-0.5 block w-full border border-gray-300 rounded-md px-3 py-2" required={newClient.type === 'BUSINESS'} />
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">상호</label>
+                        <input ref={bizNameInputRef} type="text" name="businessName" value={newClient.business.businessName} onChange={handleBusinessChange} className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" required={newClient.type === 'BUSINESS'} />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700">대표자</label>
-                          <input type="text" name="representative" value={newClient.business.representative} onChange={handleBusinessChange} className="mt-0.5 block w-full border border-gray-300 rounded-md px-3 py-2" required={newClient.type === 'BUSINESS'} />
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">대표자</label>
+                          <input type="text" name="representative" value={newClient.business.representative} onChange={handleBusinessChange} className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" required={newClient.type === 'BUSINESS'} />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700">사업자등록번호</label>
-                          <input type="text" name="businessNumber" value={newClient.business.businessNumber} onChange={handleBusinessChange} placeholder="000-00-00000" className="mt-0.5 block w-full border border-gray-300 rounded-md px-3 py-2" required={newClient.type === 'BUSINESS'} />
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">사업자등록번호</label>
+                          <input type="text" name="businessNumber" value={newClient.business.businessNumber} onChange={handleBusinessChange} placeholder="000-00-00000" className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" required={newClient.type === 'BUSINESS'} />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700">발행 이메일</label>
-                          <input type="email" name="taxEmail" value={newClient.business.taxEmail} onChange={handleBusinessChange} className="mt-0.5 block w-full border border-gray-300 rounded-md px-3 py-2" required={newClient.type === 'BUSINESS'} />
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">발행 이메일</label>
+                          <input type="email" name="taxEmail" value={newClient.business.taxEmail} onChange={handleBusinessChange} className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" required={newClient.type === 'BUSINESS'} />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700">업태</label>
-                          <input type="text" name="businessType" value={newClient.business.businessType} onChange={handleBusinessChange} className="mt-0.5 block w-full border border-gray-300 rounded-md px-3 py-2" />
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">업태</label>
+                          <input type="text" name="businessType" value={newClient.business.businessType} onChange={handleBusinessChange} className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700">업종</label>
-                          <input type="text" name="businessItem" value={newClient.business.businessItem} onChange={handleBusinessChange} className="mt-0.5 block w-full border border-gray-300 rounded-md px-3 py-2" />
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">업종</label>
+                          <input type="text" name="businessItem" value={newClient.business.businessItem} onChange={handleBusinessChange} className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" />
                         </div>
                         <div className="md:col-span-2">
-                          <label className="block text-sm font-medium text-gray-700">사업장 주소</label>
-                          <input type="text" name="businessAddress" value={newClient.business.businessAddress} onChange={handleBusinessChange} className="mt-0.5 block w-full border border-gray-300 rounded-md px-3 py-2" />
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">사업장 주소</label>
+                          <input type="text" name="businessAddress" value={newClient.business.businessAddress} onChange={handleBusinessChange} className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" />
                         </div>
                       </div>
                     </div>
@@ -1018,31 +1018,31 @@ const Clients: React.FC = () => {
                 </div>
 
                 {/* 섹션: 연락처 / 주소 */}
-                <div className="rounded-xl border border-gray-100 bg-white shadow-sm p-4">
+                <div className="rounded-xl border border-gray-100 dark:border-gray-600 bg-white dark:bg-gray-700 shadow-sm p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-50">
-                      <PhoneIcon className="h-4 w-4 text-slate-600" aria-hidden="true" />
+                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-50 dark:bg-slate-900">
+                      <PhoneIcon className="h-4 w-4 text-slate-600 dark:text-slate-300" aria-hidden="true" />
                     </span>
-                    <h4 className="text-sm font-semibold text-gray-900">연락처 / 주소</h4>
+                    <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">연락처 / 주소</h4>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">전화번호</label>
-                      <input type="tel" name="phone" value={newClient.phone} onChange={handleInputChange} placeholder="02-1234-5678" className="mt-0.5 block w-full border border-gray-300 rounded-md px-3 py-2" />
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">전화번호</label>
+                      <input type="tel" name="phone" value={newClient.phone} onChange={handleInputChange} placeholder="02-1234-5678" className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">휴대전화</label>
-                      <input type="tel" name="mobile" value={newClient.mobile} onChange={handleInputChange} placeholder="010-1234-5678" className="mt-0.5 block w-full border border-gray-300 rounded-md px-3 py-2" />
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">휴대전화</label>
+                      <input type="tel" name="mobile" value={newClient.mobile} onChange={handleInputChange} placeholder="010-1234-5678" className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">이메일</label>
-                      <input type="email" name="email" value={newClient.email} onChange={handleInputChange} placeholder="선택사항" className="mt-0.5 block w-full border border-gray-300 rounded-md px-3 py-2" />
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">이메일</label>
+                      <input type="email" name="email" value={newClient.email} onChange={handleInputChange} placeholder="선택사항" className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" />
                     </div>
                     <div className="md:col-span-2">
                       <div className="flex items-center justify-between">
-                        <label className="block text-sm font-medium text-gray-700 flex items-center gap-1"><MapPinIcon className="h-4 w-4 text-slate-600" />주소</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1"><MapPinIcon className="h-4 w-4 text-slate-600 dark:text-slate-300" />주소</label>
                         {newClient.type === 'BUSINESS' && (
-                          <label className="text-xs text-gray-600 inline-flex items-center gap-1">
+                          <label className="text-xs text-gray-600 dark:text-gray-300 inline-flex items-center gap-1">
                             <input
                               type="checkbox"
                               className="rounded border-gray-300"
@@ -1070,41 +1070,41 @@ const Clients: React.FC = () => {
                         )}
                       </div>
                       {(newClient.type !== 'BUSINESS' || showAltAddress) && (
-                        <textarea name="address" value={newClient.address} onChange={handleInputChange} rows={1} placeholder="선택사항" className="mt-0.5 block w-full border border-gray-300 rounded-md px-3 py-2" />
+                        <textarea name="address" value={newClient.address} onChange={handleInputChange} rows={1} placeholder="선택사항" className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" />
                       )}
                     </div>
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-700">메모</label>
-                      <textarea name="notes" value={newClient.notes} onChange={handleInputChange} rows={2} className="mt-0.5 block w-full border border-gray-300 rounded-md px-3 py-2" />
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">메모</label>
+                      <textarea name="notes" value={newClient.notes} onChange={handleInputChange} rows={2} className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" />
                     </div>
                   </div>
                 </div>
                 
                 
                 {/* 작업장 정보 */}
-                <div className="rounded-xl border border-gray-100 bg-white shadow-sm p-4">
+                <div className="rounded-xl border border-gray-100 dark:border-gray-600 bg-white dark:bg-gray-700 shadow-sm p-4">
                   <div className="flex justify-between items-center mb-2">
                     <div className="flex items-center gap-2">
-                      <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-50">
-                        <UsersIcon className="h-4 w-4 text-slate-600" aria-hidden="true" />
+                      <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-50 dark:bg-slate-900">
+                        <UsersIcon className="h-4 w-4 text-slate-600 dark:text-slate-300" aria-hidden="true" />
                       </span>
-                      <label className="text-sm font-semibold text-gray-900">작업장 정보</label>
+                      <label className="text-sm font-semibold text-gray-900 dark:text-gray-100">작업장 정보</label>
                     </div>
-                    <button type="button" onClick={addWorkplace} className="text-blue-600 hover:text-blue-800 text-sm">+ 작업장 추가</button>
+                    <button type="button" onClick={addWorkplace} className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm">+ 작업장 추가</button>
                   </div>
                   {newClient.workplaces.map((workplace, index) => (
-                    <div key={index} className="border rounded-md p-3 mb-3 bg-gray-50">
+                    <div key={index} className="border border-gray-200 dark:border-gray-600 rounded-md p-3 mb-3 bg-gray-50 dark:bg-gray-900">
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm font-medium text-gray-700">작업장 {index + 1}</span>
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">작업장 {index + 1}</span>
                         {newClient.workplaces.length > 1 && (
-                          <button type="button" onClick={() => removeWorkplace(index)} className="text-red-600 hover:text-red-800 text-sm">삭제</button>
+                          <button type="button" onClick={() => removeWorkplace(index)} className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 text-sm">삭제</button>
                         )}
                       </div>
                       <div className="space-y-2">
-                        <input type="text" placeholder="작업장명 (예: 신축 주택, 카페 인테리어 등)" value={workplace.name} onChange={(e) => handleWorkplaceChange(index, 'name', e.target.value)} className="w-full border border-gray-300 rounded px-2 py-1 text-sm" required />
-                        <input type="text" placeholder="작업장 주소" value={workplace.address} onChange={(e) => handleWorkplaceChange(index, 'address', e.target.value)} className="w-full border border-gray-300 rounded px-2 py-1 text-sm" required />
-                        <label className="block text-sm font-medium text-gray-700 mb-1">프로젝트</label>
-                        <textarea placeholder="프로젝트 (필수사항)" value={workplace.description} onChange={(e) => handleWorkplaceChange(index, 'description', e.target.value)} className="w-full border border-gray-300 rounded px-2 py-1 text-sm" rows={2} required />
+                        <input type="text" placeholder="작업장명 (예: 신축 주택, 카페 인테리어 등)" value={workplace.name} onChange={(e) => handleWorkplaceChange(index, 'name', e.target.value)} className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded px-2 py-1 text-sm" required />
+                        <input type="text" placeholder="작업장 주소" value={workplace.address} onChange={(e) => handleWorkplaceChange(index, 'address', e.target.value)} className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded px-2 py-1 text-sm" required />
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">프로젝트</label>
+                        <textarea placeholder="프로젝트 (필수사항)" value={workplace.description} onChange={(e) => handleWorkplaceChange(index, 'description', e.target.value)} className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded px-2 py-1 text-sm" rows={2} required />
                         <p className="mt-1 text-xs text-red-600">필수사항: 프로젝트명을 입력해주세요.</p>
                       </div>
                     </div>
@@ -1137,13 +1137,13 @@ const Clients: React.FC = () => {
                         workplaces: [{ name: '', address: '', description: '' }]
                       });
                     }}
-                    className="px-4 py-2 text-gray-500 hover:text-gray-700"
+                    className="px-4 py-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
                   >
                     취소
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded"
+                    className="px-4 py-2 bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-white rounded"
                   >
                     {isEditing ? '수정' : '추가'}
                   </button>
@@ -1157,43 +1157,43 @@ const Clients: React.FC = () => {
       {/* 건축주 상세보기 모달 */}
       {(selectedClient !== null && selectedClient !== undefined) && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-10 mx-auto p-5 border w-4/5 max-w-3xl shadow-lg rounded-md bg-white">
+          <div className="relative top-10 mx-auto p-5 border border-gray-200 dark:border-gray-600 w-4/5 max-w-3xl shadow-lg rounded-md bg-white dark:bg-gray-800">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium text-gray-900">건축주 상세 정보 - {selectedClient.name}</h3>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">건축주 상세 정보 - {selectedClient.name}</h3>
               <button
                 onClick={() => setSelectedClient(null)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400"
               >
                 ✕
               </button>
             </div>
-            
-            <div className="border rounded-lg p-6 bg-gray-50">
+
+            <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-6 bg-gray-50 dark:bg-gray-700">
               <div className="grid grid-cols-2 gap-6 mb-6">
                 <div>
-                  <h4 className="font-medium mb-3">기본 정보</h4>
-                  <p className="mb-2"><strong>이름:</strong> {selectedClient.name}</p>
-                  {(selectedClient.phone !== '' && selectedClient.phone !== null && selectedClient.phone !== undefined) && <p className="mb-2"><strong>전화번호:</strong> {selectedClient.phone}</p>}
-                  {(selectedClient?.mobile !== '' && selectedClient?.mobile !== null && selectedClient?.mobile !== undefined) && <p className="mb-2"><strong>휴대전화:</strong> {selectedClient.mobile}</p>}
-                  {(selectedClient.email !== '' && selectedClient.email !== null && selectedClient.email !== undefined) && <p className="mb-2"><strong>이메일:</strong> {selectedClient.email}</p>}
-                  <p><strong>주소:</strong> {selectedClient.address}</p>
+                  <h4 className="font-medium mb-3 text-gray-900 dark:text-gray-100">기본 정보</h4>
+                  <p className="mb-2 text-gray-900 dark:text-gray-100"><strong>이름:</strong> {selectedClient.name}</p>
+                  {(selectedClient.phone !== '' && selectedClient.phone !== null && selectedClient.phone !== undefined) && <p className="mb-2 text-gray-900 dark:text-gray-100"><strong>전화번호:</strong> {selectedClient.phone}</p>}
+                  {(selectedClient?.mobile !== '' && selectedClient?.mobile !== null && selectedClient?.mobile !== undefined) && <p className="mb-2 text-gray-900 dark:text-gray-100"><strong>휴대전화:</strong> {selectedClient.mobile}</p>}
+                  {(selectedClient.email !== '' && selectedClient.email !== null && selectedClient.email !== undefined) && <p className="mb-2 text-gray-900 dark:text-gray-100"><strong>이메일:</strong> {selectedClient.email}</p>}
+                  <p className="text-gray-900 dark:text-gray-100"><strong>주소:</strong> {selectedClient.address}</p>
                 </div>
                 <div>
-                  <h4 className="font-medium mb-3">재무 정보</h4>
-                  <p className="mb-2"><strong>총 청구액:</strong> {((selectedClient.totalBilled !== 0 && selectedClient.totalBilled !== null && selectedClient.totalBilled !== undefined) ? selectedClient.totalBilled : 0).toLocaleString()}원</p>
-                  <p className="mb-2"><strong>미수금:</strong>
+                  <h4 className="font-medium mb-3 text-gray-900 dark:text-gray-100">재무 정보</h4>
+                  <p className="mb-2 text-gray-900 dark:text-gray-100"><strong>총 청구액:</strong> {((selectedClient.totalBilled !== 0 && selectedClient.totalBilled !== null && selectedClient.totalBilled !== undefined) ? selectedClient.totalBilled : 0).toLocaleString()}원</p>
+                  <p className="mb-2 text-gray-900 dark:text-gray-100"><strong>미수금:</strong>
                     <span className={((selectedClient.outstanding !== 0 && selectedClient.outstanding !== null && selectedClient.outstanding !== undefined) ? selectedClient.outstanding : 0) > 0 ? 'text-red-600 font-medium' : 'text-green-600'}>
                       {((selectedClient.outstanding !== 0 && selectedClient.outstanding !== null && selectedClient.outstanding !== undefined) ? selectedClient.outstanding : 0).toLocaleString()}원
                     </span>
                   </p>
-                  <p><strong>완료 프로젝트:</strong> {(selectedClient.projects !== null && selectedClient.projects !== undefined ? selectedClient.projects : []).length}개</p>
+                  <p className="text-gray-900 dark:text-gray-100"><strong>완료 프로젝트:</strong> {(selectedClient.projects !== null && selectedClient.projects !== undefined ? selectedClient.projects : []).length}개</p>
                 </div>
               </div>
 
               {(selectedClient?.type === 'BUSINESS') && (
-                <div className="border rounded-md p-4 bg-yellow-50 mb-6">
-                  <h4 className="font-medium mb-3">사업자 정보</h4>
-                  <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="border border-yellow-200 dark:border-yellow-600 rounded-md p-4 bg-yellow-50 dark:bg-yellow-900 mb-6">
+                  <h4 className="font-medium mb-3 text-gray-900 dark:text-gray-100">사업자 정보</h4>
+                  <div className="grid grid-cols-2 gap-4 text-sm text-gray-900 dark:text-gray-100">
                     <p><strong>상호:</strong> {(selectedClient.business?.businessName !== '' && selectedClient.business?.businessName !== null && selectedClient.business?.businessName !== undefined) ? selectedClient.business.businessName : '-'}</p>
                     <p><strong>대표자:</strong> {(selectedClient.business?.representative !== '' && selectedClient.business?.representative !== null && selectedClient.business?.representative !== undefined) ? selectedClient.business.representative : '-'}</p>
                     <p><strong>사업자등록번호:</strong> {(selectedClient.business?.businessNumber !== '' && selectedClient.business?.businessNumber !== null && selectedClient.business?.businessNumber !== undefined) ? selectedClient.business.businessNumber : '-'}</p>
@@ -1204,24 +1204,24 @@ const Clients: React.FC = () => {
                   </div>
                 </div>
               )}
-              
+
               <div className="mb-4">
-                <h4 className="font-medium mb-2">작업장 정보</h4>
+                <h4 className="font-medium mb-2 text-gray-900 dark:text-gray-100">작업장 정보</h4>
                 {(selectedClient.workplaces !== null && selectedClient.workplaces !== undefined && selectedClient.workplaces.length > 0) ? (
                   <div className="space-y-3">
                     {selectedClient.workplaces.map((workplace, index) => (
-                      <div key={index} className="bg-white rounded border p-3">
+                      <div key={index} className="bg-white dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-600 p-3">
                         <div className="flex justify-between items-start mb-2">
-                          <h5 className="font-medium text-gray-900">{workplace.name}</h5>
-                          <span className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded">
+                          <h5 className="font-medium text-gray-900 dark:text-gray-100">{workplace.name}</h5>
+                          <span className="text-xs bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 px-2 py-1 rounded">
                             작업장 {index + 1}
                           </span>
                         </div>
-                        <p className="text-sm text-gray-600 mb-1">
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">
                           <strong>주소:</strong> {workplace.address}
                         </p>
                         {(workplace.description !== '' && workplace.description !== null && workplace.description !== undefined) && (
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-gray-600 dark:text-gray-300">
                             <strong>프로젝트:</strong> {workplace.description}
                           </p>
                         )}
@@ -1229,29 +1229,29 @@ const Clients: React.FC = () => {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-500 italic">등록된 작업장이 없습니다.</p>
+                  <p className="text-gray-500 dark:text-gray-400 italic">등록된 작업장이 없습니다.</p>
                 )}
               </div>
 
               <div className="mb-4">
-                <h4 className="font-medium mb-2">프로젝트 이력</h4>
+                <h4 className="font-medium mb-2 text-gray-900 dark:text-gray-100">프로젝트 이력</h4>
                 {((selectedClient.projects !== null && selectedClient.projects !== undefined ? selectedClient.projects : []).length > 0) ? (
-                  <ul className="bg-white rounded border p-3">
+                  <ul className="bg-white dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-600 p-3">
                     {selectedClient.projects!.map((project, index) => (
-                      <li key={index} className="py-1 border-b last:border-b-0">
+                      <li key={index} className="py-1 border-b border-gray-200 dark:border-gray-600 last:border-b-0 text-gray-900 dark:text-gray-100">
                         • {project}
                       </li>
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-gray-500 italic">진행된 프로젝트가 없습니다.</p>
+                  <p className="text-gray-500 dark:text-gray-400 italic">진행된 프로젝트가 없습니다.</p>
                 )}
               </div>
 
               {(selectedClient.notes !== '' && selectedClient.notes !== null && selectedClient.notes !== undefined) && (
                 <div>
-                  <h4 className="font-medium mb-2">메모</h4>
-                  <p className="bg-white rounded border p-3">{selectedClient.notes}</p>
+                  <h4 className="font-medium mb-2 text-gray-900 dark:text-gray-100">메모</h4>
+                  <p className="bg-white dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-600 p-3 text-gray-900 dark:text-gray-100">{selectedClient.notes}</p>
                 </div>
               )}
             </div>

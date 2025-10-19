@@ -199,32 +199,32 @@ const Settings: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">설정</h1>
-        <p className="mt-2 text-gray-600">계정 정보를 관리하세요</p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">설정</h1>
+        <p className="mt-2 text-gray-600 dark:text-gray-300">계정 정보를 관리하세요</p>
       </div>
 
       {/* 현재 사용자 정보 */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-          <UserCircleIcon className="w-6 h-6 mr-2 text-blue-600" />
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
+          <UserCircleIcon className="w-6 h-6 mr-2 text-blue-600 dark:text-blue-400" />
           현재 로그인 정보
         </h2>
         <div className="space-y-3">
           <div className="flex items-center">
-            <span className="font-medium text-gray-700 w-32">로그인 방식:</span>
-            <span className="text-gray-900">{getProviderName(provider)}</span>
+            <span className="font-medium text-gray-700 dark:text-gray-300 w-32">로그인 방식:</span>
+            <span className="text-gray-900 dark:text-gray-100">{getProviderName(provider)}</span>
           </div>
           <div className="flex items-center">
-            <span className="font-medium text-gray-700 w-32">이름:</span>
-            <span className="text-gray-900">{(userName !== '' && userName !== null) ? userName : '(없음)'}</span>
+            <span className="font-medium text-gray-700 dark:text-gray-300 w-32">이름:</span>
+            <span className="text-gray-900 dark:text-gray-100">{(userName !== '' && userName !== null) ? userName : '(없음)'}</span>
           </div>
           <div className="flex items-center">
-            <span className="font-medium text-gray-700 w-32">이메일:</span>
-            <span className="text-gray-900">{userEmail}</span>
+            <span className="font-medium text-gray-700 dark:text-gray-300 w-32">이메일:</span>
+            <span className="text-gray-900 dark:text-gray-100">{userEmail}</span>
           </div>
           {isSocialLogin && (
-            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
-              <p className="text-sm text-blue-700">
+            <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md">
+              <p className="text-sm text-blue-700 dark:text-blue-300">
                 SNS 로그인 사용자는 {getProviderName(provider)} 계정에서 정보를 관리합니다.
               </p>
             </div>
@@ -234,14 +234,14 @@ const Settings: React.FC = () => {
 
       <div className="space-y-6">
         {/* 이름 변경 */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-            <UserCircleIcon className="w-6 h-6 mr-2 text-blue-600" />
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
+            <UserCircleIcon className="w-6 h-6 mr-2 text-blue-600 dark:text-blue-400" />
             이름 변경
           </h2>
           <form onSubmit={handleUpdateName} className="space-y-4">
             <div>
-              <label htmlFor="newName" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="newName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 새 이름
               </label>
               <input
@@ -249,22 +249,22 @@ const Settings: React.FC = () => {
                 type="text"
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                 placeholder="새 이름을 입력하세요"
               />
             </div>
 
             {nameError !== '' && (
-              <div className="flex items-center p-3 bg-red-50 border border-red-200 rounded-md">
-                <XCircleIcon className="w-5 h-5 text-red-600 mr-2" />
-                <p className="text-red-700 text-sm">{nameError}</p>
+              <div className="flex items-center p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
+                <XCircleIcon className="w-5 h-5 text-red-600 dark:text-red-400 mr-2" />
+                <p className="text-red-700 dark:text-red-300 text-sm">{nameError}</p>
               </div>
             )}
 
             {nameSuccess !== '' && (
-              <div className="flex items-center p-3 bg-green-50 border border-green-200 rounded-md">
-                <CheckCircleIcon className="w-5 h-5 text-green-600 mr-2" />
-                <p className="text-green-700 text-sm">{nameSuccess}</p>
+              <div className="flex items-center p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-md">
+                <CheckCircleIcon className="w-5 h-5 text-green-600 dark:text-green-400 mr-2" />
+                <p className="text-green-700 dark:text-green-300 text-sm">{nameSuccess}</p>
               </div>
             )}
 
@@ -280,14 +280,14 @@ const Settings: React.FC = () => {
 
         {/* 이메일 변경 - 이메일 로그인 사용자만 */}
         {!isSocialLogin && (
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-              <EnvelopeIcon className="w-6 h-6 mr-2 text-blue-600" />
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
+              <EnvelopeIcon className="w-6 h-6 mr-2 text-blue-600 dark:text-blue-400" />
               이메일 변경
             </h2>
             <form onSubmit={handleUpdateEmail} className="space-y-4">
             <div>
-              <label htmlFor="newEmail" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="newEmail" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 새 이메일
               </label>
               <input
@@ -295,22 +295,22 @@ const Settings: React.FC = () => {
                 type="email"
                 value={newEmail}
                 onChange={(e) => setNewEmail(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                 placeholder="새 이메일을 입력하세요"
               />
             </div>
 
             {emailError !== '' && (
-              <div className="flex items-center p-3 bg-red-50 border border-red-200 rounded-md">
-                <XCircleIcon className="w-5 h-5 text-red-600 mr-2" />
-                <p className="text-red-700 text-sm">{emailError}</p>
+              <div className="flex items-center p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
+                <XCircleIcon className="w-5 h-5 text-red-600 dark:text-red-400 mr-2" />
+                <p className="text-red-700 dark:text-red-300 text-sm">{emailError}</p>
               </div>
             )}
 
             {emailSuccess !== '' && (
-              <div className="flex items-center p-3 bg-green-50 border border-green-200 rounded-md">
-                <CheckCircleIcon className="w-5 h-5 text-green-600 mr-2" />
-                <p className="text-green-700 text-sm">{emailSuccess}</p>
+              <div className="flex items-center p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-md">
+                <CheckCircleIcon className="w-5 h-5 text-green-600 dark:text-green-400 mr-2" />
+                <p className="text-green-700 dark:text-green-300 text-sm">{emailSuccess}</p>
               </div>
             )}
 
@@ -321,7 +321,7 @@ const Settings: React.FC = () => {
             >
               {emailLoading ? '변경 중...' : '이메일 변경'}
             </button>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
               * 이메일 변경 시 새 이메일로 확인 메일이 발송됩니다.
             </p>
           </form>
@@ -330,14 +330,14 @@ const Settings: React.FC = () => {
 
         {/* 비밀번호 변경 - 이메일 로그인 사용자만 */}
         {!isSocialLogin && (
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-              <LockClosedIcon className="w-6 h-6 mr-2 text-blue-600" />
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
+              <LockClosedIcon className="w-6 h-6 mr-2 text-blue-600 dark:text-blue-400" />
               비밀번호 변경
             </h2>
             <form onSubmit={handleUpdatePassword} className="space-y-4">
             <div>
-              <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 새 비밀번호
               </label>
               <input
@@ -345,13 +345,13 @@ const Settings: React.FC = () => {
                 type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                 placeholder="새 비밀번호 (최소 6자)"
               />
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 새 비밀번호 확인
               </label>
               <input
@@ -359,22 +359,22 @@ const Settings: React.FC = () => {
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                 placeholder="새 비밀번호 확인"
               />
             </div>
 
             {passwordError !== '' && (
-              <div className="flex items-center p-3 bg-red-50 border border-red-200 rounded-md">
-                <XCircleIcon className="w-5 h-5 text-red-600 mr-2" />
-                <p className="text-red-700 text-sm">{passwordError}</p>
+              <div className="flex items-center p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
+                <XCircleIcon className="w-5 h-5 text-red-600 dark:text-red-400 mr-2" />
+                <p className="text-red-700 dark:text-red-300 text-sm">{passwordError}</p>
               </div>
             )}
 
             {passwordSuccess !== '' && (
-              <div className="flex items-center p-3 bg-green-50 border border-green-200 rounded-md">
-                <CheckCircleIcon className="w-5 h-5 text-green-600 mr-2" />
-                <p className="text-green-700 text-sm">{passwordSuccess}</p>
+              <div className="flex items-center p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-md">
+                <CheckCircleIcon className="w-5 h-5 text-green-600 dark:text-green-400 mr-2" />
+                <p className="text-green-700 dark:text-green-300 text-sm">{passwordSuccess}</p>
               </div>
             )}
 
@@ -390,12 +390,12 @@ const Settings: React.FC = () => {
         )}
 
         {/* 로그아웃 */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-            <ArrowRightOnRectangleIcon className="w-6 h-6 mr-2 text-red-600" />
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center">
+            <ArrowRightOnRectangleIcon className="w-6 h-6 mr-2 text-red-600 dark:text-red-400" />
             로그아웃
           </h2>
-          <p className="text-gray-600 mb-4">모든 기기에서 로그아웃됩니다.</p>
+          <p className="text-gray-600 dark:text-gray-300 mb-4">모든 기기에서 로그아웃됩니다.</p>
           <button
             type="button"
             onClick={handleLogout}

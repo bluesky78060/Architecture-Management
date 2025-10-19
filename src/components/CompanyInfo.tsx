@@ -138,14 +138,14 @@ export default function CompanyInfo(): JSX.Element {
     <>
     <div className="p-6">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">환경설정</h1>
-        <p className="text-gray-600">건축업체 정보와 시스템 설정을 관리하세요</p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">환경설정</h1>
+        <p className="text-gray-600 dark:text-gray-300">건축업체 정보와 시스템 설정을 관리하세요</p>
       </div>
 
       <div className="flex flex-col lg:flex-row lg:flex-wrap gap-8 mb-8">
-        <div className="flex-1 bg-white rounded-lg shadow flex flex-col">
-          <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-100">
-            <h2 className="text-xl font-semibold text-gray-900">업체 정보 관리</h2>
+        <div className="flex-1 bg-white dark:bg-gray-800 rounded-lg shadow flex flex-col">
+          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-600 flex justify-between items-center bg-gray-50 dark:bg-gray-700">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">업체 정보 관리</h2>
             {!isEditing ? (
               <button onClick={() => setIsEditing(true)} className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-1.5 px-3 rounded">수정</button>
             ) : (
@@ -160,104 +160,104 @@ export default function CompanyInfo(): JSX.Element {
             <div className="grid grid-cols-1 gap-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">업체명 *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">업체명 *</label>
                   {isEditing ? (
-                    <input type="text" name="name" value={editForm.name} onChange={handleInputChange} className="w-full border border-gray-300 rounded-md px-3 py-2" required />
+                    <input type="text" name="name" value={editForm.name} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required />
                   ) : (
-                    <p className="text-gray-900 py-2">{companyInfo.name}</p>
+                    <p className="text-gray-900 dark:text-gray-100 py-2">{companyInfo.name}</p>
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">사업자등록번호 *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">사업자등록번호 *</label>
                   {isEditing ? (
-                    <input type="text" name="businessNumber" value={editForm.businessNumber ?? ''} onChange={handleInputChange} placeholder="000-00-00000" className="w-full border border-gray-300 rounded-md px-3 py-2" required />
+                    <input type="text" name="businessNumber" value={editForm.businessNumber ?? ''} onChange={handleInputChange} placeholder="000-00-00000" className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required />
                   ) : (
-                    <p className="text-gray-900 py-2">{companyInfo.businessNumber}</p>
+                    <p className="text-gray-900 dark:text-gray-100 py-2">{companyInfo.businessNumber}</p>
                   )}
                 </div>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">대표자명 *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">대표자명 *</label>
                   {isEditing ? (
-                    <input type="text" name="representative" value={editForm.representative ?? ''} onChange={handleInputChange} className="w-full border border-gray-300 rounded-md px-3 py-2" required />
+                    <input type="text" name="representative" value={editForm.representative ?? ''} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required />
                   ) : (
-                    <p className="text-gray-900 py-2">{companyInfo.representative}</p>
+                    <p className="text-gray-900 dark:text-gray-100 py-2">{companyInfo.representative}</p>
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">전화번호 *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">전화번호 *</label>
                   {isEditing ? (
-                    <input type="tel" name="phone" value={editForm.phone ?? ''} onChange={handleInputChange} className="w-full border border-gray-300 rounded-md px-3 py-2" required />
+                    <input type="tel" name="phone" value={editForm.phone ?? ''} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required />
                   ) : (
-                    <p className="text-gray-900 py-2">{companyInfo.phone}</p>
+                    <p className="text-gray-900 dark:text-gray-100 py-2">{companyInfo.phone}</p>
                   )}
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">이메일</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">이메일</label>
                 {isEditing ? (
-                  <input type="email" name="email" value={editForm.email ?? ''} onChange={handleInputChange} className="w-full border border-gray-300 rounded-md px-3 py-2" />
+                  <input type="email" name="email" value={editForm.email ?? ''} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
                 ) : (
-                  <p className="text-gray-900 py-2">{companyInfo.email ?? '-'}</p>
+                  <p className="text-gray-900 dark:text-gray-100 py-2">{companyInfo.email ?? '-'}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">주소 *</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">주소 *</label>
                 {isEditing ? (
-                  <input type="text" name="address" value={editForm.address ?? ''} onChange={handleInputChange} className="w-full border border-gray-300 rounded-md px-3 py-2" required />
+                  <input type="text" name="address" value={editForm.address ?? ''} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required />
                 ) : (
-                  <p className="text-gray-900 py-2">{companyInfo.address}</p>
+                  <p className="text-gray-900 dark:text-gray-100 py-2">{companyInfo.address}</p>
                 )}
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">계좌번호</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">계좌번호</label>
                   {isEditing ? (
-                    <input type="text" name="bankAccount" value={editForm.bankAccount ?? ''} onChange={handleInputChange} className="w-full border border-gray-300 rounded-md px-3 py-2" />
+                    <input type="text" name="bankAccount" value={editForm.bankAccount ?? ''} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
                   ) : (
-                    <p className="text-gray-900 py-2">{companyInfo.bankAccount ?? '-'}</p>
+                    <p className="text-gray-900 dark:text-gray-100 py-2">{companyInfo.bankAccount ?? '-'}</p>
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">예금주명</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">예금주명</label>
                   {isEditing ? (
-                    <input type="text" name="accountHolder" value={editForm.accountHolder ?? ''} onChange={handleInputChange} className="w-full border border-gray-300 rounded-md px-3 py-2" />
+                    <input type="text" name="accountHolder" value={editForm.accountHolder ?? ''} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
                   ) : (
-                    <p className="text-gray-900 py-2">{companyInfo.accountHolder ?? '-'}</p>
+                    <p className="text-gray-900 dark:text-gray-100 py-2">{companyInfo.accountHolder ?? '-'}</p>
                   )}
                 </div>
               </div>
             </div>
 
-            <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-              <p className="text-sm text-blue-700">여기서 설정한 정보는 생성되는 모든 청구서/견적서에 자동으로 포함됩니다. 정확한 정보를 입력해주세요.</p>
+            <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
+              <p className="text-sm text-blue-700 dark:text-blue-300">여기서 설정한 정보는 생성되는 모든 청구서/견적서에 자동으로 포함됩니다. 정확한 정보를 입력해주세요.</p>
             </div>
           </div>
         </div>
 
         {/* 시스템 설정 */}
-        <div className="flex-1 bg-white rounded-lg shadow flex flex-col">
-          <div className="px-6 py-4 border-b border-gray-200 bg-gray-100">
-            <h2 className="text-xl font-semibold text-gray-900">시스템 설정</h2>
+        <div className="flex-1 bg-white dark:bg-gray-800 rounded-lg shadow flex flex-col">
+          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">시스템 설정</h2>
           </div>
           <div className="p-6 space-y-4">
             {/* 단위 관리 */}
             <div>
-              <h3 className="font-medium mb-2">단위 관리</h3>
+              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-2">단위 관리</h3>
               <div className="flex gap-2">
-                <input value={newUnit} onChange={(e) => setNewUnit(e.target.value)} placeholder="새 단위 입력" className="border rounded px-3 py-2 text-sm flex-1" />
+                <input value={newUnit} onChange={(e) => setNewUnit(e.target.value)} placeholder="새 단위 입력" className="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm flex-1 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
                 <button onClick={handleAddUnit} className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded text-sm">추가</button>
               </div>
               <div className="mt-2 flex gap-2 flex-wrap">
                 {units.map(u => (
-                  <span key={u} className="inline-flex items-center bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs">
+                  <span key={u} className="inline-flex items-center bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded text-xs">
                     {u}
-                    <button onClick={() => handleRemoveUnit(u)} className="ml-2 text-red-600">✕</button>
+                    <button onClick={() => handleRemoveUnit(u)} className="ml-2 text-red-600 dark:text-red-400">✕</button>
                   </span>
                 ))}
               </div>
@@ -265,16 +265,16 @@ export default function CompanyInfo(): JSX.Element {
 
             {/* 카테고리 관리 */}
             <div>
-              <h3 className="font-medium mb-2">카테고리 관리</h3>
+              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-2">카테고리 관리</h3>
               <div className="flex gap-2">
-                <input value={newCategory} onChange={(e) => setNewCategory(e.target.value)} placeholder="새 카테고리 입력" className="border rounded px-3 py-2 text-sm flex-1" />
+                <input value={newCategory} onChange={(e) => setNewCategory(e.target.value)} placeholder="새 카테고리 입력" className="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm flex-1 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
                 <button onClick={handleAddCategory} className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded text-sm">추가</button>
               </div>
               <div className="mt-2 flex gap-2 flex-wrap">
                 {categories.map(c => (
-                  <span key={c} className="inline-flex items-center bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs">
+                  <span key={c} className="inline-flex items-center bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded text-xs">
                     {c}
-                    <button onClick={() => handleRemoveCategory(c)} className="ml-2 text-red-600">✕</button>
+                    <button onClick={() => handleRemoveCategory(c)} className="ml-2 text-red-600 dark:text-red-400">✕</button>
                   </span>
                 ))}
               </div>
@@ -282,59 +282,59 @@ export default function CompanyInfo(): JSX.Element {
 
             {/* 도장 이미지 */}
             <div>
-              <h3 className="font-medium mb-2">도장 이미지</h3>
-              <input 
-                ref={fileInputRef} 
-                id="stamp-image" 
-                type="file" 
-                accept="image/jpeg,image/jpg,image/png,image/gif,image/webp" 
-                onChange={handleStampImageChange} 
-                className="hidden" 
+              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-2">도장 이미지</h3>
+              <input
+                ref={fileInputRef}
+                id="stamp-image"
+                type="file"
+                accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                onChange={handleStampImageChange}
+                className="hidden"
               />
               <div className="flex items-center gap-2 mb-3">
-                <button 
-                  onClick={() => fileInputRef.current?.click()} 
+                <button
+                  onClick={() => fileInputRef.current?.click()}
                   className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded text-sm font-medium transition-colors"
                 >
                   📷 이미지 선택
                 </button>
                 {stampImage !== null && (
-                  <button 
-                    onClick={requestRemoveStampImage} 
+                  <button
+                    onClick={requestRemoveStampImage}
                     className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm font-medium transition-colors"
                   >
                     🗑️ 삭제
                   </button>
                 )}
               </div>
-              
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 bg-gray-50">
+
+              <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 bg-gray-50 dark:bg-gray-700">
                 {stampImage !== null ? (
                   <div className="flex items-center gap-4">
-                    <img 
-                      src={stampImage} 
-                      alt="업로드된 도장 이미지" 
-                      className="w-20 h-20 object-contain border border-gray-200 rounded bg-white shadow-sm" 
+                    <img
+                      src={stampImage}
+                      alt="업로드된 도장 이미지"
+                      className="w-20 h-20 object-contain border border-gray-200 dark:border-gray-600 rounded bg-white dark:bg-gray-800 shadow-sm"
                     />
-                    <div className="text-sm text-gray-600">
-                      <p className="font-medium text-green-600 mb-1">✅ 도장 이미지가 등록되었습니다</p>
+                    <div className="text-sm text-gray-600 dark:text-gray-300">
+                      <p className="font-medium text-green-600 dark:text-green-400 mb-1">✅ 도장 이미지가 등록되었습니다</p>
                       <p>청구서 출력 시 자동으로 표시됩니다</p>
                     </div>
                   </div>
                 ) : (
                   <div className="text-center py-4">
-                    <div className="text-gray-400 mb-2">
+                    <div className="text-gray-400 dark:text-gray-500 mb-2">
                       <svg className="mx-auto h-12 w-12" stroke="currentColor" fill="none" viewBox="0 0 48 48">
                         <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     </div>
-                    <p className="text-sm text-gray-500 mb-1">도장 이미지가 등록되지 않았습니다</p>
-                    <p className="text-xs text-gray-400">JPG, PNG, GIF 파일 (최대 2MB)</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">도장 이미지가 등록되지 않았습니다</p>
+                    <p className="text-xs text-gray-400 dark:text-gray-500">JPG, PNG, GIF 파일 (최대 2MB)</p>
                   </div>
                 )}
               </div>
-              
-              <div className="mt-2 text-xs text-gray-500">
+
+              <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                 💡 <strong>팁:</strong> 투명 배경의 PNG 파일을 사용하면 더 깔끔하게 표시됩니다
               </div>
             </div>

@@ -515,20 +515,20 @@ export default function Invoices(): JSX.Element {
   return (
     <div className="p-4">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-3xl font-bold text-gray-900">청구서 관리</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">청구서 관리</h1>
         <div className="flex items-center gap-2">
           {selection.selected.length > 0 && (
-            <button 
-              onClick={handleBulkDelete} 
-              className="flex items-center justify-center px-4 py-2.5 bg-white border border-red-200 rounded-full shadow-sm hover:shadow-md hover:bg-red-50 transition-all duration-300 text-red-600 font-medium"
+            <button
+              onClick={handleBulkDelete}
+              className="flex items-center justify-center px-4 py-2.5 bg-white dark:bg-gray-800 border border-red-200 dark:border-red-600 rounded-full shadow-sm hover:shadow-md hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-300 text-red-600 dark:text-red-400 font-medium"
             >
-              <span className="text-red-500 mr-2">🗑️</span>
+              <span className="text-red-500 dark:text-red-400 mr-2">🗑️</span>
               <span className="text-xs font-semibold">선택 삭제({selection.selected.length})</span>
             </button>
           )}
-          <button 
-            onClick={() => setShowForm(true)} 
-            className="flex items-center justify-center px-4 py-2.5 bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700 transition-colors duration-300 font-bold"
+          <button
+            onClick={() => setShowForm(true)}
+            className="flex items-center justify-center px-4 py-2.5 bg-indigo-600 dark:bg-indigo-500 text-white rounded-full shadow-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors duration-300 font-bold"
           >
             <span className="text-yellow-300 mr-2">✨</span>
             <span className="text-xs font-bold">새 청구서</span>
@@ -564,24 +564,24 @@ export default function Invoices(): JSX.Element {
       />
 
       {(detail !== null && detail !== undefined) && (
-        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-5xl p-6">
+        <div className="fixed inset-0 bg-black/30 dark:bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-5xl p-6">
             <div className="flex justify-between items-center mb-3">
-              <h3 className="text-lg font-semibold">청구서 상세</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">청구서 상세</h3>
               <div className="flex items-center gap-2">
-                <button onClick={handleOpenDetailPrint} className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-sm" title="상세 출력">🖨️ 상세 출력</button>
-                <button onClick={() => setDetail(null)} className="text-gray-400 hover:text-gray-600">✕</button>
+                <button onClick={handleOpenDetailPrint} className="px-3 py-1.5 bg-indigo-600 dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-600 text-white rounded text-sm" title="상세 출력">🖨️ 상세 출력</button>
+                <button onClick={() => setDetail(null)} className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">✕</button>
               </div>
             </div>
             {/* 인쇄 대상 시작 */}
             <div ref={detailPrintRef}>
               {/* 인쇄 헤더: 번호/성명(건축주)만 출력 */}
-              <div className="mb-3 text-sm">
+              <div className="mb-3 text-sm text-gray-900 dark:text-gray-100">
                 <p><strong>번호:</strong> {detail.id}</p>
                 <p><strong>성명:</strong> {detail.client}</p>
               </div>
               <div className="mt-4">
-                <h4 className="font-medium mb-2">작업 내역</h4>
+                <h4 className="font-medium mb-2 text-gray-900 dark:text-gray-100">작업 내역</h4>
                 <InvoiceDetailTable items={(detail.workItems !== null && detail.workItems !== undefined) ? detail.workItems : []} format={format} totalAmount={(() => {
                   const MIN_VALUE = 0;
                   const amt = Number(detail.amount);
@@ -589,7 +589,7 @@ export default function Invoices(): JSX.Element {
                 })()} />
               {/* 합계 영역: 템플릿 스타일 참고(소계/부가세/총액) */}
               <div className="mt-3 w-full flex justify-end">
-                <div className="w-full max-w-sm space-y-1 bg-white p-3 rounded border">
+                <div className="w-full max-w-sm space-y-1 bg-white dark:bg-gray-700 p-3 rounded border border-gray-200 dark:border-gray-600">
                   {(() => {
                     const MIN_VALUE = 0;
                     const VAT_DIVISOR = 1.1;
@@ -599,9 +599,9 @@ export default function Invoices(): JSX.Element {
                     const vat = total - subtotal;
                     return (
                       <>
-                        <div className="flex justify-between text-sm"><span>소계</span><span>{format(subtotal)}원</span></div>
-                        <div className="flex justify-between text-sm"><span>부가세(10%)</span><span>{format(vat)}원</span></div>
-                        <div className="flex justify-between font-bold text-base"><span>총액</span><span>{format(total)}원</span></div>
+                        <div className="flex justify-between text-sm text-gray-900 dark:text-gray-100"><span>소계</span><span>{format(subtotal)}원</span></div>
+                        <div className="flex justify-between text-sm text-gray-900 dark:text-gray-100"><span>부가세(10%)</span><span>{format(vat)}원</span></div>
+                        <div className="flex justify-between font-bold text-base text-gray-900 dark:text-gray-100"><span>총액</span><span>{format(total)}원</span></div>
                       </>
                     );
                   })()}
@@ -611,7 +611,7 @@ export default function Invoices(): JSX.Element {
             </div>
             {/* 인쇄 대상 끝 */}
             <div className="mt-4 text-right">
-              <button onClick={() => setDetail(null)} className="px-4 py-2 text-sm text-gray-600">닫기</button>
+              <button onClick={() => setDetail(null)} className="px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100">닫기</button>
             </div>
           </div>
         </div>
@@ -638,73 +638,73 @@ export default function Invoices(): JSX.Element {
       />
 
       {showForm && (
-        <div className="fixed inset-0 bg-gray-800/50 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
-          <div className="relative top-8 mx-auto w-[980px] max-w-[95vw] shadow-2xl rounded-2xl bg-white/80 ring-1 ring-black/5">
-            <div className="rounded-t-2xl bg-gradient-to-br from-indigo-50 via-purple-50 to-white px-8 pt-8 pb-6 text-center">
-              <h3 className="text-2xl font-extrabold tracking-tight text-indigo-600">새 청구서 생성</h3>
-              <p className="mt-2 text-sm text-gray-500">청구 정보를 입력하고 항목을 추가하세요</p>
+        <div className="fixed inset-0 bg-gray-800/50 dark:bg-black/60 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
+          <div className="relative top-8 mx-auto w-[980px] max-w-[95vw] shadow-2xl rounded-2xl bg-white/80 dark:bg-gray-800/90 ring-1 ring-black/5 dark:ring-white/10">
+            <div className="rounded-t-2xl bg-gradient-to-br from-indigo-50 via-purple-50 to-white dark:from-gray-700 dark:via-gray-800 dark:to-gray-900 px-8 pt-8 pb-6 text-center">
+              <h3 className="text-2xl font-extrabold tracking-tight text-indigo-600 dark:text-indigo-400">새 청구서 생성</h3>
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">청구 정보를 입력하고 항목을 추가하세요</p>
             </div>
             <div className="px-6 pb-6">
               <form onSubmit={submitForm} className="space-y-4">
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">건축주 *</label>
-                      <select name="clientId" value={String(form.clientId)} onChange={onFormChange} className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2" required>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">건축주 *</label>
+                      <select name="clientId" value={String(form.clientId)} onChange={onFormChange} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required>
                         <option value="">건축주 선택</option>
                         {clients.map(c => (<option key={c.id} value={String(c.id)}>{c.name}</option>))}
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">프로젝트 *</label>
-                      <input type="text" name="project" value={form.project} onChange={onFormChange} className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2" required />
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">프로젝트 *</label>
+                      <input type="text" name="project" value={form.project} onChange={onFormChange} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">작업장 *</label>
-                      <select name="workplaceId" value={String(form.workplaceId)} onChange={onFormChange} className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2" required disabled={(typeof form.clientId === 'string' && form.clientId === '') || (typeof form.clientId === 'number' && (form.clientId === 0 || isNaN(form.clientId)))}>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">작업장 *</label>
+                      <select name="workplaceId" value={String(form.workplaceId)} onChange={onFormChange} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required disabled={(typeof form.clientId === 'string' && form.clientId === '') || (typeof form.clientId === 'number' && (form.clientId === 0 || isNaN(form.clientId)))}>
                         <option value="">{(typeof form.clientId === 'string' ? form.clientId !== '' : (form.clientId !== 0 && !isNaN(form.clientId))) ? '작업장 선택' : '먼저 건축주를 선택하세요'}</option>
                         {(typeof form.clientId === 'string' ? form.clientId !== '' : (form.clientId !== 0 && !isNaN(form.clientId))) && getClientWorkplaces(form.clientId).map(wp => (
                           <option key={wp.id} value={String(wp.id)}>{wp.name} - {wp.address}</option>
                         ))}
                       </select>
                       {form.workplaceAddress !== '' && (
-                        <div className="mt-2 p-2 bg-gray-50 rounded text-sm text-gray-600">작업장 주소: {form.workplaceAddress}</div>
+                        <div className="mt-2 p-2 bg-gray-50 dark:bg-gray-700 rounded text-sm text-gray-600 dark:text-gray-300">작업장 주소: {form.workplaceAddress}</div>
                       )}
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">발행일</label>
-                      <input type="date" name="date" value={form.date} onChange={onFormChange} className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2" />
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">발행일</label>
+                      <input type="date" name="date" value={form.date} onChange={onFormChange} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="text-base font-semibold text-gray-900">작업 항목</h4>
-                    <button type="button" onClick={addFormItem} className="text-indigo-600 hover:text-indigo-800 text-sm">+ 항목 추가</button>
+                    <h4 className="text-base font-semibold text-gray-900 dark:text-gray-100">작업 항목</h4>
+                    <button type="button" onClick={addFormItem} className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 text-sm">+ 항목 추가</button>
                   </div>
                   <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
                     {form.items.map((it, idx) => (
-                      <div key={idx} className="border border-gray-200 rounded-lg p-3 bg-gray-50">
+                      <div key={idx} className="border border-gray-200 dark:border-gray-600 rounded-lg p-3 bg-gray-50 dark:bg-gray-700">
                         <div className="grid grid-cols-4 gap-2 mb-2">
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">내용</label>
-                            <input type="text" value={it.name} onChange={(e) => onFormItemChange(idx, 'name', e.target.value)} className="w-full border border-gray-200 rounded px-2 py-1 text-sm" required />
+                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">내용</label>
+                            <input type="text" value={it.name} onChange={(e) => onFormItemChange(idx, 'name', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" required />
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">카테고리</label>
-                            <select value={(it.category !== null && it.category !== undefined && it.category !== '') ? it.category : ''} onChange={(e) => onFormItemChange(idx, 'category', e.target.value)} className="w-full border border-gray-200 rounded px-2 py-1 text-sm">
+                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">카테고리</label>
+                            <select value={(it.category !== null && it.category !== undefined && it.category !== '') ? it.category : ''} onChange={(e) => onFormItemChange(idx, 'category', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
                               <option value="">선택</option>
                               {categories.map(cat => (<option key={cat} value={cat}>{cat}</option>))}
                             </select>
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">수량</label>
-                            <input type="text" value={it.quantity === '' ? '' : String(it.quantity)} onChange={(e) => onFormItemChange(idx, 'quantity', e.target.value)} className="w-full border border-gray-200 rounded px-2 py-1 text-sm" />
+                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">수량</label>
+                            <input type="text" value={it.quantity === '' ? '' : String(it.quantity)} onChange={(e) => onFormItemChange(idx, 'quantity', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" />
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">단위</label>
-                            <select value={(it.unit !== null && it.unit !== undefined && it.unit !== '') ? it.unit : ''} onChange={(e) => onFormItemChange(idx, 'unit', e.target.value)} className="w-full border border-gray-200 rounded px-2 py-1 text-sm">
+                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">단위</label>
+                            <select value={(it.unit !== null && it.unit !== undefined && it.unit !== '') ? it.unit : ''} onChange={(e) => onFormItemChange(idx, 'unit', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
                               <option value="">선택</option>
                               {units.map(unit => (<option key={unit} value={unit}>{unit}</option>))}
                             </select>
@@ -712,48 +712,48 @@ export default function Invoices(): JSX.Element {
                         </div>
                         <div className="grid grid-cols-2 gap-2 mb-2">
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">단가</label>
-                            <input type="text" value={it.unitPrice === '' ? '' : String(it.unitPrice)} onChange={(e) => onFormItemChange(idx, 'unitPrice', e.target.value)} className="w-full border border-gray-200 rounded px-2 py-1 text-sm" />
+                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">단가</label>
+                            <input type="text" value={it.unitPrice === '' ? '' : String(it.unitPrice)} onChange={(e) => onFormItemChange(idx, 'unitPrice', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" />
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">상세 설명</label>
-                            <textarea value={(it.description !== null && it.description !== undefined && it.description !== '') ? it.description : ''} onChange={(e) => onFormItemChange(idx, 'description', e.target.value)} className="w-full border border-gray-200 rounded px-2 py-1 text-sm h-8 resize-none" placeholder="작업 상세 내용"></textarea>
+                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">상세 설명</label>
+                            <textarea value={(it.description !== null && it.description !== undefined && it.description !== '') ? it.description : ''} onChange={(e) => onFormItemChange(idx, 'description', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm h-8 resize-none bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" placeholder="작업 상세 내용"></textarea>
                           </div>
                         </div>
                         {/* 인부임 섹션 */}
-                        <div className="bg-blue-50 rounded p-2 mb-2">
-                          <div className="text-xs font-medium text-blue-700 mb-1">인부임 정보</div>
+                        <div className="bg-blue-50 dark:bg-blue-900/20 rounded p-2 mb-2">
+                          <div className="text-xs font-medium text-blue-700 dark:text-blue-400 mb-1">인부임 정보</div>
                           <div className="grid grid-cols-4 gap-2">
                             <div>
-                              <label className="block text-xs text-blue-600 mb-1">인부수</label>
-                              <input type="text" value={it.laborPersons === '' ? '' : String(it.laborPersons)} onChange={(e) => onFormItemChange(idx, 'laborPersons', e.target.value)} className="w-full border border-blue-200 rounded px-2 py-1 text-sm" placeholder="명" />
+                              <label className="block text-xs text-blue-600 dark:text-blue-400 mb-1">인부수</label>
+                              <input type="text" value={it.laborPersons === '' ? '' : String(it.laborPersons)} onChange={(e) => onFormItemChange(idx, 'laborPersons', e.target.value)} className="w-full border border-blue-200 dark:border-blue-700 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" placeholder="명" />
                             </div>
                             <div>
-                              <label className="block text-xs text-blue-600 mb-1">단가</label>
-                              <input type="text" value={it.laborUnitRate === '' ? '' : String(it.laborUnitRate)} onChange={(e) => onFormItemChange(idx, 'laborUnitRate', e.target.value)} className="w-full border border-blue-200 rounded px-2 py-1 text-sm" placeholder="원" />
+                              <label className="block text-xs text-blue-600 dark:text-blue-400 mb-1">단가</label>
+                              <input type="text" value={it.laborUnitRate === '' ? '' : String(it.laborUnitRate)} onChange={(e) => onFormItemChange(idx, 'laborUnitRate', e.target.value)} className="w-full border border-blue-200 dark:border-blue-700 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" placeholder="원" />
                             </div>
                             <div>
-                              <label className="block text-xs text-blue-600 mb-1">인부수</label>
-                              <input type="text" value={it.laborPersonsGeneral === '' ? '' : String(it.laborPersonsGeneral)} onChange={(e) => onFormItemChange(idx, 'laborPersonsGeneral', e.target.value)} className="w-full border border-blue-200 rounded px-2 py-1 text-sm" placeholder="명" />
+                              <label className="block text-xs text-blue-600 dark:text-blue-400 mb-1">인부수</label>
+                              <input type="text" value={it.laborPersonsGeneral === '' ? '' : String(it.laborPersonsGeneral)} onChange={(e) => onFormItemChange(idx, 'laborPersonsGeneral', e.target.value)} className="w-full border border-blue-200 dark:border-blue-700 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" placeholder="명" />
                             </div>
                             <div>
-                              <label className="block text-xs text-blue-600 mb-1">단가</label>
-                              <input type="text" value={it.laborUnitRateGeneral === '' ? '' : String(it.laborUnitRateGeneral)} onChange={(e) => onFormItemChange(idx, 'laborUnitRateGeneral', e.target.value)} className="w-full border border-blue-200 rounded px-2 py-1 text-sm" placeholder="원" />
+                              <label className="block text-xs text-blue-600 dark:text-blue-400 mb-1">단가</label>
+                              <input type="text" value={it.laborUnitRateGeneral === '' ? '' : String(it.laborUnitRateGeneral)} onChange={(e) => onFormItemChange(idx, 'laborUnitRateGeneral', e.target.value)} className="w-full border border-blue-200 dark:border-blue-700 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" placeholder="원" />
                             </div>
                           </div>
                         </div>
                         <div className="grid grid-cols-3 gap-2">
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">비고</label>
-                            <input type="text" value={(it.notes !== null && it.notes !== undefined && it.notes !== '') ? it.notes : ''} onChange={(e) => onFormItemChange(idx, 'notes', e.target.value)} className="w-full border border-gray-200 rounded px-2 py-1 text-sm" />
+                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">비고</label>
+                            <input type="text" value={(it.notes !== null && it.notes !== undefined && it.notes !== '') ? it.notes : ''} onChange={(e) => onFormItemChange(idx, 'notes', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" />
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">날짜</label>
-                            <input type="date" value={(it.date !== null && it.date !== undefined && it.date !== '') ? it.date : ''} onChange={(e) => onFormItemChange(idx, 'date', e.target.value)} className="w-full border border-gray-200 rounded px-2 py-1 text-sm" />
+                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">날짜</label>
+                            <input type="date" value={(it.date !== null && it.date !== undefined && it.date !== '') ? it.date : ''} onChange={(e) => onFormItemChange(idx, 'date', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" />
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">합계</label>
-                            <div className="w-full bg-gray-100 border border-gray-200 rounded px-2 py-1 text-sm">{(() => {
+                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">합계</label>
+                            <div className="w-full bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm text-gray-900 dark:text-gray-100">{(() => {
                               const MIN_VALUE = 0;
                               const total = Number(it.total);
                               return format((total !== MIN_VALUE && !isNaN(total)) ? total : MIN_VALUE);
@@ -762,7 +762,7 @@ export default function Invoices(): JSX.Element {
                         </div>
                         {form.items.length > 1 && (
                           <div className="mt-2 text-right">
-                            <button type="button" onClick={() => removeFormItem(idx)} className="text-xs text-red-600 hover:text-red-800">항목 삭제</button>
+                            <button type="button" onClick={() => removeFormItem(idx)} className="text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300">항목 삭제</button>
                           </div>
                         )}
                       </div>
@@ -770,11 +770,11 @@ export default function Invoices(): JSX.Element {
                   </div>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
                   <div className="grid grid-cols-3 gap-3">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">상태</label>
-                      <select name="status" value={form.status} onChange={onFormChange} className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">상태</label>
+                      <select name="status" value={form.status} onChange={onFormChange} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
                         <option value="발송대기">발송대기</option>
                         <option value="발송됨">발송됨</option>
                         <option value="미결제">미결제</option>
@@ -782,15 +782,15 @@ export default function Invoices(): JSX.Element {
                       </select>
                     </div>
                     <div className="col-span-2 text-right">
-                      <div className="text-sm text-gray-600">총 금액</div>
-                      <div className="text-lg font-bold">{format(getFormTotal())}원</div>
+                      <div className="text-sm text-gray-600 dark:text-gray-300">총 금액</div>
+                      <div className="text-lg font-bold text-gray-900 dark:text-gray-100">{format(getFormTotal())}원</div>
                     </div>
                   </div>
                 </div>
 
                 <div className="flex justify-end gap-2 pt-2">
-                  <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2 text-gray-600 hover:text-gray-800">취소</button>
-                  <button type="submit" className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded">저장</button>
+                  <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100">취소</button>
+                  <button type="submit" className="px-4 py-2 bg-indigo-600 dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-600 text-white rounded">저장</button>
                 </div>
               </form>
             </div>

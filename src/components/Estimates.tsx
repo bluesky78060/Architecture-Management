@@ -789,8 +789,8 @@ const Estimates: React.FC = () => {
       <div className="mb-6">
         <div className="flex justify-between items-center mb-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">견적서 관리</h1>
-            <p className="text-gray-600">건축주별 견적서를 관리하고 작업 항목으로 변환하세요</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">견적서 관리</h1>
+            <p className="text-gray-600 dark:text-gray-300">건축주별 견적서를 관리하고 작업 항목으로 변환하세요</p>
           </div>
           <div className="flex space-x-2">
             {uiState.selectedIds.length > 0 && (
@@ -873,9 +873,9 @@ const Estimates: React.FC = () => {
 
       {modals.isOpen('confirmDelete') && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">선택 삭제</h3>
-            <p className="text-sm text-gray-600 mb-4">선택된 {uiState.selectedIds.length}개의 견적서를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</p>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-md p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">선택 삭제</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">선택된 {uiState.selectedIds.length}개의 견적서를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</p>
             <div className="flex justify-end gap-2">
               <button className="btn-secondary" onClick={() => modals.close('confirmDelete')}>취소</button>
               <button className="btn-primary bg-red-600 hover:bg-red-700" onClick={handleBulkDelete}>삭제</button>
@@ -907,25 +907,25 @@ const Estimates: React.FC = () => {
       {/* 견적서 추가/편집 모달 */}
       {modals.isOpen('estimateForm') && (
         <div className="fixed inset-0 bg-gray-800/50 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
-          <div className="relative top-6 mx-auto w-[1100px] max-w-[96vw] shadow-2xl rounded-2xl bg-white/80 ring-1 ring-black/5">
-            <div className="rounded-t-2xl bg-gradient-to-br from-indigo-50 via-purple-50 to-white px-8 pt-8 pb-6 text-center">
-              <h3 className="text-2xl font-extrabold tracking-tight text-indigo-600">
+          <div className="relative top-6 mx-auto w-[1100px] max-w-[96vw] shadow-2xl rounded-2xl bg-white/80 dark:bg-gray-800/80 ring-1 ring-black/5">
+            <div className="rounded-t-2xl bg-gradient-to-br from-indigo-50 via-purple-50 to-white dark:bg-gradient-to-br dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 px-8 pt-8 pb-6 text-center">
+              <h3 className="text-2xl font-extrabold tracking-tight text-indigo-600 dark:text-indigo-400">
                 {(modalState.editingEstimate !== null && modalState.editingEstimate !== undefined) ? '견적서 편집' : '새 견적서 작성'}
               </h3>
-              <p className="mt-2 text-sm text-gray-500">견적 기본정보와 항목을 입력하세요</p>
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">견적 기본정보와 항목을 입력하세요</p>
             </div>
             <div className="px-6 pb-6">
               <form onSubmit={handleSubmit} className="space-y-3">
                 
                 {/* 기본 정보 */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+                <div className="bg-white dark:bg-gray-700 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600 p-4">
                   <div className="flex items-center mb-3 gap-3">
-                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-50 text-indigo-600">📄</span>
-                    <h4 className="text-base font-semibold text-gray-900">기본 정보</h4>
+                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-50 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400">📄</span>
+                    <h4 className="text-base font-semibold text-gray-900 dark:text-gray-100">기본 정보</h4>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">건축주</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">건축주</label>
                       <select
                         name="clientId"
                         value={newEstimate.clientId}
@@ -940,7 +940,7 @@ const Estimates: React.FC = () => {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">작업장</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">작업장</label>
                       <select
                         name="workplaceId"
                         value={newEstimate.workplaceId}
@@ -958,7 +958,7 @@ const Estimates: React.FC = () => {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">프로젝트명</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">프로젝트명</label>
                       <input
                         type="text"
                         name="projectName"
@@ -969,7 +969,7 @@ const Estimates: React.FC = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">견적서 제목</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">견적서 제목</label>
                       <input
                         type="text"
                         name="title"
@@ -980,7 +980,7 @@ const Estimates: React.FC = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">유효기한</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">유효기한</label>
                       <div className="mt-1 relative inline-block" ref={cal.containerRef}>
                         <div className="flex items-center gap-2">
                           <input
@@ -1079,11 +1079,11 @@ const Estimates: React.FC = () => {
                 </div>
 
                 {/* 견적 항목들 */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+                <div className="bg-white dark:bg-gray-700 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600 p-4">
                   <div className="flex justify-between items-center mb-2">
                     <div className="flex items-center gap-3">
-                      <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-green-50 text-green-600">🗂️</span>
-                      <h4 className="text-base font-semibold text-gray-900">견적 항목</h4>
+                      <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-green-50 dark:bg-green-900 text-green-600 dark:text-green-400">🗂️</span>
+                      <h4 className="text-base font-semibold text-gray-900 dark:text-gray-100">견적 항목</h4>
                     </div>
                     <button
                       type="button"
@@ -1096,9 +1096,9 @@ const Estimates: React.FC = () => {
                   
                   <div ref={itemsContainerRef} className="space-y-3 max-h-96 overflow-y-auto pr-1">
                     {newEstimate.items.map((item, index) => (
-                      <div key={index} className="border border-gray-200 rounded-lg p-3 bg-gray-50">
+                      <div key={index} className="border border-gray-200 dark:border-gray-600 rounded-lg p-3 bg-gray-50 dark:bg-gray-800">
                         <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm font-medium text-gray-700">항목 #{index + 1}</span>
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">항목 #{index + 1}</span>
                           {newEstimate.items.length > 1 && (
                             <button
                               type="button"
@@ -1112,7 +1112,7 @@ const Estimates: React.FC = () => {
                         
                         <div className="grid grid-cols-3 gap-2 mb-2">
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">카테고리</label>
+                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">카테고리</label>
                             <select
                               value={item.category}
                               onChange={(e) => handleItemChange(index, 'category', e.target.value)}
@@ -1126,7 +1126,7 @@ const Estimates: React.FC = () => {
                             </select>
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">내용</label>
+                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">내용</label>
                             <input
                               type="text"
                               value={item.name}
@@ -1136,7 +1136,7 @@ const Estimates: React.FC = () => {
                             />
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">설명</label>
+                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">설명</label>
                             <input
                               type="text"
                               value={item.description}
@@ -1148,7 +1148,7 @@ const Estimates: React.FC = () => {
 
                         <div className="grid grid-cols-4 gap-2 mb-2">
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">수량</label>
+                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">수량</label>
                             <input
                               type="text"
                               value={item.quantity === '' ? '' : format(Number(item.quantity))}
@@ -1160,7 +1160,7 @@ const Estimates: React.FC = () => {
                             />
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">단가</label>
+                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">단가</label>
                             <input
                               type="text"
                               value={(typeof item.unitPrice === 'number' && item.unitPrice !== 0 && !isNaN(item.unitPrice)) ? format(Number(item.unitPrice)) : ''}
@@ -1172,7 +1172,7 @@ const Estimates: React.FC = () => {
                             />
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">단위</label>
+                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">단위</label>
                             <select
                               value={item.unit}
                               onChange={(e) => handleItemChange(index, 'unit', e.target.value)}
@@ -1186,8 +1186,8 @@ const Estimates: React.FC = () => {
                             </select>
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">합계</label>
-                            <div className="w-full bg-gray-100 border border-gray-200 rounded px-2 py-1 text-sm">
+                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">합계</label>
+                            <div className="w-full bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm">
                               {(() => {
                                 const MIN_VALUE = 0;
                                 const DEFAULT_QUANTITY = 1;
@@ -1202,7 +1202,7 @@ const Estimates: React.FC = () => {
                         </div>
 
                         <div>
-                          <label className="block text-xs font-medium text-gray-600 mb-1">비고</label>
+                          <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">비고</label>
                           <textarea
                             value={item.notes}
                             onChange={(e) => handleItemChange(index, 'notes', e.target.value)}
@@ -1214,17 +1214,17 @@ const Estimates: React.FC = () => {
                     ))}
                   </div>
 
-                  <div className="mt-3 p-3 bg-gray-100 rounded">
+                  <div className="mt-3 p-3 bg-gray-100 dark:bg-gray-900 rounded">
                     <div className="text-right">
-                      <span className="text-lg font-bold text-gray-900">
+                      <span className="text-lg font-bold text-gray-900 dark:text-gray-100">
                         총 견적 금액: {format(calculateTotal())}원
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
-                  <label className="block text-sm font-medium text-gray-700">특이사항 및 조건</label>
+                <div className="bg-white dark:bg-gray-700 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600 p-4">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">특이사항 및 조건</label>
                   <textarea
                     name="notes"
                     value={newEstimate.notes}

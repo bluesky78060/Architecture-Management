@@ -1188,23 +1188,23 @@ export default function WorkItems(): JSX.Element {
       <div className="mb-6">
         <div className="flex justify-between items-center mb-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">작업 항목 관리</h1>
-            <p className="text-gray-600">작업 항목을 관리하고 진행을 확인하세요</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">작업 항목 관리</h1>
+            <p className="text-gray-600 dark:text-gray-300">작업 항목을 관리하고 진행을 확인하세요</p>
           </div>
           <div className="flex space-x-2">
-            <button onClick={() => createTemplate.workItems()} className="flex items-center justify-center px-4 py-2.5 bg-white border border-gray-200 rounded-full shadow-sm text-gray-700">
-              <span className="text-gray-500 mr-2">📁</span>
+            <button onClick={() => createTemplate.workItems()} className="flex items-center justify-center px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full shadow-sm text-gray-700 dark:text-gray-300">
+              <span className="text-gray-500 dark:text-gray-400 mr-2">📁</span>
               <span className="text-xs font-semibold">템플릿 다운로드</span>
             </button>
-            <button onClick={() => fileInputRef.current?.click()} className="flex items-center justify-center px-4 py-2.5 bg-white border border-gray-200 rounded-full shadow-sm text-gray-700">
+            <button onClick={() => fileInputRef.current?.click()} className="flex items-center justify-center px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full shadow-sm text-gray-700 dark:text-gray-300">
               <span className="text-blue-500 mr-2">📤</span>
               <span className="text-xs font-semibold">Excel 가져오기</span>
             </button>
-            <button onClick={handleExport} className="flex items-center justify-center px-4 py-2.5 bg-white border border-gray-200 rounded-full shadow-sm text-gray-700">
+            <button onClick={handleExport} className="flex items-center justify-center px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full shadow-sm text-gray-700 dark:text-gray-300">
               <span className="text-green-500 mr-2">📥</span>
               <span className="text-xs font-semibold">Excel 내보내기</span>
             </button>
-            <button onClick={() => setShowBulkModal(true)} className="flex items-center justify-center px-4 py-2.5 bg-white border border-gray-200 rounded-full shadow-sm text-gray-700">
+            <button onClick={() => setShowBulkModal(true)} className="flex items-center justify-center px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full shadow-sm text-gray-700 dark:text-gray-300">
               <span className="text-purple-500 mr-2">📋</span>
               <span className="text-xs font-semibold">일괄 작업 항목 추가</span>
             </button>
