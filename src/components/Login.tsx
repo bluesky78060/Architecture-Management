@@ -278,7 +278,7 @@ const Login: React.FC = () => {
   const handleSubmit = mode === 'login' ? handleEmailSignIn : handleEmailSignUp;
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center px-4 py-8 overflow-hidden">
+    <div className="min-h-screen relative flex items-center justify-center px-4 py-8 overflow-hidden bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 dark:from-blue-500 dark:via-purple-500 dark:to-pink-500">
       {/* Background image from provided blueprint */}
       {(() => {
         const envVer = process.env.REACT_APP_ASSET_VER;
@@ -294,22 +294,22 @@ const Login: React.FC = () => {
         return (
           <div
             aria-hidden
-            className="absolute inset-0 bg-center bg-cover bg-no-repeat bg-fixed blur-[2px]"
+            className="absolute inset-0 bg-center bg-cover bg-no-repeat bg-fixed blur-[2px] opacity-10 dark:opacity-10"
             style={{ backgroundImage: `url(${bgUrl})` }}
           />
         );
       })()}
 
       {/* Color overlay and vignette inspired by the HTML template */}
-      <div aria-hidden className="absolute inset-0 bg-[#0b2a53]/70 mix-blend-multiply" />
-      <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-br from-indigo-900/40 via-transparent to-blue-900/40" />
-      <div aria-hidden className="pointer-events-none absolute -top-24 -left-24 w-96 h-96 rounded-full bg-indigo-300/30 blur-3xl" />
-      <div aria-hidden className="pointer-events-none absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-blue-300/30 blur-3xl" />
+      <div aria-hidden className="absolute inset-0 bg-[#0b2a53]/70 dark:bg-[#0b2a53]/70 mix-blend-multiply" />
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-br from-indigo-900/40 via-transparent to-blue-900/40 dark:from-indigo-900/40 dark:via-transparent dark:to-blue-900/40" />
+      <div aria-hidden className="pointer-events-none absolute -top-24 -left-24 w-96 h-96 rounded-full bg-indigo-300/30 dark:bg-indigo-300/30 blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-blue-300/30 dark:bg-blue-300/30 blur-3xl" />
 
       <div className="w-full max-w-md">
         <div className="bg-white/85 dark:bg-white/85 backdrop-blur-md rounded-2xl shadow-xl border border-gray-200 dark:border-gray-200 p-7">
           <div className="text-center mb-6">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-blue-600 text-white shadow-lg mb-2">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-blue-600 dark:bg-blue-600 text-white dark:text-white shadow-lg mb-2">
               <LockClosedIcon className="w-6 h-6" />
             </div>
             <h1 className="font-sans font-bold text-2xl text-gray-900 dark:text-gray-900 mb-1 tracking-wide">건축 관리 시스템</h1>
@@ -472,10 +472,10 @@ const Login: React.FC = () => {
               type="submit"
               disabled={loading}
               className="
-                w-full bg-blue-600 text-white py-3 rounded-lg text-sm font-semibold
+                w-full bg-blue-600 dark:bg-blue-600 text-white dark:text-white py-3 rounded-lg text-sm font-semibold
                 transition-all duration-300 ease-in-out relative overflow-hidden
-                hover:bg-blue-700 hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(59,130,246,0.3)]
-                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+                hover:bg-blue-700 dark:hover:bg-blue-700 hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(59,130,246,0.3)]
+                focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-500 focus:ring-offset-2
                 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
                 group
               "
