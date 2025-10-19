@@ -56,25 +56,25 @@ interface KpiCardProps {
 
 const KpiCard: React.FC<KpiCardProps> = ({ icon: Icon, label, value, tone, isPrimary }) => {
   const bgColors = {
-    indigo: 'bg-indigo-100',
-    emerald: 'bg-green-100', 
-    amber: 'bg-orange-100',
-    violet: 'bg-blue-100'
+    indigo: 'bg-indigo-100 dark:bg-indigo-900/30',
+    emerald: 'bg-green-100 dark:bg-green-900/30',
+    amber: 'bg-orange-100 dark:bg-orange-900/30',
+    violet: 'bg-blue-100 dark:bg-blue-900/30'
   };
-  
+
   const iconBgColors = {
-    indigo: 'bg-indigo-500',
-    emerald: 'bg-green-500',
-    amber: 'bg-orange-500', 
-    violet: 'bg-blue-500'
+    indigo: 'bg-indigo-500 dark:bg-indigo-600',
+    emerald: 'bg-green-500 dark:bg-green-600',
+    amber: 'bg-orange-500 dark:bg-orange-600',
+    violet: 'bg-blue-500 dark:bg-blue-600'
   };
 
   return (
-    <div className={`${bgColors[tone]} rounded-lg shadow-md p-5 hover:shadow-lg transition-shadow border border-gray-100`}>
+    <div className={`${bgColors[tone]} rounded-lg shadow-md p-5 hover:shadow-lg transition-shadow border border-gray-100 dark:border-gray-700`}>
       <div className="flex items-center justify-between">
         <div className="flex-1">
-          <p className="text-xs font-medium text-gray-600 mb-1 leading-snug">{label}</p>
-          <p className={`font-bold text-gray-900 leading-tight ${(isPrimary === true) ? 'text-lg' : 'text-base'}`}>
+          <p className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1 leading-snug">{label}</p>
+          <p className={`font-bold text-gray-900 dark:text-gray-100 leading-tight ${(isPrimary === true) ? 'text-lg' : 'text-base'}`}>
             {value}
           </p>
         </div>
@@ -94,11 +94,11 @@ const StatusChip: React.FC<StatusChipProps> = ({ status }) => {
   const koreanStatus = fromDbStatus(status);
   return (
     <span className={`inline-flex items-center px-3 py-1.5 rounded-2xl text-xs font-semibold ${
-      koreanStatus === '결제완료' ? 'bg-success-100 text-success-700 shadow-sm' :
-      koreanStatus === '발송됨' ? 'bg-primary-100 text-primary-700 shadow-sm' :
-      koreanStatus === '발송대기' ? 'bg-warning-100 text-warning-700 shadow-sm' :
-      koreanStatus === '미결제' ? 'bg-danger-100 text-danger-700 shadow-sm' :
-      'bg-gray-100 text-gray-700 shadow-sm'
+      koreanStatus === '결제완료' ? 'bg-success-100 dark:bg-success-900/50 text-success-700 dark:text-success-300 shadow-sm' :
+      koreanStatus === '발송됨' ? 'bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 shadow-sm' :
+      koreanStatus === '발송대기' ? 'bg-warning-100 dark:bg-warning-900/50 text-warning-700 dark:text-warning-300 shadow-sm' :
+      koreanStatus === '미결제' ? 'bg-danger-100 dark:bg-danger-900/50 text-danger-700 dark:text-danger-300 shadow-sm' :
+      'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 shadow-sm'
     }`}>
       {koreanStatus}
     </span>
@@ -112,12 +112,12 @@ interface ListCardProps {
 }
 
 const ListCard: React.FC<ListCardProps> = ({ title, icon: Icon, children }) => (
-  <div className="group relative overflow-hidden bg-white/70 backdrop-blur-lg rounded-3xl p-8 shadow-soft hover:shadow-card-hover border border-white/20 transition-all duration-300 ease-out hover:scale-[1.02]">
+  <div className="group relative overflow-hidden bg-white/70 dark:bg-gray-800/70 backdrop-blur-lg rounded-3xl p-8 shadow-soft hover:shadow-card-hover border border-white/20 dark:border-gray-700/50 transition-all duration-300 ease-out hover:scale-[1.02]">
     {/* Glassmorphism Background */}
-    <div className="absolute inset-0 bg-gradient-glass opacity-10" />
-    
+    <div className="absolute inset-0 bg-gradient-glass opacity-10 dark:opacity-5" />
+
     <div className="relative">
-      <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+      <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center">
         <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-full p-2 text-white mr-3 flex items-center justify-center w-8 h-8">
           <Icon className="h-4 w-4 stroke-2" aria-hidden="true" />
         </div>
@@ -185,10 +185,10 @@ export default function Dashboard() {
     <div className="animate-fade-in">
       {/* Header with tighter spacing */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
           대시보드
         </h1>
-        <p className="mt-2 text-base font-medium-light text-gray-600 leading-snug">
+        <p className="mt-2 text-base font-medium-light text-gray-600 dark:text-gray-300 leading-snug">
           현장 작업 현황과 청구 관리 상태를 한눈에 확인하세요.
         </p>
       </div>
@@ -213,15 +213,15 @@ export default function Dashboard() {
           {recentEstimates.map((estimate) => {
             const koreanStatus = fromDbStatus(estimate.status);
             return (
-              <div key={estimate.id} className="flex items-center justify-between py-2 px-4 bg-white/50 rounded-2xl border border-gray-100/50 hover:bg-white/80 hover:shadow-sm transition-all duration-200">
+              <div key={estimate.id} className="flex items-center justify-between py-2 px-4 bg-white/50 dark:bg-gray-700/50 rounded-2xl border border-gray-100/50 dark:border-gray-600/50 hover:bg-white/80 dark:hover:bg-gray-600/50 hover:shadow-sm transition-all duration-200">
                 <div>
-                  <p className="text-sm font-semibold text-gray-900">{estimate.id} · {estimate.clientName}</p>
-                  <p className="text-xs text-gray-600">{formatDate(estimate.date ?? '')} | {estimate.projectName}</p>
+                  <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{estimate.id} · {estimate.clientName}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{formatDate(estimate.date ?? '')} | {estimate.projectName}</p>
                 </div>
                 <span className={`text-xs font-medium px-3 py-1 rounded-full ${
-                  koreanStatus === '승인됨' ? 'text-success-600 bg-success-50' :
-                  koreanStatus === '검토중' ? 'text-warning-600 bg-warning-50' :
-                  'text-gray-600 bg-gray-50'
+                  koreanStatus === '승인됨' ? 'text-success-600 dark:text-success-300 bg-success-50 dark:bg-success-900/50' :
+                  koreanStatus === '검토중' ? 'text-warning-600 dark:text-warning-300 bg-warning-50 dark:bg-warning-900/50' :
+                  'text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700'
                 }`}>
                   {koreanStatus}
                 </span>
@@ -232,12 +232,12 @@ export default function Dashboard() {
 
         <ListCard title="최근 청구서" icon={CurrencyDollarIcon}>
           {recentInvoices.map((inv) => (
-            <div key={inv.id} className="flex items-center justify-between py-2 px-4 bg-white/50 rounded-2xl border border-gray-100/50 hover:bg-white/80 hover:shadow-sm transition-all duration-200">
+            <div key={inv.id} className="flex items-center justify-between py-2 px-4 bg-white/50 dark:bg-gray-700/50 rounded-2xl border border-gray-100/50 dark:border-gray-600/50 hover:bg-white/80 dark:hover:bg-gray-600/50 hover:shadow-sm transition-all duration-200">
               <div>
-                <p className="text-sm font-semibold text-gray-900">
+                <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                   {inv.id} · {inv.client}
                 </p>
-                <p className="text-xs text-gray-600">
+                <p className="text-xs text-gray-600 dark:text-gray-400">
                   {inv.project} · {formatKRW(inv.amount)}
                 </p>
               </div>
