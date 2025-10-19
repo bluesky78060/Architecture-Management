@@ -278,7 +278,7 @@ const Login: React.FC = () => {
   const handleSubmit = mode === 'login' ? handleEmailSignIn : handleEmailSignUp;
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center px-4 py-8 overflow-hidden bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 dark:from-blue-500 dark:via-purple-500 dark:to-pink-500">
+    <div className="min-h-screen relative flex items-center justify-center px-4 py-8 overflow-hidden">
       {/* Background image from provided blueprint */}
       {(() => {
         const envVer = process.env.REACT_APP_ASSET_VER;
@@ -294,7 +294,7 @@ const Login: React.FC = () => {
         return (
           <div
             aria-hidden
-            className="absolute inset-0 bg-center bg-cover bg-no-repeat bg-fixed blur-[2px] opacity-10 dark:opacity-10"
+            className="absolute inset-0 bg-center bg-cover bg-no-repeat bg-fixed blur-[2px]"
             style={{ backgroundImage: `url(${bgUrl})` }}
           />
         );
