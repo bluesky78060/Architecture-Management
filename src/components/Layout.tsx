@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
-import ThemeToggle from './ThemeToggle';
+import { useTheme } from '../contexts/ThemeContext';
+import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
 import {
   HomeIcon,
   DocumentTextIcon,
@@ -32,6 +33,7 @@ const navigation = [
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const { logout, currentUser, isAdmin } = useUser();
+  const { theme, toggleTheme } = useTheme();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -67,7 +69,19 @@ export default function Layout({ children }: LayoutProps) {
               <p className="text-gray-500 dark:text-gray-400 text-xs">Architecture Management</p>
             </div>
           </div>
-          <ThemeToggle />
+          {/* Theme Toggle Button */}
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            aria-label={theme === 'light' ? '다크 모드로 전환' : '라이트 모드로 전환'}
+            title={theme === 'light' ? '다크 모드로 전환' : '라이트 모드로 전환'}
+          >
+            {theme === 'light' ? (
+              <MoonIcon className="h-5 w-5 text-gray-700" />
+            ) : (
+              <SunIcon className="h-5 w-5 text-yellow-400" />
+            )}
+          </button>
         </div>
         
         <nav className="mt-10 px-4">
