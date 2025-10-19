@@ -233,10 +233,10 @@ const Login: React.FC = () => {
     {
       name: 'Google',
       action: loginWithGoogle,
-      bgColor: 'bg-white',
-      hoverColor: 'hover:bg-red-500',
-      textColor: 'text-red-500 hover:text-white',
-      borderColor: 'border-red-500',
+      bgColor: 'bg-white dark:bg-white',
+      hoverColor: 'hover:bg-red-500 dark:hover:bg-red-500',
+      textColor: 'text-red-500 hover:text-white dark:text-red-500 dark:hover:text-white',
+      borderColor: 'border-red-500 dark:border-red-500',
       icon: (
         <svg className="w-[18px] h-[18px] mr-2" viewBox="0 0 24 24">
           <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -249,10 +249,10 @@ const Login: React.FC = () => {
     {
       name: 'Kakao',
       action: loginWithKakao,
-      bgColor: 'bg-yellow-400',
-      hoverColor: 'hover:bg-yellow-500',
-      textColor: 'text-gray-800',
-      borderColor: 'border-yellow-400',
+      bgColor: 'bg-yellow-400 dark:bg-yellow-400',
+      hoverColor: 'hover:bg-yellow-500 dark:hover:bg-yellow-500',
+      textColor: 'text-gray-800 dark:text-gray-800',
+      borderColor: 'border-yellow-400 dark:border-yellow-400',
       icon: (
         <svg className="w-[18px] h-[18px] mr-2" viewBox="0 0 24 24">
           <path fill="currentColor" d="M12 3C6.48 3 2 6.48 2 11c0 2.76 1.66 5.23 4.24 6.63l-.91 3.35c-.08.3.26.54.52.37l4.07-2.68c.69.09 1.4.14 2.08.14 5.52 0 10-3.48 10-8S17.52 3 12 3z"/>
