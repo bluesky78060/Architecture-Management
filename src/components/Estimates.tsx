@@ -805,22 +805,22 @@ const Estimates: React.FC = () => {
 
             <button
               onClick={handleDownloadTemplate}
-              className="flex items-center justify-center px-4 py-2.5 bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md transition-shadow duration-300 text-gray-700 font-medium"
+              className="flex items-center justify-center px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full shadow-sm hover:shadow-md transition-shadow duration-300 text-gray-700 dark:text-gray-200 font-medium"
             >
-              <span className="text-gray-500 mr-2">📁</span>
+              <span className="text-gray-500 dark:text-gray-400 mr-2">📁</span>
               <span className="text-xs font-semibold">템플릿 다운로드</span>
             </button>
 
             <button
               onClick={handleExportToExcel}
-              className="flex items-center justify-center px-4 py-2.5 bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md transition-shadow duration-300 text-gray-700 font-medium"
+              className="flex items-center justify-center px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full shadow-sm hover:shadow-md transition-shadow duration-300 text-gray-700 dark:text-gray-200 font-medium"
             >
-              <span className="text-green-500 mr-2">📥</span>
+              <span className="text-green-500 dark:text-green-400 mr-2">📥</span>
               <span className="text-xs font-semibold">Excel 내보내기</span>
             </button>
 
-            <label className="flex items-center justify-center px-4 py-2.5 bg-white border border-gray-200 rounded-full shadow-sm hover:shadow-md transition-shadow duration-300 text-gray-700 font-medium cursor-pointer">
-              <span className="text-blue-500 mr-2">📤</span>
+            <label className="flex items-center justify-center px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full shadow-sm hover:shadow-md transition-shadow duration-300 text-gray-700 dark:text-gray-200 font-medium cursor-pointer">
+              <span className="text-blue-500 dark:text-blue-400 mr-2">📤</span>
               <span className="text-xs font-semibold">Excel 가져오기</span>
               <input
                 type="file"
