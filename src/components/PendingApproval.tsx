@@ -103,8 +103,8 @@ const PendingApproval: React.FC = () => {
           );
         })()}
         <div className="text-center relative z-10">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-          <p className="mt-4 text-white">로딩 중...</p>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-white dark:border-gray-300"></div>
+          <p className="mt-4 text-white dark:text-gray-200">로딩 중...</p>
         </div>
       </div>
     );
@@ -134,10 +134,10 @@ const PendingApproval: React.FC = () => {
 
       {/* Content */}
       <div className="relative z-10 w-full max-w-md mx-4">
-        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-6">
-            <h1 className="text-3xl font-bold text-white text-center font-['Pacifico']">
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-700 dark:to-purple-700 px-8 py-6">
+            <h1 className="text-3xl font-bold text-white dark:text-gray-100 text-center font-['Pacifico']">
               건축 관리 시스템
             </h1>
           </div>
@@ -147,20 +147,20 @@ const PendingApproval: React.FC = () => {
             {approvalStatus?.status === 'approved' && (
               <>
                 <div className="flex justify-center mb-6">
-                  <div className="bg-green-100 rounded-full p-4">
-                    <svg className="h-16 w-16 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="bg-green-100 dark:bg-green-900/30 rounded-full p-4">
+                    <svg className="h-16 w-16 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
                 </div>
-                <h2 className="text-2xl font-bold text-gray-800 text-center mb-4">
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 text-center mb-4">
                   승인 완료
                 </h2>
-                <div className="bg-green-50 border-l-4 border-green-400 p-4 mb-6">
-                  <p className="text-sm text-gray-700">
+                <div className="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-400 dark:border-green-500 p-4 mb-6">
+                  <p className="text-sm text-gray-700 dark:text-gray-200">
                     <strong>{approvalStatus.email}</strong> 계정이 승인되었습니다.
                   </p>
-                  <p className="text-sm text-gray-600 mt-2">
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">
                     이제 로그인하여 시스템을 사용하실 수 있습니다.
                   </p>
                 </div>
@@ -176,24 +176,24 @@ const PendingApproval: React.FC = () => {
             {approvalStatus?.status === 'pending' && (
               <>
                 <div className="flex justify-center mb-6">
-                  <div className="bg-yellow-100 rounded-full p-4">
-                    <ClockIcon className="h-16 w-16 text-yellow-600" />
+                  <div className="bg-yellow-100 dark:bg-yellow-900/30 rounded-full p-4">
+                    <ClockIcon className="h-16 w-16 text-yellow-600 dark:text-yellow-400" />
                   </div>
                 </div>
-                <h2 className="text-2xl font-bold text-gray-800 text-center mb-4">
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 text-center mb-4">
                   승인 대기 중
                 </h2>
-                <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
-                  <p className="text-sm text-gray-700">
+                <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 dark:border-yellow-500 p-4 mb-6">
+                  <p className="text-sm text-gray-700 dark:text-gray-200">
                     <strong>{approvalStatus.email}</strong> 계정이 등록되었습니다.
                   </p>
-                  <p className="text-sm text-gray-600 mt-2">
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">
                     관리자의 승인을 기다리고 있습니다.
                   </p>
-                  <p className="text-xs text-gray-500 mt-3">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">
                     로그인 방식: {approvalStatus.provider === 'google' ? 'Google' : approvalStatus.provider === 'kakao' ? 'Kakao' : approvalStatus.provider}
                   </p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
                     등록일: {new Date(approvalStatus.created_at).toLocaleString('ko-KR')}
                   </p>
                 </div>
@@ -203,18 +203,18 @@ const PendingApproval: React.FC = () => {
             {approvalStatus?.status === 'rejected' && (
               <>
                 <div className="flex justify-center mb-6">
-                  <div className="bg-red-100 rounded-full p-4">
-                    <ExclamationCircleIcon className="h-16 w-16 text-red-600" />
+                  <div className="bg-red-100 dark:bg-red-900/30 rounded-full p-4">
+                    <ExclamationCircleIcon className="h-16 w-16 text-red-600 dark:text-red-400" />
                   </div>
                 </div>
-                <h2 className="text-2xl font-bold text-gray-800 text-center mb-4">
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 text-center mb-4">
                   접근 거부됨
                 </h2>
-                <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-6">
-                  <p className="text-sm text-gray-700">
+                <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-400 dark:border-red-500 p-4 mb-6">
+                  <p className="text-sm text-gray-700 dark:text-gray-200">
                     <strong>{approvalStatus.email}</strong> 계정의 접근 요청이 거부되었습니다.
                   </p>
-                  <p className="text-sm text-gray-600 mt-2">
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">
                     자세한 내용은 시스템 관리자에게 문의하세요.
                   </p>
                 </div>
@@ -224,15 +224,15 @@ const PendingApproval: React.FC = () => {
             {approvalStatus === null && (
               <>
                 <div className="flex justify-center mb-6">
-                  <div className="bg-gray-100 rounded-full p-4">
-                    <ExclamationCircleIcon className="h-16 w-16 text-gray-600" />
+                  <div className="bg-gray-100 dark:bg-gray-700 rounded-full p-4">
+                    <ExclamationCircleIcon className="h-16 w-16 text-gray-600 dark:text-gray-400" />
                   </div>
                 </div>
-                <h2 className="text-2xl font-bold text-gray-800 text-center mb-4">
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 text-center mb-4">
                   승인 정보 없음
                 </h2>
-                <div className="bg-gray-50 border-l-4 border-gray-400 p-4 mb-6">
-                  <p className="text-sm text-gray-700">
+                <div className="bg-gray-50 dark:bg-gray-700/50 border-l-4 border-gray-400 dark:border-gray-500 p-4 mb-6">
+                  <p className="text-sm text-gray-700 dark:text-gray-200">
                     승인 정보를 찾을 수 없습니다. 다시 로그인해주세요.
                   </p>
                 </div>
@@ -252,7 +252,7 @@ const PendingApproval: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <p className="text-center text-white text-sm mt-6 drop-shadow-lg">
+        <p className="text-center text-white dark:text-gray-200 text-sm mt-6 drop-shadow-lg">
           © 2024 건축 관리 시스템. All rights reserved.
         </p>
       </div>
