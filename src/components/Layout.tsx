@@ -53,7 +53,7 @@ export default function Layout() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       {/* Sidebar */}
-      <div className="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-lg border-r border-gray-200 dark:border-gray-700">
+      <div className="fixed inset-y-0 left-0 z-50 w-72 bg-white dark:bg-gray-800 shadow-lg border-r border-gray-200 dark:border-gray-700">
         {/* Header */}
         <div className="flex h-20 items-center justify-between px-6 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center space-x-3">
@@ -146,7 +146,7 @@ export default function Layout() {
       </div>
 
       {/* Main content */}
-      <div className="pl-64">
+      <div className="pl-72">
         <main className="py-10 px-8 lg:px-12">
           <div className="mx-auto max-w-7xl">
             <Outlet />
