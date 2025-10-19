@@ -34,33 +34,33 @@ export default function BulkFormModal({ open, clients, categories, units, bulkIt
   if (open !== true) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-800/50 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
-      <div className="relative top-6 mx-auto w-[1100px] max-w-[96vw] shadow-2xl rounded-2xl bg-white/80 ring-1 ring-black/5">
-        <div className="rounded-t-2xl bg-gradient-to-br from-indigo-50 via-purple-50 to-white px-8 pt-8 pb-6 text-center">
-          <h3 className="text-2xl font-extrabold tracking-tight text-indigo-600">일괄 작업 항목 추가</h3>
-          <p className="mt-2 text-sm text-gray-500">여러 작업을 한 번에 등록합니다</p>
+    <div className="fixed inset-0 bg-gray-800/50 dark:bg-gray-900/70 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
+      <div className="relative top-6 mx-auto w-[1100px] max-w-[96vw] shadow-2xl rounded-2xl bg-white/80 dark:bg-gray-800/90 ring-1 ring-black/5 dark:ring-white/10">
+        <div className="rounded-t-2xl bg-gradient-to-br from-indigo-50 via-purple-50 to-white dark:from-indigo-900/30 dark:via-purple-900/30 dark:to-gray-800 px-8 pt-8 pb-6 text-center">
+          <h3 className="text-2xl font-extrabold tracking-tight text-indigo-600 dark:text-indigo-400">일괄 작업 항목 추가</h3>
+          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">여러 작업을 한 번에 등록합니다</p>
         </div>
         <div className="px-6 pb-6">
           <form onSubmit={onSubmit} className="space-y-4">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
               <div className="flex items-center mb-3 gap-3">
-                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-50 text-indigo-600">📋</span>
-                <h4 className="text-base font-semibold text-gray-900">공통 정보</h4>
+                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">📋</span>
+                <h4 className="text-base font-semibold text-gray-900 dark:text-gray-100">공통 정보</h4>
               </div>
               <div className="grid grid-cols-4 gap-3 mb-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">건축주</label>
-                  <select name="clientId" value={String(bulkBaseInfo.clientId ?? '')} onChange={(e) => onBaseInfoChangeField(e.target.name, e.target.value)} className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">건축주</label>
+                  <select name="clientId" value={String(bulkBaseInfo.clientId ?? '')} onChange={(e) => onBaseInfoChangeField(e.target.name, e.target.value)} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required>
                     <option value="">건축주 선택</option>
                     {clients.map(client => (<option key={client.id} value={String(client.id)}>{client.name}</option>))}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">작업장</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">작업장</label>
                   {(() => {
                     const hasClient = String(bulkBaseInfo.clientId ?? '') !== '';
                     return (
-                      <select name="workplaceId" value={String(bulkBaseInfo.workplaceId ?? '')} onChange={(e) => onBaseInfoChangeField(e.target.name, e.target.value)} className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required disabled={!hasClient}>
+                      <select name="workplaceId" value={String(bulkBaseInfo.workplaceId ?? '')} onChange={(e) => onBaseInfoChangeField(e.target.name, e.target.value)} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required disabled={!hasClient}>
                         <option value="">{hasClient ? '작업장 선택' : '작업장 선택(먼저 건축주를 선택하세요)'}</option>
                         {hasClient && getClientWorkplaces(bulkBaseInfo.clientId).map(workplace => (<option key={workplace.id} value={String(workplace.id)}>{workplace.name} - {workplace.address}</option>))}
                       </select>
@@ -68,12 +68,12 @@ export default function BulkFormModal({ open, clients, categories, units, bulkIt
                   })()}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">프로젝트명</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">프로젝트명</label>
                   {showBulkCustomProject !== true ? (
                     (() => {
                       const hasClient = String(bulkBaseInfo.clientId ?? '') !== '';
                       return (
-                        <select name="projectName" value={bulkBaseInfo.projectName} onChange={(e) => onBaseInfoChangeField(e.target.name, e.target.value)} className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required disabled={!hasClient}>
+                        <select name="projectName" value={bulkBaseInfo.projectName} onChange={(e) => onBaseInfoChangeField(e.target.name, e.target.value)} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required disabled={!hasClient}>
                           <option value="">프로젝트 선택</option>
                           {hasClient && getClientProjects(bulkBaseInfo.clientId).map(project => (<option key={project} value={project}>{project}</option>))}
                           <option value="custom">+ 새 프로젝트 입력</option>
@@ -82,28 +82,28 @@ export default function BulkFormModal({ open, clients, categories, units, bulkIt
                     })()
                   ) : (
                     <div className="flex space-x-2">
-                      <input type="text" name="projectName" value={bulkBaseInfo.projectName} onChange={(e) => onBaseInfoChangeField(e.target.name, e.target.value)} placeholder="새 프로젝트명 입력" className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required />
+                      <input type="text" name="projectName" value={bulkBaseInfo.projectName} onChange={(e) => onBaseInfoChangeField(e.target.name, e.target.value)} placeholder="새 프로젝트명 입력" className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required />
                       <button type="button" onClick={() => onBaseInfoChangeField('projectName', '')} className="mt-1 px-2 py-2 text-gray-400 hover:text-gray-600" title="기존 프로젝트 선택으로 돌아가기">↩</button>
                     </div>
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">작업일자</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">작업일자</label>
                   <div className="mt-1 relative inline-block" ref={calRef}>
                     <div className="flex items-center gap-2">
                       <input type="text" name="date" value={bulkBaseInfo?.date ?? ''} onChange={(e) => onBaseInfoChangeField(e.target.name, e.target.value)} placeholder="YYYY-MM-DD" inputMode="numeric" className="block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400" onFocus={() => cal.setOpen(true)} required />
                       <button type="button" className="px-2 py-2 text-gray-600 hover:text-gray-800" onClick={() => cal.setOpen((v) => !v)} title="달력 열기">📅</button>
                     </div>
                     {cal.open && (
-                      <div className="absolute z-50 bg-white border border-gray-300 rounded-md shadow-lg mt-2 p-3" style={{ transform: 'scale(1)', transformOrigin: 'top left' }}>
+                      <div className="absolute z-50 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg mt-2 p-3" style={{ transform: 'scale(1)', transformOrigin: 'top left' }}>
                         <div className="flex items-center justify-between mb-2">
-                          <button type="button" className="px-2 py-1 text-sm border rounded" onClick={cal.prevMonth}>◀</button>
-                          <div className="text-sm font-medium">{cal.month.getFullYear()}년 {cal.month.getMonth() + 1}월</div>
-                          <button type="button" className="px-2 py-1 text-sm border rounded" onClick={cal.nextMonth}>▶</button>
+                          <button type="button" className="px-2 py-1 text-sm border dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={cal.prevMonth}>◀</button>
+                          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{cal.month.getFullYear()}년 {cal.month.getMonth() + 1}월</div>
+                          <button type="button" className="px-2 py-1 text-sm border dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={cal.nextMonth}>▶</button>
                         </div>
                         <table className="text-xs select-none">
                           <thead>
-                            <tr className="text-left text-gray-600">{['일','월','화','수','목','금','토'].map((d, idx) => {
+                            <tr className="text-left text-gray-600 dark:text-gray-400">{['일','월','화','수','목','금','토'].map((d, idx) => {
                               const SUN = 0; // eslint-disable-line no-magic-numbers
                               const SAT = 6; // eslint-disable-line no-magic-numbers
                               return (<th key={d} className={`px-2 py-1 ${idx === SUN ? 'text-red-600' : idx === SAT ? 'text-blue-600' : ''}`}>{d}</th>);
@@ -133,24 +133,24 @@ export default function BulkFormModal({ open, clients, categories, units, bulkIt
                 </div>
               </div>
 
-              <div className="border-t border-gray-200 pt-3">
+              <div className="border-t border-gray-200 dark:border-gray-700 pt-3">
                 <div className="grid grid-cols-3 gap-3">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">인부 인원</label>
-                    <input type="text" name="bulkLaborPersons" value={bulkBaseInfo.bulkLaborPersons ?? ''} onChange={(e) => onBaseInfoChangeField(e.target.name, e.target.value)} onFocus={(e) => e.target.select()} placeholder="예: 3" className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">인부 인원</label>
+                    <input type="text" name="bulkLaborPersons" value={bulkBaseInfo.bulkLaborPersons ?? ''} onChange={(e) => onBaseInfoChangeField(e.target.name, e.target.value)} onFocus={(e) => e.target.select()} placeholder="예: 3" className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">인부 단가</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">인부 단가</label>
                     <input type="text" name="bulkLaborUnitRate" value={(() => {
                       const val = bulkBaseInfo.bulkLaborUnitRate;
                       if (val === null || val === undefined || val === '') return '';
                       const num = Number(val);
                       return Number.isFinite(num) ? format(num) : String(val);
-                    })()} onChange={(e) => onBaseInfoChangeField(e.target.name, e.target.value)} onFocus={(e) => e.target.select()} placeholder="예: 250,000" className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+                    })()} onChange={(e) => onBaseInfoChangeField(e.target.name, e.target.value)} onFocus={(e) => e.target.select()} placeholder="예: 250,000" className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">인부임 합계</label>
-                    <div className="mt-1 w-full bg-indigo-50 border border-indigo-200 rounded px-3 py-2 text-sm font-semibold text-indigo-900">{
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">인부임 합계</label>
+                    <div className="mt-1 w-full bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700 rounded px-3 py-2 text-sm font-semibold text-indigo-900 dark:text-indigo-300">{
                       (() => {
                         const persons = Number(bulkBaseInfo.bulkLaborPersons);
                         const rate = Number(bulkBaseInfo.bulkLaborUnitRate);
@@ -164,69 +164,69 @@ export default function BulkFormModal({ open, clients, categories, units, bulkIt
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
               <div className="flex justify-between items-center mb-2">
                 <div className="flex items-center gap-3">
-                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-green-50 text-green-600">🗂️</span>
-                  <h4 className="text-base font-semibold text-gray-900">작업 항목들</h4>
+                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400">🗂️</span>
+                  <h4 className="text-base font-semibold text-gray-900 dark:text-gray-100">작업 항목들</h4>
                 </div>
-                <button type="button" onClick={onAddItem} className="text-indigo-600 hover:text-indigo-800 text-sm">+ 항목 추가</button>
+                <button type="button" onClick={onAddItem} className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 text-sm">+ 항목 추가</button>
               </div>
 
               <div className="space-y-3 max-h-96 overflow-y-auto">
                 {bulkItems.map((item, index) => (
-                  <div key={index} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                  <div key={index} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 bg-gray-50 dark:bg-gray-700/50">
                     <div className="flex justify-between items-center mb-3">
-                      <span className="text-sm font-medium text-gray-700">작업 항목 #{index + 1}</span>
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">작업 항목 #{index + 1}</span>
                       {bulkItems.length > 1 && (
-                        <button type="button" onClick={() => onRemoveItem(index)} className="text-red-600 hover:text-red-800 text-sm">삭제</button>
+                        <button type="button" onClick={() => onRemoveItem(index)} className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 text-sm">삭제</button>
                       )}
                     </div>
 
                     {/* 1행: 내용, 카테고리, 세부작업 */}
                     <div className="grid grid-cols-3 gap-3 mb-2">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">내용</label>
-                        <input type="text" value={item.name ?? ''} onChange={(e) => onItemChange(index, 'name', e.target.value)} className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required />
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">내용</label>
+                        <input type="text" value={item.name ?? ''} onChange={(e) => onItemChange(index, 'name', e.target.value)} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">카테고리</label>
-                        <select value={item.category ?? ''} onChange={(e) => onItemChange(index, 'category', e.target.value)} className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">카테고리</label>
+                        <select value={item.category ?? ''} onChange={(e) => onItemChange(index, 'category', e.target.value)} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required>
                           <option value="">카테고리 선택</option>
                           {categories.map(cat => (<option key={cat} value={cat}>{cat}</option>))}
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">세부 작업</label>
-                        <input type="text" value={item.description ?? ''} onChange={(e) => onItemChange(index, 'description', e.target.value)} className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">세부 작업</label>
+                        <input type="text" value={item.description ?? ''} onChange={(e) => onItemChange(index, 'description', e.target.value)} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
                       </div>
                     </div>
 
                     {/* 2행: 수량, 단위, 단가, 합계 */}
                     <div className="grid grid-cols-4 gap-3 mb-2">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">수량</label>
-                        <input type="text" value={item.quantity ?? ''} onChange={(e) => onItemChange(index, 'quantity', e.target.value)} onFocus={(e) => e.target.select()} placeholder="예: 1" className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">수량</label>
+                        <input type="text" value={item.quantity ?? ''} onChange={(e) => onItemChange(index, 'quantity', e.target.value)} onFocus={(e) => e.target.select()} placeholder="예: 1" className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">단위</label>
-                        <select value={item.unit ?? ''} onChange={(e) => onItemChange(index, 'unit', e.target.value)} className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">단위</label>
+                        <select value={item.unit ?? ''} onChange={(e) => onItemChange(index, 'unit', e.target.value)} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                           <option value="">단위 선택</option>
                           {units.map(u => (<option key={u} value={u}>{u}</option>))}
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">단가</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">단가</label>
                         <input type="text" value={(() => {
                           const val = item.defaultPrice;
                           if (val === null || val === undefined) return '';
                           const num = Number(val);
                           return Number.isFinite(num) ? format(num) : String(val);
-                        })()} onChange={(e) => onItemChange(index, 'defaultPrice', e.target.value)} onFocus={(e) => e.target.select()} placeholder="예: 200,000" className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+                        })()} onChange={(e) => onItemChange(index, 'defaultPrice', e.target.value)} onFocus={(e) => e.target.select()} placeholder="예: 200,000" className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">합계</label>
-                        <div className="mt-1 w-full bg-green-50 border border-green-200 rounded px-3 py-2 text-sm font-semibold text-green-900">{
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">합계</label>
+                        <div className="mt-1 w-full bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded px-3 py-2 text-sm font-semibold text-green-900 dark:text-green-300">{
                           (() => {
                             const pRaw = item.defaultPrice;
                             const qRaw = item.quantity;
@@ -243,18 +243,18 @@ export default function BulkFormModal({ open, clients, categories, units, bulkIt
 
                     {/* 3행: 비고 */}
                     <div className="mb-3">
-                      <label className="block text-sm font-medium text-gray-700">비고</label>
-                      <input type="text" value={item.notes ?? ''} onChange={(e) => onItemChange(index, 'notes', e.target.value)} className="mt-1 block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">비고</label>
+                      <input type="text" value={item.notes ?? ''} onChange={(e) => onItemChange(index, 'notes', e.target.value)} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
                     </div>
 
                     {/* 상태 및 총합계 */}
                     <div className="flex justify-between items-center">
                       <div className="flex-1">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">상태</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">상태</label>
                         <div className="flex flex-wrap gap-1.5">
                           {statuses.map((s) => {
                             const active = item.status === s;
-                            const classes = active ? 'bg-indigo-600 text-white border-transparent shadow' : 'bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200';
+                            const classes = active ? 'bg-indigo-600 dark:bg-indigo-500 text-white border-transparent shadow' : 'bg-gray-100 dark:bg-gray-600 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-500 hover:bg-gray-200 dark:hover:bg-gray-500';
                             return (
                               <button key={s} type="button" onClick={() => onItemChange(index, 'status', s)} className={`px-2.5 py-1 rounded-full text-xs transition ${classes}`} aria-pressed={active}>{s}</button>
                             );
@@ -262,8 +262,8 @@ export default function BulkFormModal({ open, clients, categories, units, bulkIt
                         </div>
                       </div>
                       <div className="ml-4">
-                        <label className="block text-sm font-medium text-gray-700 mb-1 text-right">총합계 금액</label>
-                        <div className="bg-blue-600 text-white rounded-lg px-4 py-2 text-base font-bold shadow-md">{
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 text-right">총합계 금액</label>
+                        <div className="bg-blue-600 dark:bg-blue-700 text-white rounded-lg px-4 py-2 text-base font-bold shadow-md">{
                           (() => {
                             const pRaw = item.defaultPrice;
                             const qRaw = item.quantity;
@@ -288,7 +288,7 @@ export default function BulkFormModal({ open, clients, categories, units, bulkIt
             </div>
 
             <div className="flex justify-end space-x-2 pt-2">
-              <button type="button" onClick={onCancel} className="px-4 py-2 text-gray-600 hover:text-gray-800">취소</button>
+              <button type="button" onClick={onCancel} className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100">취소</button>
               <button type="submit" className="px-4 py-2 rounded bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow">{bulkItems.length}개 항목 일괄 추가</button>
             </div>
           </form>
