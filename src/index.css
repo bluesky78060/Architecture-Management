@@ -3,14 +3,38 @@
 @tailwind utilities;
 
 @layer base {
+  /* 다크 모드 전환 애니메이션 */
+  * {
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+
   body {
     @apply font-sans;
     background: linear-gradient(135deg, #f9fafb 0%, #e0f2fe 50%, #faf0ff 100%);
     min-height: 100vh;
   }
+
+  /* 다크 모드 body 배경 */
+  .dark body {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+  }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold text-gray-900;
+    @apply font-semibold text-gray-900 dark:text-white;
+  }
+
+  /* 인쇄 시 다크 모드 비활성화 */
+  @media print {
+    * {
+      background-color: white !important;
+      color: black !important;
+      border-color: #e5e7eb !important;
+    }
+
+    .dark {
+      background-color: white !important;
+      color: black !important;
+    }
   }
 
   /* Brand display font utility (Pacifico) */

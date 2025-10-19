@@ -2,14 +2,23 @@
 const colors = require('tailwindcss/colors');
 
 module.exports = {
+  darkMode: 'class', // 클래스 기반 다크모드
   content: [
     './public/index.html',
     './src/**/*.{js,jsx,ts,tsx}',
-    
+
   ],
   theme: {
     extend: {
       colors: {
+        // 다크모드 전용 색상
+        dark: {
+          bg: '#1a1a1a',
+          card: '#2d2d2d',
+          border: '#404040',
+          text: '#e5e5e5',
+          'text-secondary': '#a0a0a0',
+        },
         primary: {
           50: '#EEF2FF',
           100: '#E0E7FF', 

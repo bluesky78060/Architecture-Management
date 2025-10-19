@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
+import ThemeToggle from './ThemeToggle';
 import {
   HomeIcon,
   DocumentTextIcon,
@@ -52,20 +53,21 @@ export default function Layout({ children }: LayoutProps) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       {/* Sidebar */}
-      <div className="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg">
+      <div className="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-lg border-r border-gray-200 dark:border-gray-700">
         {/* Header */}
-        <div className="flex h-20 items-center justify-center px-6 bg-white">
+        <div className="flex h-20 items-center justify-between px-6 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center">
               <HomeIcon className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-gray-900">건축 관리 시스템</h1>
-              <p className="text-gray-500 text-xs">Architecture Management</p>
+              <h1 className="text-lg font-bold text-gray-900 dark:text-white">건축 관리 시스템</h1>
+              <p className="text-gray-500 dark:text-gray-400 text-xs">Architecture Management</p>
             </div>
           </div>
+          <ThemeToggle />
         </div>
         
         <nav className="mt-10 px-4">
@@ -87,11 +89,11 @@ export default function Layout({ children }: LayoutProps) {
                         flex items-center px-4 py-4 text-base font-medium rounded-xl transition-all duration-200
                         ${isActive
                           ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white'
-                          : 'text-gray-700 hover:bg-gray-100'
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                         }
                       `}
                     >
-                      <item.icon className={`mr-3 h-5 w-5 ${isActive ? 'text-white' : 'text-gray-500'}`} />
+                      <item.icon className={`mr-3 h-5 w-5 ${isActive ? 'text-white' : 'text-gray-500 dark:text-gray-400'}`} />
                       <span>{item.name}</span>
                     </Link>
                   </li>
@@ -105,26 +107,26 @@ export default function Layout({ children }: LayoutProps) {
           <div className="relative">
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex w-full items-center px-4 py-3 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors duration-200"
+              className="flex w-full items-center px-4 py-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-xl transition-colors duration-200"
             >
               <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mr-3">
                 <UserIcon className="h-4 w-4 text-white" />
               </div>
               <div className="text-left flex-1">
-                <div className="text-sm font-medium text-gray-900">
+                <div className="text-sm font-medium text-gray-900 dark:text-white">
                   {(currentUser?.name !== null && currentUser?.name !== undefined) ? currentUser.name : '사용자'}
                 </div>
-                <div className="text-xs text-gray-500">v2.0 Enhanced Edition</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">v2.0 Enhanced Edition</div>
               </div>
             </button>
 
             {showUserMenu && (
-              <div className="absolute bottom-full mb-2 w-full rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden">
+              <div className="absolute bottom-full mb-2 w-full rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 shadow-lg overflow-hidden">
                 <button
                   onClick={logout}
-                  className="flex w-full items-center px-4 py-3 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                  className="flex w-full items-center px-4 py-3 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
                 >
-                  <UserIcon className="mr-3 h-4 w-4 text-gray-500" />
+                  <UserIcon className="mr-3 h-4 w-4 text-gray-500 dark:text-gray-400" />
                   로그아웃
                 </button>
               </div>

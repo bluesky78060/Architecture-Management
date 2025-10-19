@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { UserProvider, useUser } from './contexts/UserContext';
 import { AppProvider } from './contexts/AppContext.impl';
 import Login from './components/Login';
@@ -50,16 +51,18 @@ function AppContent() {
 
 function App() {
   return (
-    <UserProvider>
-      <Routes>
-        <Route path="/supabase-test" element={<SupabaseTest />} />
-        <Route path="*" element={
-          <AppProvider>
-            <AppContent />
-          </AppProvider>
-        } />
-      </Routes>
-    </UserProvider>
+    <ThemeProvider>
+      <UserProvider>
+        <Routes>
+          <Route path="/supabase-test" element={<SupabaseTest />} />
+          <Route path="*" element={
+            <AppProvider>
+              <AppContent />
+            </AppProvider>
+          } />
+        </Routes>
+      </UserProvider>
+    </ThemeProvider>
   );
 }
 
