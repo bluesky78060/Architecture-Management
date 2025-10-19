@@ -68,7 +68,7 @@ export default function Layout() {
           {/* Theme Toggle Button */}
           <button
             onClick={toggleTheme}
-            className="p-2 mr-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
             aria-label={theme === 'light' ? '다크 모드로 전환' : '라이트 모드로 전환'}
             title={theme === 'light' ? '다크 모드로 전환' : '라이트 모드로 전환'}
           >
