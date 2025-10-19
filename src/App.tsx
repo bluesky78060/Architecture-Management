@@ -34,19 +34,22 @@ function AppContent() {
   }
 
   return (
-    <Layout>
+    <AppProvider>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/estimates" element={<EstimatesPage />} />
-        <Route path="/invoices" element={<InvoicesPage />} />
-        <Route path="/clients" element={<Clients />} />
-        <Route path="/work-items" element={<WorkItemsPage />} />
-        <Route path="/company-info" element={<CompanyInfo />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/migration" element={<Migration />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="/supabase-test" element={<SupabaseTest />} />
+        <Route element={<Layout />}>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/estimates" element={<EstimatesPage />} />
+          <Route path="/invoices" element={<InvoicesPage />} />
+          <Route path="/clients" element={<Clients />} />
+          <Route path="/work-items" element={<WorkItemsPage />} />
+          <Route path="/company-info" element={<CompanyInfo />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/migration" element={<Migration />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
       </Routes>
-    </Layout>
+    </AppProvider>
   );
 }
 
@@ -54,14 +57,7 @@ function App() {
   return (
     <ThemeProvider>
       <UserProvider>
-        <Routes>
-          <Route path="/supabase-test" element={<SupabaseTest />} />
-          <Route path="*" element={
-            <AppProvider>
-              <AppContent />
-            </AppProvider>
-          } />
-        </Routes>
+        <AppContent />
       </UserProvider>
     </ThemeProvider>
   );

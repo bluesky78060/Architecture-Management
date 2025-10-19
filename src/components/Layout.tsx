@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, Outlet } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
@@ -15,10 +15,6 @@ import {
   ShieldCheckIcon
 } from '@heroicons/react/24/outline';
 
-interface LayoutProps {
-  children: React.ReactNode;
-}
-
 const navigation = [
   { name: '대시보드', href: '/', icon: HomeIcon, adminOnly: false },
   { name: '견적서 관리', href: '/estimates', icon: CalculatorIcon, adminOnly: false },
@@ -30,7 +26,7 @@ const navigation = [
   { name: '사용자 승인', href: '/admin/approvals', icon: ShieldCheckIcon, adminOnly: true },
 ];
 
-export default function Layout({ children }: LayoutProps) {
+export default function Layout() {
   const location = useLocation();
   const { logout, currentUser, isAdmin } = useUser();
   const { theme, toggleTheme } = useTheme();
@@ -153,7 +149,7 @@ export default function Layout({ children }: LayoutProps) {
       <div className="pl-64">
         <main className="py-10 px-8 lg:px-12">
           <div className="mx-auto max-w-7xl">
-            {children}
+            <Outlet />
           </div>
         </main>
       </div>

@@ -1,10 +1,11 @@
 // React import not required for new JSX transform
 import { lazy, Suspense, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, createHashRouter, RouterProvider, Route, createRoutesFromElements, Outlet, Navigate } from 'react-router-dom';
+import { createBrowserRouter, createHashRouter, RouterProvider, Route, createRoutesFromElements, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import './index.css';
 import { MS_IN_SECOND, SECONDS_IN_MINUTE } from './constants/units';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { UserProvider } from './contexts/UserContext';
 import { AppProvider } from './contexts/AppContext.impl';
 import Layout from './components/Layout';
@@ -185,11 +186,7 @@ function AppGate() {
     return <Navigate to="/login" replace />;
   }
 
-  return (
-    <Layout>
-      <Outlet />
-    </Layout>
-  );
+  return <Layout />;
 }
 
 const routes = createRoutesFromElements(
@@ -228,11 +225,13 @@ const router = useHash
   : createBrowserRouter(routes, { basename: basePath, future: futureFlags });
 
 root.render(
-  <QueryClientProvider client={queryClient}>
-    <UserProvider>
-      <AppProvider>
-        <RouterProvider router={router} future={{ v7_startTransition: true }} />
-      </AppProvider>
-    </UserProvider>
-  </QueryClientProvider>
+  <ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <UserProvider>
+        <AppProvider>
+          <RouterProvider router={router} future={{ v7_startTransition: true }} />
+        </AppProvider>
+      </UserProvider>
+    </QueryClientProvider>
+  </ThemeProvider>
 );
