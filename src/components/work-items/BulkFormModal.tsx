@@ -35,13 +35,13 @@ export default function BulkFormModal({ open, clients, categories, units, bulkIt
 
   return (
     <div className="fixed inset-0 bg-gray-800/50 dark:bg-gray-900/70 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
-      <div className="relative top-6 mx-auto w-[1100px] max-w-[96vw] shadow-2xl rounded-2xl bg-white/80 dark:bg-gray-800/90 ring-1 ring-black/5 dark:ring-white/10">
+      <div className="relative top-6 mx-auto w-[1100px] max-w-[96vw] shadow-2xl rounded-2xl bg-white/80 dark:bg-gray-800/90 ring-1 ring-black/5 dark:ring-white/10 mb-8">
         <div className="rounded-t-2xl bg-gradient-to-br from-indigo-50 via-purple-50 to-white dark:from-indigo-900/30 dark:via-purple-900/30 dark:to-gray-800 px-8 pt-8 pb-6 text-center">
           <h3 className="text-2xl font-extrabold tracking-tight text-indigo-600 dark:text-indigo-400">일괄 작업 항목 추가</h3>
           <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">여러 작업을 한 번에 등록합니다</p>
         </div>
         <div className="px-6 pb-6">
-          <form onSubmit={onSubmit} className="space-y-4">
+          <form id="bulk-work-item-form" onSubmit={onSubmit} className="space-y-4">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
               <div className="flex items-center mb-3 gap-3">
                 <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">📋</span>
@@ -286,12 +286,19 @@ export default function BulkFormModal({ open, clients, categories, units, bulkIt
                 ))}
               </div>
             </div>
-
-            <div className="flex justify-end space-x-2 pt-2">
-              <button type="button" onClick={onCancel} className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100">취소</button>
-              <button type="submit" className="px-4 py-2 rounded bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow">{bulkItems.length}개 항목 일괄 추가</button>
-            </div>
           </form>
+        </div>
+
+        {/* Sticky 버튼 영역 */}
+        <div className="sticky bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700 px-6 py-4 rounded-b-2xl shadow-lg">
+          <div className="flex justify-end space-x-3">
+            <button type="button" onClick={onCancel} className="px-6 py-2.5 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition font-medium">
+              취소
+            </button>
+            <button type="submit" form="bulk-work-item-form" className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-md transition font-bold">
+              {bulkItems.length}개 항목 일괄 추가
+            </button>
+          </div>
         </div>
       </div>
     </div>

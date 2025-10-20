@@ -27,17 +27,11 @@ export default function ItemFormModal({ open, editingItem, newItem, clients, uni
 
   return (
     <div className="fixed inset-0 bg-gray-800/50 dark:bg-gray-900/70 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
-      <div className="relative top-8 mx-auto w-[980px] max-w-[95vw] shadow-2xl rounded-2xl bg-white/80 dark:bg-gray-800/90 ring-1 ring-black/5 dark:ring-white/10">
+      <div className="relative top-8 mx-auto w-[980px] max-w-[95vw] shadow-2xl rounded-2xl bg-white/80 dark:bg-gray-800/90 ring-1 ring-black/5 dark:ring-white/10 mb-8">
         <div className="rounded-t-2xl bg-gradient-to-br from-indigo-50 via-purple-50 to-white dark:from-indigo-900/30 dark:via-purple-900/30 dark:to-gray-800 px-8 pt-5 pb-3">
-          <div className="flex items-center justify-between">
-            <div className="text-center flex-1">
-              <h3 className="text-2xl font-extrabold tracking-tight text-indigo-600 dark:text-indigo-400">{editingItem !== null ? '작업 항목 편집' : '새 작업 항목 추가'}</h3>
-              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">새로운 건설 작업 항목을 등록하고 관리하세요</p>
-            </div>
-            <div className="flex space-x-2 ml-4">
-              <button type="button" onClick={onCancel} className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 hover:bg-white/50 dark:hover:bg-gray-700/50 rounded-lg transition">취소</button>
-              <button type="submit" form="work-item-form" className="px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-md transition">{editingItem !== null ? '수정' : '추가'}</button>
-            </div>
+          <div className="text-center">
+            <h3 className="text-2xl font-extrabold tracking-tight text-indigo-600 dark:text-indigo-400">{editingItem !== null ? '작업 항목 편집' : '새 작업 항목 추가'}</h3>
+            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">새로운 건설 작업 항목을 등록하고 관리하세요</p>
           </div>
         </div>
         <div className="px-6 pb-6 pt-3">
@@ -260,6 +254,18 @@ export default function ItemFormModal({ open, editingItem, newItem, clients, uni
               </div>
             </div>
           </form>
+        </div>
+
+        {/* Sticky 버튼 영역 */}
+        <div className="sticky bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700 px-6 py-4 rounded-b-2xl shadow-lg">
+          <div className="flex justify-end space-x-3">
+            <button type="button" onClick={onCancel} className="px-6 py-2.5 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition font-medium">
+              취소
+            </button>
+            <button type="submit" form="work-item-form" className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-md transition font-bold">
+              {editingItem !== null ? '수정' : '추가'}
+            </button>
+          </div>
         </div>
       </div>
     </div>
