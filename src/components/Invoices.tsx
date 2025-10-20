@@ -579,27 +579,32 @@ export default function Invoices(): JSX.Element {
           return statusMap[status] ?? '예정';
         };
 
-        const newWorkItems = workItemsData.map((w: Record<string, unknown>) => ({
-          id: w.work_item_id as number,
-          clientId: w.client_id as number,
-          clientName: (w.client_name ?? created.client) as string,
-          workplaceId: (w.workplace_id !== null && w.workplace_id !== undefined) ? (w.workplace_id as number) : '',
-          workplaceName: (w.workplace_name ?? workplaceName) as string,
-          projectName: (w.project_name ?? '') as string,
-          name: w.name as string,
-          category: (w.category ?? '') as string,
-          defaultPrice: (w.default_price ?? 0) as number,
-          quantity: (w.quantity ?? 0) as number,
-          unit: (w.unit ?? '') as string,
-          description: (w.description ?? '') as string,
-          status: fromDbStatus(w.status as string),
-          date: (w.start_date ?? '') as string,
-          notes: (w.notes ?? '') as string,
-          laborPersons: (w.labor_persons ?? 0) as number,
-          laborUnitRate: (w.labor_unit_rate ?? 0) as number,
-          laborPersonsGeneral: (w.labor_persons_general ?? 0) as number,
-          laborUnitRateGeneral: (w.labor_unit_rate_general ?? 0) as number,
-        }));
+        const newWorkItems = workItemsData.map((w: Record<string, unknown>) => {
+          const rawWorkplaceId = w.workplace_id as number | null | undefined;
+          const workplaceIdValue: number | '' = (rawWorkplaceId !== null && rawWorkplaceId !== undefined) ? rawWorkplaceId : '';
+
+          return {
+            id: w.work_item_id as number,
+            clientId: w.client_id as number,
+            clientName: (w.client_name ?? created.client) as string,
+            workplaceId: workplaceIdValue,
+            workplaceName: (w.workplace_name ?? workplaceName) as string,
+            projectName: (w.project_name ?? '') as string,
+            name: w.name as string,
+            category: (w.category ?? '') as string,
+            defaultPrice: (w.default_price ?? 0) as number,
+            quantity: (w.quantity ?? 0) as number,
+            unit: (w.unit ?? '') as string,
+            description: (w.description ?? '') as string,
+            status: fromDbStatus(w.status as string),
+            date: (w.start_date ?? '') as string,
+            notes: (w.notes ?? '') as string,
+            laborPersons: (w.labor_persons ?? 0) as number,
+            laborUnitRate: (w.labor_unit_rate ?? 0) as number,
+            laborPersonsGeneral: (w.labor_persons_general ?? 0) as number,
+            laborUnitRateGeneral: (w.labor_unit_rate_general ?? 0) as number,
+          };
+        });
 
         setWorkItems(prev => [...prev, ...newWorkItems]);
       }
