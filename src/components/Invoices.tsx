@@ -56,6 +56,7 @@ export default function Invoices(): JSX.Element {
     items: FormItem[];
   };
   const [showForm, setShowForm] = useState<boolean>(false);
+  const [showCustomProject, setShowCustomProject] = useState<boolean>(false);
   const [form, setForm] = useState<FormState>({
     clientId: '',
     client: '',
@@ -260,6 +261,16 @@ export default function Invoices(): JSX.Element {
     return (c?.workplaces !== null && c?.workplaces !== undefined) ? c.workplaces : [];
   };
 
+  const getClientProjects = (clientId: string | number) => {
+    const cid = parseInt(String(clientId));
+    const client = clients.find(c => Number(c.id) === cid);
+    const clientProjects = (client?.projects !== null && client?.projects !== undefined) ? client.projects.filter((p): p is string => p !== '' && p !== null && p !== undefined) : [];
+    const workplaceProjects = (client?.workplaces !== null && client?.workplaces !== undefined)
+      ? client.workplaces.map(wp => wp.description ?? '').filter((desc): desc is string => desc !== '')
+      : [];
+    return Array.from(new Set([...clientProjects, ...workplaceProjects]));
+  };
+
   const onFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setForm(prev => {
@@ -271,11 +282,20 @@ export default function Invoices(): JSX.Element {
         next.workplaceId = '';
         next.workplaceAddress = '';
         next.project = '';
+        setShowCustomProject(false);
       }
       if (name === 'workplaceId') {
         const wp = getClientWorkplaces(prev.clientId).find(w => Number(w.id) === parseInt(String(value)));
         next.workplaceAddress = (wp?.address !== null && wp?.address !== undefined && wp?.address !== '') ? wp.address : '';
         if (next.project === '' && wp?.description !== null && wp?.description !== undefined && wp?.description !== '') next.project = wp.description;
+      }
+      if (name === 'project') {
+        if (value === 'custom') {
+          setShowCustomProject(true);
+          next.project = '';
+        } else {
+          setShowCustomProject(false);
+        }
       }
       return next;
     });
@@ -406,6 +426,7 @@ export default function Invoices(): JSX.Element {
     // UI 즉시 업데이트 (낙관적 업데이트)
     setInvoices(prev => [...prev, created]);
     setShowForm(false);
+    setShowCustomProject(false);
     setForm({
       clientId: '', client: '', workplaceId: '', workplaceAddress: '', project: '', date: new Date().toISOString().split('T')[0], status: '발송대기',
       items: [{ name: '', quantity: 1, unit: '', unitPrice: 0, total: 0, category: '', description: '', laborPersons: '', laborUnitRate: '', laborPersonsGeneral: '', laborUnitRateGeneral: '' }]
@@ -737,7 +758,22 @@ export default function Invoices(): JSX.Element {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">프로젝트 *</label>
-                      <input type="text" name="project" value={form.project} onChange={onFormChange} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required />
+                      {!showCustomProject ? (
+                        <select name="project" value={form.project} onChange={onFormChange} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required disabled={(typeof form.clientId === 'string' && form.clientId === '') || (typeof form.clientId === 'number' && (form.clientId === 0 || isNaN(form.clientId)))}>
+                          <option value="">{(typeof form.clientId === 'string' ? form.clientId !== '' : (form.clientId !== 0 && !isNaN(form.clientId))) ? '프로젝트 선택' : '먼저 건축주를 선택하세요'}</option>
+                          {(typeof form.clientId === 'string' ? form.clientId !== '' : (form.clientId !== 0 && !isNaN(form.clientId))) && getClientProjects(form.clientId).map((proj, idx) => (
+                            <option key={idx} value={proj}>{proj}</option>
+                          ))}
+                          {(typeof form.clientId === 'string' ? form.clientId !== '' : (form.clientId !== 0 && !isNaN(form.clientId))) && (
+                            <option value="custom">직접 입력</option>
+                          )}
+                        </select>
+                      ) : (
+                        <input type="text" name="project" value={form.project} onChange={onFormChange} placeholder="프로젝트명을 입력하세요" className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required />
+                      )}
+                      {showCustomProject && (
+                        <button type="button" onClick={() => { setShowCustomProject(false); setForm(prev => ({ ...prev, project: '' })); }} className="mt-1 text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300">← 목록에서 선택</button>
+                      )}
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">작업장 *</label>
@@ -873,7 +909,7 @@ export default function Invoices(): JSX.Element {
             {/* Sticky 버튼 영역 */}
             <div className="sticky bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700 px-6 py-4 rounded-b-2xl shadow-lg">
               <div className="flex justify-end space-x-3">
-                <button type="button" onClick={() => setShowForm(false)} className="px-6 py-2.5 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition font-medium">
+                <button type="button" onClick={() => { setShowForm(false); setShowCustomProject(false); }} className="px-6 py-2.5 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition font-medium">
                   취소
                 </button>
                 <button type="submit" form="invoice-form" className="px-6 py-2.5 bg-indigo-600 dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-600 text-white rounded-lg transition font-bold">
