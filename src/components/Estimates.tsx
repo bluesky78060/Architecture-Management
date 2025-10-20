@@ -1054,13 +1054,13 @@ const Estimates: React.FC = () => {
                       </div>
                     </div>
                     <div className="col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">상태</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">상태</label>
                       <div className="flex flex-wrap gap-1.5">
                         {statuses.map((s) => {
                           const active = newEstimate.status === s;
                           const classes = active
-                            ? 'bg-indigo-600 text-white border-transparent shadow'
-                            : 'bg-gray-100 text-gray-700 border border-gray-200 hover:bg-gray-200';
+                            ? 'bg-indigo-600 dark:bg-indigo-500 text-white border-transparent shadow'
+                            : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600';
                           return (
                             <button
                               key={s}
