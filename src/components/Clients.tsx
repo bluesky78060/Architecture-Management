@@ -737,7 +737,7 @@ const Clients: React.FC = () => {
 
       {/* 통계 카드 */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-blue-100 dark:bg-blue-900 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100 dark:border-gray-600">
+        <div className="bg-blue-100 dark:bg-blue-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100 dark:border-gray-600">
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <p className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">총 건축주</p>
@@ -749,7 +749,7 @@ const Clients: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-green-100 dark:bg-green-900 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100 dark:border-gray-600">
+        <div className="bg-green-100 dark:bg-green-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100 dark:border-gray-600">
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <p className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">총 청구금액 :</p>
@@ -763,7 +763,7 @@ const Clients: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-red-100 dark:bg-red-900 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100 dark:border-gray-600">
+        <div className="bg-red-100 dark:bg-red-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100 dark:border-gray-600">
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <p className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">미수금</p>
@@ -777,7 +777,7 @@ const Clients: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-orange-100 dark:bg-orange-900 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100 dark:border-gray-600">
+        <div className="bg-orange-100 dark:bg-orange-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100 dark:border-gray-600">
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <p className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">미수금 건수</p>
@@ -948,7 +948,7 @@ const Clients: React.FC = () => {
               </h3>
               <form onSubmit={handleSubmit} className="space-y-3">
                 {/* 섹션: 기본 정보 */}
-                <div className="rounded-xl border border-gray-100 dark:border-gray-600 bg-white dark:bg-gray-700 shadow-sm p-4">
+                <div className="rounded-xl border border-gray-100 dark:border-gray-600 bg-white dark:bg-gray-600 shadow-sm p-4">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-indigo-50 dark:bg-indigo-900">
                       <ClipboardDocumentListIcon className="h-4 w-4 text-indigo-600 dark:text-indigo-300" aria-hidden="true" />
@@ -978,7 +978,7 @@ const Clients: React.FC = () => {
                     )}
                   </div>
                   {newClient.type === 'BUSINESS' && (
-                    <div className="mt-3 rounded-lg border border-yellow-200 dark:border-yellow-600 bg-yellow-50 dark:bg-yellow-900 p-3">
+                    <div className="mt-3 rounded-lg border border-yellow-200 dark:border-yellow-600 bg-yellow-50 dark:bg-yellow-800 p-3">
                       <div className="flex items-center gap-2 mb-2 text-yellow-800 dark:text-yellow-200">
                         <BuildingOffice2Icon className="h-4 w-4" aria-hidden="true" />
                         <span className="text-sm font-medium">사업자 정보</span>
@@ -1018,7 +1018,7 @@ const Clients: React.FC = () => {
                 </div>
 
                 {/* 섹션: 연락처 / 주소 */}
-                <div className="rounded-xl border border-gray-100 dark:border-gray-600 bg-white dark:bg-gray-700 shadow-sm p-4">
+                <div className="rounded-xl border border-gray-100 dark:border-gray-600 bg-white dark:bg-gray-600 shadow-sm p-4">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-50 dark:bg-slate-900">
                       <PhoneIcon className="h-4 w-4 text-slate-600 dark:text-slate-300" aria-hidden="true" />
@@ -1082,7 +1082,7 @@ const Clients: React.FC = () => {
                 
                 
                 {/* 작업장 정보 */}
-                <div className="rounded-xl border border-gray-100 dark:border-gray-600 bg-white dark:bg-gray-700 shadow-sm p-4">
+                <div className="rounded-xl border border-gray-100 dark:border-gray-600 bg-white dark:bg-gray-600 shadow-sm p-4">
                   <div className="flex justify-between items-center mb-2">
                     <div className="flex items-center gap-2">
                       <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-50 dark:bg-slate-900">
@@ -1093,7 +1093,7 @@ const Clients: React.FC = () => {
                     <button type="button" onClick={addWorkplace} className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm">+ 작업장 추가</button>
                   </div>
                   {newClient.workplaces.map((workplace, index) => (
-                    <div key={index} className="border border-gray-200 dark:border-gray-600 rounded-md p-3 mb-3 bg-gray-50 dark:bg-gray-900">
+                    <div key={index} className="border border-gray-200 dark:border-gray-600 rounded-md p-3 mb-3 bg-gray-50 dark:bg-gray-800">
                       <div className="flex justify-between items-center mb-2">
                         <span className="text-sm font-medium text-gray-700 dark:text-gray-300">작업장 {index + 1}</span>
                         {newClient.workplaces.length > 1 && (
@@ -1168,7 +1168,7 @@ const Clients: React.FC = () => {
               </button>
             </div>
 
-            <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-6 bg-gray-50 dark:bg-gray-700">
+            <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-6 bg-gray-50 dark:bg-gray-600">
               <div className="grid grid-cols-2 gap-6 mb-6">
                 <div>
                   <h4 className="font-medium mb-3 text-gray-900 dark:text-gray-100">기본 정보</h4>
@@ -1191,7 +1191,7 @@ const Clients: React.FC = () => {
               </div>
 
               {(selectedClient?.type === 'BUSINESS') && (
-                <div className="border border-yellow-200 dark:border-yellow-600 rounded-md p-4 bg-yellow-50 dark:bg-yellow-900 mb-6">
+                <div className="border border-yellow-200 dark:border-yellow-600 rounded-md p-4 bg-yellow-50 dark:bg-yellow-800 mb-6">
                   <h4 className="font-medium mb-3 text-gray-900 dark:text-gray-100">사업자 정보</h4>
                   <div className="grid grid-cols-2 gap-4 text-sm text-gray-900 dark:text-gray-100">
                     <p><strong>상호:</strong> {(selectedClient.business?.businessName !== '' && selectedClient.business?.businessName !== null && selectedClient.business?.businessName !== undefined) ? selectedClient.business.businessName : '-'}</p>
@@ -1210,7 +1210,7 @@ const Clients: React.FC = () => {
                 {(selectedClient.workplaces !== null && selectedClient.workplaces !== undefined && selectedClient.workplaces.length > 0) ? (
                   <div className="space-y-3">
                     {selectedClient.workplaces.map((workplace, index) => (
-                      <div key={index} className="bg-white dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-600 p-3">
+                      <div key={index} className="bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-600 p-3">
                         <div className="flex justify-between items-start mb-2">
                           <h5 className="font-medium text-gray-900 dark:text-gray-100">{workplace.name}</h5>
                           <span className="text-xs bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 px-2 py-1 rounded">
@@ -1236,7 +1236,7 @@ const Clients: React.FC = () => {
               <div className="mb-4">
                 <h4 className="font-medium mb-2 text-gray-900 dark:text-gray-100">프로젝트 이력</h4>
                 {((selectedClient.projects !== null && selectedClient.projects !== undefined ? selectedClient.projects : []).length > 0) ? (
-                  <ul className="bg-white dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-600 p-3">
+                  <ul className="bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-600 p-3">
                     {selectedClient.projects!.map((project, index) => (
                       <li key={index} className="py-1 border-b border-gray-200 dark:border-gray-600 last:border-b-0 text-gray-900 dark:text-gray-100">
                         • {project}
@@ -1251,7 +1251,7 @@ const Clients: React.FC = () => {
               {(selectedClient.notes !== '' && selectedClient.notes !== null && selectedClient.notes !== undefined) && (
                 <div>
                   <h4 className="font-medium mb-2 text-gray-900 dark:text-gray-100">메모</h4>
-                  <p className="bg-white dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-600 p-3 text-gray-900 dark:text-gray-100">{selectedClient.notes}</p>
+                  <p className="bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-600 p-3 text-gray-900 dark:text-gray-100">{selectedClient.notes}</p>
                 </div>
               )}
             </div>
