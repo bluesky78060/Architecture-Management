@@ -737,7 +737,7 @@ const Clients: React.FC = () => {
 
       {/* 통계 카드 */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-blue-100 dark:bg-blue-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100 dark:border-gray-600">
+        <div className="bg-blue-100 dark:bg-blue-900/30 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100 dark:border-gray-700">
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <p className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">총 건축주</p>
@@ -749,7 +749,7 @@ const Clients: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-green-100 dark:bg-green-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100 dark:border-gray-600">
+        <div className="bg-green-100 dark:bg-green-900/30 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100 dark:border-gray-700">
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <p className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">총 청구금액 :</p>
@@ -763,7 +763,7 @@ const Clients: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-red-100 dark:bg-red-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100 dark:border-gray-600">
+        <div className="bg-red-100 dark:bg-red-900/30 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100 dark:border-gray-700">
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <p className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">미수금</p>
@@ -777,7 +777,7 @@ const Clients: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-orange-100 dark:bg-orange-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100 dark:border-gray-600">
+        <div className="bg-orange-100 dark:bg-orange-900/30 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-100 dark:border-gray-700">
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <p className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">미수금 건수</p>
