@@ -215,6 +215,76 @@ export interface PaginatedResult<T> {
 }
 
 // ========================================
+// 일정 관리 타입
+// ========================================
+
+export type ScheduleType = 'construction' | 'consultation' | 'meeting' | 'other';
+export type ScheduleStatus = 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
+export type SchedulePriority = 'low' | 'normal' | 'high' | 'urgent';
+
+export interface Attendee {
+  name: string;
+  phone?: string;
+  email?: string;
+}
+
+export interface Attachment {
+  name: string;
+  url: string;
+  type: string;
+}
+
+export interface Schedule {
+  id: number;
+  userId: string;
+
+  // 기본 정보
+  title: string;
+  description?: string;
+  scheduleType: ScheduleType;
+
+  // 날짜/시간
+  startDate: string; // YYYY-MM-DD
+  startTime?: string; // HH:MM
+  endDate?: string;
+  endTime?: string;
+  allDay: boolean;
+
+  // 연관 정보
+  clientId?: number;
+  clientName?: string;
+  workplaceId?: number;
+  workplaceName?: string;
+  projectName?: string;
+
+  // 상태
+  status: ScheduleStatus;
+  priority: SchedulePriority;
+
+  // 알림 설정
+  reminderEnabled: boolean;
+  reminderMinutesBefore?: number;
+
+  // 반복 일정 설정
+  isRecurring: boolean;
+  recurrenceRule?: {
+    frequency: 'daily' | 'weekly' | 'monthly' | 'yearly';
+    interval: number; // 매 n일/주/월/년
+    endDate?: string; // YYYY-MM-DD
+    daysOfWeek?: number[]; // 0(일) ~ 6(토) - weekly인 경우
+  };
+
+  // 메타데이터
+  location?: string;
+  attendees?: Attendee[];
+  notes?: string;
+  attachments?: Attachment[];
+
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ========================================
 // 통계 관련 타입
 // ========================================
 

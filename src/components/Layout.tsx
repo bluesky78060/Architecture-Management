@@ -12,7 +12,8 @@ import {
   CalculatorIcon,
   UserIcon,
   UserCircleIcon,
-  ShieldCheckIcon
+  ShieldCheckIcon,
+  CalendarIcon
 } from '@heroicons/react/24/outline';
 
 const navigation = [
@@ -21,6 +22,7 @@ const navigation = [
   { name: '청구서 관리', href: '/invoices', icon: DocumentTextIcon, adminOnly: false },
   { name: '건축주 관리', href: '/clients', icon: UsersIcon, adminOnly: false },
   { name: '작업 항목 관리', href: '/work-items', icon: WrenchScrewdriverIcon, adminOnly: false },
+  { name: '일정 관리', href: '/schedules', icon: CalendarIcon, adminOnly: false },
   { name: '환경설정', href: '/company-info', icon: CogIcon, adminOnly: false },
   { name: '계정 설정', href: '/settings', icon: UserCircleIcon, adminOnly: false },
   { name: '사용자 승인', href: '/admin/approvals', icon: ShieldCheckIcon, adminOnly: true },
@@ -81,7 +83,7 @@ export default function Layout() {
         </div>
         
         <nav className="mt-10 px-4">
-          <ul className="space-y-6">
+          <ul className="space-y-2">
             {navigation
               .filter((item) => !item.adminOnly || isAdmin)
               .map((item) => {
@@ -93,10 +95,11 @@ export default function Layout() {
                       onClick={() => {
                         /* eslint-disable no-console */
                         console.log('🔵 [Layout] Navigation clicked:', item.name, '→', item.href);
+                        console.log('🔵 [Layout] Current location:', location.pathname);
                         /* eslint-enable no-console */
                       }}
                       className={`
-                        flex items-center px-4 py-4 text-base font-medium rounded-xl transition-all duration-200
+                        flex items-center px-4 py-3 text-base font-medium rounded-xl transition-all duration-200
                         ${isActive
                           ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white'
                           : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'

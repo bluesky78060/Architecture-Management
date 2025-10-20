@@ -12,6 +12,7 @@ import InvoicesPage from './pages/InvoicesPage';
 import Clients from './components/Clients';
 import WorkItemsPage from './pages/WorkItemsPage';
 import CompanyInfo from './components/CompanyInfo';
+import Schedules from './components/schedules/Schedules';
 import Migration from './pages/Migration';
 import SupabaseTest from './pages/SupabaseTest';
 import Settings from './pages/Settings';
@@ -38,16 +39,17 @@ function AppContent() {
       <Routes>
         <Route path="/supabase-test" element={<SupabaseTest />} />
         <Route element={<Layout />}>
-          <Route path="/" element={<Dashboard />} />
+          <Route index element={<Dashboard />} />
           <Route path="/estimates" element={<EstimatesPage />} />
           <Route path="/invoices" element={<InvoicesPage />} />
           <Route path="/clients" element={<Clients />} />
           <Route path="/work-items" element={<WorkItemsPage />} />
+          <Route path="/schedules" element={<Schedules />} />
           <Route path="/company-info" element={<CompanyInfo />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/migration" element={<Migration />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AppProvider>
   );

@@ -1,7 +1,13 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions, @typescript-eslint/no-explicit-any, no-console */
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '../services/supabase';
-import type { CompanyInfo, Client, WorkItem, Invoice, Estimate, UnitName, CategoryName } from '../types/domain';
+import type { CompanyInfo, Client, WorkItem, Invoice, Estimate, Schedule, UnitName, CategoryName } from '../types/domain';
+import {
+  requestNotificationPermission,
+  scheduleMultipleNotifications,
+  scheduleNotification,
+  cancelScheduleNotification,
+} from '../services/notificationService';
 
 // Timing constants for data synchronization
 const INITIAL_LOAD_GRACE_PERIOD_MS = 100;
@@ -30,6 +36,8 @@ export interface AppContextValue {
   setInvoices: React.Dispatch<React.SetStateAction<Invoice[]>>;
   estimates: Estimate[];
   setEstimates: React.Dispatch<React.SetStateAction<Estimate[]>>;
+  schedules: Schedule[];
+  setSchedules: React.Dispatch<React.SetStateAction<Schedule[]>>;
   units: UnitName[];
   setUnits: React.Dispatch<React.SetStateAction<UnitName[]>>;
   categories: CategoryName[];
@@ -40,6 +48,8 @@ export interface AppContextValue {
   getCompletedWorkItemsByClient: (clientId: number) => WorkItem[];
   addWorkItemToInvoice: (workItem: WorkItem, quantity?: number | null, unitPrice?: number | null) => any;
   convertEstimateToWorkItems: (estimateId: string) => WorkItem[];
+  saveSchedule: (schedule: Schedule) => Promise<void>;
+  deleteSchedule: (id: number) => Promise<void>;
   loading: boolean;
   error: string | null;
 }
@@ -74,6 +84,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [workItems, setWorkItems] = useState<WorkItem[]>([]);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [estimates, setEstimates] = useState<Estimate[]>([]);
+  const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [units, setUnits] = useState<UnitName[]>(['식', '㎡', '개', '톤', 'm', 'kg', '회', '일']);
   const [categories, setCategories] = useState<CategoryName[]>(['토목공사', '구조공사', '철거공사', '마감공사', '설비공사', '내부공사', '기타']);
   const [stampImage, setStampImage] = useState<string | null>(null);
@@ -92,8 +103,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
       // 로그인 비활성화 모드면 인증 체크 건너뛰기
       if (LOGIN_DISABLED) {
-        // 개발용 UUID (nil UUID)
-        setUserId('00000000-0000-0000-0000-000000000000');
+        // 개발 모드: 로그인 없이 사용 (user_id는 null)
+        setUserId(null);
         setLoading(false);
         return;
       }
@@ -103,8 +114,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setUserId(user.id);
       } else {
         // 인증 없이도 기본 사용자로 작동 (개발/테스트 모드)
-        // 개발용 UUID (nil UUID)
-        setUserId('00000000-0000-0000-0000-000000000000');
+        // user_id는 null로 설정 (Supabase RLS 정책에서 허용)
+        setUserId(null);
       }
       setLoading(false);
     };
@@ -414,6 +425,52 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
           }
         }
 
+        // Schedules 로딩 (현재 사용자 것만)
+        const { data: schedulesData, error: schedulesError } = await supabase!
+          .from('schedules')
+          .select('*')
+          .eq('user_id', userId)
+          .order('start_date', { ascending: true });
+
+        if (!schedulesError && schedulesData) {
+          const mappedSchedules: Schedule[] = schedulesData.map((s: any) => ({
+            id: s.schedule_id,
+            userId: s.user_id,
+            title: s.title,
+            description: s.description || undefined,
+            scheduleType: s.schedule_type,
+            startDate: s.start_date,
+            startTime: s.start_time || undefined,
+            endDate: s.end_date || undefined,
+            endTime: s.end_time || undefined,
+            allDay: s.all_day || false,
+            clientId: s.client_id || undefined,
+            clientName: s.client_name || undefined,
+            workplaceId: s.workplace_id || undefined,
+            workplaceName: s.workplace_name || undefined,
+            projectName: s.project_name || undefined,
+            status: s.status || 'scheduled',
+            priority: s.priority || 'normal',
+            reminderEnabled: s.reminder_enabled || false,
+            reminderMinutesBefore: s.reminder_minutes_before || undefined,
+            isRecurring: s.is_recurring || false,
+            recurrenceRule: s.recurrence_rule || undefined,
+            location: s.location || undefined,
+            attendees: s.attendees || undefined,
+            notes: s.notes || undefined,
+            attachments: s.attachments || undefined,
+            createdAt: s.created_at,
+            updatedAt: s.updated_at
+          }));
+          setSchedules(mappedSchedules);
+
+          // 알림 권한 요청 및 스케줄링
+          const hasPermission = await requestNotificationPermission();
+          if (hasPermission) {
+            scheduleMultipleNotifications(mappedSchedules);
+          }
+        }
+
         setError(null);
       } catch (err) {
         console.error('데이터 로딩 실패:', err);
@@ -559,6 +616,140 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     })();
 
     return newItems;
+  };
+
+  // Schedules CRUD 함수
+  const saveSchedule = async (schedule: Schedule) => {
+    if (!supabase) return;
+
+    try {
+      const payload = {
+        user_id: userId || null,
+        title: schedule.title,
+        description: schedule.description || null,
+        schedule_type: schedule.scheduleType,
+        start_date: schedule.startDate,
+        start_time: schedule.startTime || null,
+        end_date: schedule.endDate || null,
+        end_time: schedule.endTime || null,
+        all_day: schedule.allDay,
+        client_id: schedule.clientId || null,
+        client_name: schedule.clientName || null,
+        workplace_id: schedule.workplaceId || null,
+        workplace_name: schedule.workplaceName || null,
+        project_name: schedule.projectName || null,
+        status: schedule.status,
+        priority: schedule.priority,
+        reminder_enabled: schedule.reminderEnabled,
+        reminder_minutes_before: schedule.reminderMinutesBefore || null,
+        is_recurring: schedule.isRecurring || false,
+        recurrence_rule: schedule.recurrenceRule || null,
+        location: schedule.location || null,
+        attendees: schedule.attendees || null,
+        notes: schedule.notes || null,
+        attachments: schedule.attachments || null,
+        updated_at: new Date().toISOString()
+      };
+
+      if (schedule.id) {
+        // Update existing schedule
+        const updateQuery = supabase!
+          .from('schedules')
+          .update(payload)
+          .eq('schedule_id', schedule.id);
+
+        // Only filter by user_id if user is logged in
+        if (userId) {
+          updateQuery.eq('user_id', userId);
+        }
+
+        const { error } = await updateQuery;
+        if (error) throw error;
+
+        // Update local state
+        setSchedules(prev =>
+          prev.map(s => s.id === schedule.id ? { ...schedule, updatedAt: payload.updated_at } : s)
+        );
+
+        // 알림 재스케줄링
+        scheduleNotification({ ...schedule, updatedAt: payload.updated_at });
+      } else {
+        // Insert new schedule
+        const { data, error } = await supabase!
+          .from('schedules')
+          .insert({ ...payload, created_at: new Date().toISOString() })
+          .select()
+          .single();
+
+        if (error) throw error;
+
+        // Add to local state
+        const newSchedule: Schedule = {
+          id: data.schedule_id,
+          userId: data.user_id,
+          title: data.title,
+          description: data.description || undefined,
+          scheduleType: data.schedule_type,
+          startDate: data.start_date,
+          startTime: data.start_time || undefined,
+          endDate: data.end_date || undefined,
+          endTime: data.end_time || undefined,
+          allDay: data.all_day,
+          clientId: data.client_id || undefined,
+          clientName: data.client_name || undefined,
+          workplaceId: data.workplace_id || undefined,
+          workplaceName: data.workplace_name || undefined,
+          projectName: data.project_name || undefined,
+          status: data.status,
+          priority: data.priority,
+          reminderEnabled: data.reminder_enabled,
+          reminderMinutesBefore: data.reminder_minutes_before || undefined,
+          isRecurring: data.is_recurring || false,
+          recurrenceRule: data.recurrence_rule || undefined,
+          location: data.location || undefined,
+          attendees: data.attendees || undefined,
+          notes: data.notes || undefined,
+          attachments: data.attachments || undefined,
+          createdAt: data.created_at,
+          updatedAt: data.updated_at
+        };
+        setSchedules(prev => [...prev, newSchedule].sort((a, b) => a.startDate.localeCompare(b.startDate)));
+
+        // 새 일정 알림 스케줄링
+        scheduleNotification(newSchedule);
+      }
+    } catch (err) {
+      console.error('일정 저장 실패:', err);
+      throw err;
+    }
+  };
+
+  const deleteSchedule = async (id: number) => {
+    if (!supabase) return;
+
+    try {
+      const deleteQuery = supabase!
+        .from('schedules')
+        .delete()
+        .eq('schedule_id', id);
+
+      // Only filter by user_id if user is logged in
+      if (userId) {
+        deleteQuery.eq('user_id', userId);
+      }
+
+      const { error } = await deleteQuery;
+      if (error) throw error;
+
+      // Update local state
+      setSchedules(prev => prev.filter(s => s.id !== id));
+
+      // 알림 취소
+      cancelScheduleNotification(id);
+    } catch (err) {
+      console.error('일정 삭제 실패:', err);
+      throw err;
+    }
   };
 
   // Clients 저장 - Clients.tsx에서 즉시 저장하므로 디바운스 저장 비활성화
@@ -797,6 +988,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setInvoices,
     estimates,
     setEstimates,
+    schedules,
+    setSchedules,
     units,
     setUnits,
     categories,
@@ -807,6 +1000,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     getCompletedWorkItemsByClient,
     addWorkItemToInvoice,
     convertEstimateToWorkItems,
+    saveSchedule,
+    deleteSchedule,
     loading,
     error
   };
