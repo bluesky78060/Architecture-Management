@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>청구서 상세 출력</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tw-config">tailwind.config={theme:{extend:{colors:{primary:'#2071f3'}}}}</script>
+    <style>
+      body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+      @media print {
+        @page { size: A4 portrait; margin: 12mm; }
+        .no-print { display: none !important; }
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50">
+    <div class="no-print fixed top-3 right-3 z-10 flex gap-2">
+      <button onclick="window.print()" class="px-3 py-1.5 rounded-md bg-primary text-white shadow flex items-center gap-1">
+        <span>🖨️</span><span>인쇄</span>
+      </button>
+      <button onclick="window.close()" class="px-3 py-1.5 rounded-md bg-white border shadow flex items-center gap-1">
+        <span>✕</span><span>닫기</span>
+      </button>
+    </div>
+
+    <main class="max-w-5xl mx-auto bg-white shadow-sm rounded-xl p-8">
+      <!-- 헤더 -->
+      <header class="flex items-start justify-between border-b pb-6 mb-6">
+        <div>
+          <h1 class="text-3xl font-extrabold text-primary">청구서 상세</h1>
+          <div class="mt-1 text-sm text-slate-600">청구서 번호: <span id="invNo"></span></div>
+          <div class="text-sm text-slate-600">발행일: <span id="invDate"></span></div>
+        </div>
+        <div class="text-right">
+          <div id="companyName" class="text-xl font-bold"></div>
+          <div id="companyAddr" class="text-sm text-slate-600"></div>
+          <div id="companyPhone" class="text-sm text-slate-600"></div>
+        </div>
+      </header>
+
+      <!-- 정보 카드 -->
+      <!-- 발주자/시공업체 정보 카드는 요청에 따라 비표시 처리 -->
+      <section class="hidden"></section>
+
+      <!-- 항목 테이블 -->
+      <section>
+        <table class="w-full text-left border">
+          <thead class="bg-slate-100">
+            <tr>
+              <th class="border px-2 py-2 text-center w-12">연번</th>
+              <th class="border px-2 py-2 text-center w-28">일자</th>
+              <th class="border px-2 py-2 text-center w-[25rem]">내&nbsp;&nbsp;&nbsp;&nbsp;용</th>
+              <th class="border px-2 py-2 text-center w-16">수량</th>
+              <th class="border px-2 py-2 text-center w-16">단위</th>
+              <th class="border px-2 py-2 text-center w-28">단&nbsp;&nbsp;&nbsp;가</th>
+              <th class="border px-2 py-2 text-center w-32">합&nbsp;&nbsp;&nbsp;계</th>
+              <th class="border px-2 py-2 text-center w-36">비&nbsp;&nbsp;&nbsp;고</th>
+            </tr>
+          </thead>
+          <tbody id="tbody" class="text-[13px]"></tbody>
+          <tfoot>
+            <tr class="bg-slate-50">
+              <td colspan="8" class="border px-2 py-3 text-right font-bold text-lg">
+                총 금액: <span id="grandTotal"></span>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </section>
+    </main>
+
+    <script>
+      function parsePayload(){
+        const p = new URLSearchParams(location.search).get('data');
+        // 1) URL 우선
+        if (p) {
+          try { return JSON.parse(decodeURIComponent(p)); } catch {}
+          try { return JSON.parse(p); } catch {}
+        }
+        // 2) localStorage 백업
+        try {
+          const ls = localStorage.getItem('invoiceDetailPrintData');
+          if (ls) return JSON.parse(ls);
+        } catch {}
+        return null;
+      }
+      function fmt(n){ return '₩' + (Number(n)||0).toLocaleString() + '원'; }
+      const payload = parsePayload();
+      if(payload){
+        const inv = payload.invoice || {};
+        const co = payload.companyInfo || {};
+        // 헤더
+        document.getElementById('invNo').textContent = inv.id || '';
+        document.getElementById('invDate').textContent = inv.date || '';
+        // 회사
+        const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val || ''; };
+        setText('companyName', co.name);
+        setText('companyAddr', co.address);
+        setText('companyPhone', co.phone);
+        // 숨긴 카드 요소는 존재하지 않을 수 있으므로 안전하게 처리
+        setText('clientName', inv.client);
+        setText('project', inv.project);
+        setText('siteAddr', inv.workplaceAddress);
+        setText('contractor', co.name);
+        setText('contractorAddr', co.address);
+        setText('contractorPhone', co.phone);
+
+        // 항목
+        const tb = document.getElementById('tbody');
+        tb.innerHTML = '';
+        (inv.workItems||[]).forEach((it, idx)=>{
+          const tr = document.createElement('tr');
+          tr.className = (idx%2? 'bg-slate-50' : 'bg-white');
+          const qty = Number(it.quantity)||0, up = Number(it.unitPrice)||0; const total = (it.total!=null? Number(it.total): qty*up)||0;
+          // 인부임 내역 계산 (청구서 상세 화면과 동일 포맷)
+          const gen = (Number(it.laborPersonsGeneral ?? (it['labor_persons_general']||0))||0) * (Number(it.laborUnitRateGeneral ?? (it['labor_unit_rate_general']||0))||0);
+          const sk  = (Number(it.laborPersons ?? (it['labor_persons']||0))||0) * (Number(it.laborUnitRate ?? (it['labor_unit_rate']||0))||0);
+          const laborTotal = gen + sk;
+          const laborParts = [];
+          if (gen > 0) laborParts.push(`${Number(it.laborPersonsGeneral)}명 × ${Number(it.laborUnitRateGeneral).toLocaleString()}원`);
+          if (sk > 0) laborParts.push(`${Number(it.laborPersons)}명 × ${Number(it.laborUnitRate).toLocaleString()}원`);
+          const laborHTML = laborTotal > 0
+            ? `<div class="text-xs text-blue-600 mt-1"><span class="font-medium">인부임:</span> ${laborParts.join(', ')} = ${laborTotal.toLocaleString()}원</div>`
+            : '';
+
+          tr.innerHTML = `
+            <td class="border px-2 py-2 text-center">${idx+1}</td>
+            <td class="border px-2 py-2 text-center">${it.date||''}</td>
+            <td class="border px-2 py-2">
+              <div class="font-medium text-slate-900">${it.name||''}</div>
+              ${(() => {
+                const desc = (it.description ?? it.desc ?? '') || '';
+                return desc ? `<div class='text-xs text-slate-600 whitespace-pre-line leading-relaxed'>${desc}</div>` : '';
+              })()}
+              ${laborHTML}
+            </td>
+            <td class="border px-2 py-2 text-center">${qty}</td>
+            <td class="border px-2 py-2 text-center">${it.unit||''}</td>
+            <td class="border px-2 py-2 text-right">${up.toLocaleString()}원</td>
+            <td class="border px-2 py-2 text-right font-semibold">${total.toLocaleString()}원</td>
+            <td class="border px-2 py-2 text-xs">${it.notes||''}</td>`;
+          tb.appendChild(tr);
+        });
+
+        const sum = (inv.workItems||[]).reduce((s,it)=> s + (it.total!=null? Number(it.total): (Number(it.quantity)||0)*(Number(it.unitPrice)||0)), 0);
+        document.getElementById('grandTotal').textContent = fmt(sum || inv.amount || 0);
+        document.title = '청구서상세_' + (inv.id||'');
+      }
+    </script>
+  </body>
+  </html>
