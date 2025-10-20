@@ -528,7 +528,8 @@ export default function Invoices(): JSX.Element {
 
       // 3. work_items 테이블에도 저장 (작업 항목 관리에서 보이도록)
       // 작업장 이름 조회
-      const workplace = getClientWorkplaces(created.clientId).find(w => Number(w.id) === Number(validWorkplaceId));
+      const clientIdForWorkplace = created.clientId ?? 0;
+      const workplace = getClientWorkplaces(clientIdForWorkplace).find(w => Number(w.id) === Number(validWorkplaceId));
       const workplaceName = workplace?.name ?? '';
 
       const workItemsToInsert = created.workItems.map((item) => ({
