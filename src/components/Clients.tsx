@@ -941,12 +941,12 @@ const Clients: React.FC = () => {
       {/* 새 건축주 모달 */}
       {showModal && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-10 mx-auto p-5 border border-gray-200 dark:border-gray-600 w-4/5 max-w-2xl shadow-lg rounded-md bg-white dark:bg-gray-800">
+          <div className="relative top-10 mx-auto p-5 border border-gray-200 dark:border-gray-600 w-4/5 max-w-2xl shadow-lg rounded-md bg-white dark:bg-gray-800 mb-8">
             <div className="mt-3">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4 text-center">
                 {isEditing ? '건축주 정보 수정' : '새 건축주 추가'}
               </h3>
-              <form onSubmit={handleSubmit} className="space-y-3">
+              <form id="client-form" onSubmit={handleSubmit} className="space-y-3">
                 {/* 섹션: 기본 정보 */}
                 <div className="rounded-xl border border-gray-100 dark:border-gray-600 bg-white dark:bg-gray-600 shadow-sm p-4">
                   <div className="flex items-center gap-2 mb-2">
@@ -1110,45 +1110,50 @@ const Clients: React.FC = () => {
                     </div>
                   ))}
                 </div>
-                <div className="flex justify-end space-x-2 pt-4">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowModal(false);
-                      setIsEditing(false);
-                      setEditingClientId(null);
-                      setNewClient({
-                        type: 'PERSON',
-                        name: '',
-                        phone: '',
-                        mobile: '',
-                        email: '',
-                        address: '',
-                        notes: '',
-                        business: {
-                          businessName: '',
-                          representative: '',
-                          businessNumber: '',
-                          businessType: '',
-                          businessItem: '',
-                          businessAddress: '',
-                          taxEmail: ''
-                        },
-                        workplaces: [{ name: '', address: '', description: '' }]
-                      });
-                    }}
-                    className="px-4 py-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                  >
-                    취소
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-white rounded"
-                  >
-                    {isEditing ? '수정' : '추가'}
-                  </button>
-                </div>
               </form>
+            </div>
+
+            {/* Sticky 버튼 영역 */}
+            <div className="sticky bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700 px-6 py-4 rounded-b-md shadow-lg -mx-5 -mb-5">
+              <div className="flex justify-end space-x-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowModal(false);
+                    setIsEditing(false);
+                    setEditingClientId(null);
+                    setNewClient({
+                      type: 'PERSON',
+                      name: '',
+                      phone: '',
+                      mobile: '',
+                      email: '',
+                      address: '',
+                      notes: '',
+                      business: {
+                        businessName: '',
+                        representative: '',
+                        businessNumber: '',
+                        businessType: '',
+                        businessItem: '',
+                        businessAddress: '',
+                        taxEmail: ''
+                      },
+                      workplaces: [{ name: '', address: '', description: '' }]
+                    });
+                  }}
+                  className="px-6 py-2.5 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition font-medium"
+                >
+                  취소
+                </button>
+                <button
+                  type="submit"
+                  form="client-form"
+                  className="px-6 py-2.5 bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-white rounded-lg transition font-bold"
+                >
+                  {isEditing ? '수정' : '추가'}
+                </button>
+              </div>
             </div>
           </div>
         </div>
