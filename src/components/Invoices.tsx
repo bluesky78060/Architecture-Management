@@ -514,8 +514,11 @@ export default function Invoices(): JSX.Element {
 
   return (
     <div className="p-4">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">청구서 관리</h1>
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">청구서 관리</h1>
+          <p className="text-gray-600 dark:text-gray-300">청구서를 발송하고 결제 현황을 추적하세요</p>
+        </div>
         <div className="flex items-center gap-2">
           {selection.selected.length > 0 && (
             <button
