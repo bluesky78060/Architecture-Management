@@ -13,7 +13,7 @@ import { exportToExcel } from '../utils/excelUtils';
 import { TIMEOUT } from '../constants/formatting';
 
 export default function Invoices(): JSX.Element {
-  const { invoices, setInvoices, clients, companyInfo, stampImage, categories, units, workItems, setWorkItems } = useApp();
+  const { invoices, setInvoices, clients, companyInfo, stampImage, categories, units, setWorkItems } = useApp();
   const { format } = useNumberFormat();
   const filters = useFilters();
 
