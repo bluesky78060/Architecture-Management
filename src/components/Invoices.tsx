@@ -13,7 +13,7 @@ import { exportToExcel } from '../utils/excelUtils';
 import { TIMEOUT } from '../constants/formatting';
 
 export default function Invoices(): JSX.Element {
-  const { invoices, setInvoices, clients, companyInfo, stampImage, categories, units } = useApp();
+  const { invoices, setInvoices, clients, companyInfo, stampImage, categories, units, workItems, setWorkItems } = useApp();
   const { format } = useNumberFormat();
   const filters = useFilters();
 
@@ -503,6 +503,83 @@ export default function Invoices(): JSX.Element {
         console.error('항목 데이터:', itemsToInsert);
         alert(`청구서 항목 생성 중 오류가 발생했습니다: ${itemsError.message}\n코드: ${itemsError.code}\n상세: ${itemsError.details}`);
         return;
+      }
+
+      // 3. work_items 테이블에도 저장 (작업 항목 관리에서 보이도록)
+      // 작업장 이름 조회
+      const workplace = getClientWorkplaces(created.clientId).find(w => Number(w.id) === Number(validWorkplaceId));
+      const workplaceName = workplace?.name ?? '';
+
+      const workItemsToInsert = created.workItems.map((item) => ({
+        user_id: userId,
+        client_id: created.clientId,
+        client_name: created.client,
+        workplace_id: validWorkplaceId,
+        workplace_name: workplaceName,
+        project_name: created.project ?? '',
+        name: item.name,
+        description: item.description ?? '',
+        category: item.category ?? '',
+        quantity: item.quantity ?? 0,
+        unit: item.unit ?? '',
+        default_price: item.unitPrice ?? 0,
+        status: 'completed', // 청구서 생성 시점이므로 완료 상태
+        start_date: item.date ?? created.date,
+        notes: item.notes ?? '',
+        labor_persons: typeof item.laborPersons === 'number' ? item.laborPersons : 0,
+        labor_unit_rate: typeof item.laborUnitRate === 'number' ? item.laborUnitRate : 0,
+        labor_persons_general: typeof item.laborPersonsGeneral === 'number' ? item.laborPersonsGeneral : 0,
+        labor_unit_rate_general: typeof item.laborUnitRateGeneral === 'number' ? item.laborUnitRateGeneral : 0,
+      }));
+
+      const { data: workItemsData, error: workItemsError } = await supabase
+        .from('work_items')
+        .insert(workItemsToInsert)
+        .select();
+
+      if (workItemsError !== null && workItemsError !== undefined) {
+        // 오류 발생 - 청구서는 생성되었지만 작업 항목 저장 실패
+        // eslint-disable-next-line no-console
+        console.error('작업 항목 저장 오류:', workItemsError);
+        alert(`청구서는 생성되었으나 작업 항목 저장 중 오류가 발생했습니다: ${workItemsError.message}`);
+        return;
+      }
+
+      // 4. 작업 항목 관리 UI 업데이트
+      if (workItemsData !== null && workItemsData !== undefined) {
+        const fromDbStatus = (status: string): '예정' | '진행중' | '완료' | '보류' => {
+          const statusMap: Record<string, '예정' | '진행중' | '완료' | '보류'> = {
+            'planned': '예정',
+            'in_progress': '진행중',
+            'completed': '완료',
+            'on_hold': '보류',
+          };
+          return statusMap[status] ?? '예정';
+        };
+
+        const newWorkItems = workItemsData.map((w: Record<string, unknown>) => ({
+          id: w.work_item_id as number,
+          clientId: w.client_id as number,
+          clientName: (w.client_name ?? created.client) as string,
+          workplaceId: (w.workplace_id !== null && w.workplace_id !== undefined) ? (w.workplace_id as number) : '',
+          workplaceName: (w.workplace_name ?? workplaceName) as string,
+          projectName: (w.project_name ?? '') as string,
+          name: w.name as string,
+          category: (w.category ?? '') as string,
+          defaultPrice: (w.default_price ?? 0) as number,
+          quantity: (w.quantity ?? 0) as number,
+          unit: (w.unit ?? '') as string,
+          description: (w.description ?? '') as string,
+          status: fromDbStatus(w.status as string),
+          date: (w.start_date ?? '') as string,
+          notes: (w.notes ?? '') as string,
+          laborPersons: (w.labor_persons ?? 0) as number,
+          laborUnitRate: (w.labor_unit_rate ?? 0) as number,
+          laborPersonsGeneral: (w.labor_persons_general ?? 0) as number,
+          laborUnitRateGeneral: (w.labor_unit_rate_general ?? 0) as number,
+        }));
+
+        setWorkItems(prev => [...prev, ...newWorkItems]);
       }
     } catch (err) {
       // 예외 발생 시 롤백
