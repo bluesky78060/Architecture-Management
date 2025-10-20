@@ -84,6 +84,41 @@ cp backup_checkpoints/[체크포인트명]/src/components/[파일명] /Users/lee
 
 ## 프로젝트 진행 기록
 
+### 2025.10.20 - 일정 관리 기능 Phase 1 MVP 완성 📅✅
+- **작업 내용**: 공사 일정 및 건축주 상담 일정 관리 기능 구현
+- **완료된 기능**:
+  - ✅ **DB 스키마**: schedules 테이블 생성 (RLS 정책, 인덱스 포함)
+  - ✅ **TypeScript 타입**: Schedule, ScheduleType, ScheduleStatus, SchedulePriority 정의
+  - ✅ **컴포넌트 구조**: Schedules, ScheduleList, ScheduleForm 구현
+  - ✅ **AppContext CRUD**: schedules 상태 및 saveSchedule, deleteSchedule 함수 추가
+  - ✅ **라우팅 통합**: /schedules 라우트 및 사이드바 메뉴 추가
+  - ✅ **다크모드 지원**: 모든 일정 관리 컴포넌트 다크모드 적용
+- **기능 상세**:
+  - 일정 타입: 공사, 상담, 회의, 기타
+  - 일정 상태: 예정, 진행중, 완료, 취소
+  - 우선순위: 낮음, 보통, 높음, 긴급
+  - 건축주 연동: clients 테이블과 연결
+  - 종일 일정 지원
+  - 장소, 메모, 참석자 정보 관리
+- **마이그레이션 오류 수정**:
+  - ❌ 발생한 오류: `ERROR: 42703: column "id" referenced in foreign key constraint does not exist`
+  - 🔍 원인 분석:
+    - `client_id INTEGER REFERENCES clients(id)` → `clients(client_id)` 참조 오류
+    - `workplace_id INTEGER REFERENCES workplaces(id)` → workplaces 테이블 없음
+  - ✅ 수정 완료:
+    - 외래키 참조 수정: `clients(client_id)` 사용
+    - workplace_id 외래키 제거 (workplaces는 별도 테이블이 아님)
+- **다음 단계**:
+  - ⏳ Supabase 마이그레이션 실행 (수정된 SQL로 재실행)
+  - ⏳ 일정 생성/수정/삭제 기능 테스트
+  - ⏳ RLS 정책 동작 확인
+  - ⏳ Phase 2: 주간/일간 뷰, 필터링, 검색 기능
+  - ⏳ Phase 3: 알림 시스템, 반복 일정, 구글 캘린더 동기화
+- **참고 문서**:
+  - 구현 계획: `claudedocs/schedule-feature-plan.md`
+  - 진행 상황: `claudedocs/schedule-implementation-progress.md`
+  - 마이그레이션: `supabase/migrations/20251020_create_schedules_table.sql`
+
 ### 2025.10.17 - 사용자 승인 시스템 v2.0.0 완성 🎯✅
 - **작업 내용**: 사용자 승인 시스템 완전 구현, 릴리즈 노트 생성
 - **완료된 기능**:

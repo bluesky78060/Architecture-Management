@@ -21,6 +21,7 @@ const EstimatesPage = lazy(() => import('./pages/EstimatesPage'));
 const InvoicesPage = lazy(() => import('./pages/InvoicesPage'));
 const Clients = lazy(() => import('./components/Clients'));
 const WorkItemsPage = lazy(() => import('./pages/WorkItemsPage'));
+const Schedules = lazy(() => import('./components/schedules/Schedules'));
 const CompanyInfo = lazy(() => import('./components/CompanyInfo'));
 const Settings = lazy(() => import('./pages/Settings'));
 const AdminApproval = lazy(() => import('./pages/AdminApproval'));
@@ -203,6 +204,7 @@ const routes = createRoutesFromElements(
       <Route path="invoices" element={<Suspense fallback={<LoadingFallback />}><InvoicesPage /></Suspense>} />
       <Route path="clients" element={<Suspense fallback={<LoadingFallback />}><Clients /></Suspense>} />
       <Route path="work-items" element={<Suspense fallback={<LoadingFallback />}><WorkItemsPage /></Suspense>} />
+      <Route path="schedules" element={<Suspense fallback={<LoadingFallback />}><Schedules /></Suspense>} />
       <Route path="company-info" element={<Suspense fallback={<LoadingFallback />}><CompanyInfo /></Suspense>} />
       <Route path="settings" element={<Suspense fallback={<LoadingFallback />}><Settings /></Suspense>} />
       <Route path="admin/approvals" element={<Suspense fallback={<LoadingFallback />}><AdminApproval /></Suspense>} />
