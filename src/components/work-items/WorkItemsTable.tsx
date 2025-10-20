@@ -115,7 +115,7 @@ export default function WorkItemsTable({ items, selection, format, getLaborCost,
                   })()}
                 </td>
                 <td className="px-3 py-3 whitespace-nowrap w-16">
-                  <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${item.status === '완료' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300' : item.status === '진행중' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300' : item.status === '보류' ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300' : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300'}`}>
+                  <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${item.status === '완료' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400' : item.status === '진행중' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400' : item.status === '보류' ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400' : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400'}`}>
                     {item.status}
                   </span>
                 </td>
