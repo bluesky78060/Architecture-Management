@@ -907,7 +907,7 @@ const Estimates: React.FC = () => {
       {/* 견적서 추가/편집 모달 */}
       {modals.isOpen('estimateForm') && (
         <div className="fixed inset-0 bg-gray-800/50 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
-          <div className="relative top-6 mx-auto w-[1100px] max-w-[96vw] shadow-2xl rounded-2xl bg-white/80 dark:bg-gray-800/80 ring-1 ring-black/5">
+          <div className="relative top-6 mx-auto w-[1100px] max-w-[96vw] shadow-2xl rounded-2xl bg-white/80 dark:bg-gray-800/80 ring-1 ring-black/5 mb-8">
             <div className="rounded-t-2xl bg-gradient-to-br from-indigo-50 via-purple-50 to-white dark:bg-gradient-to-br dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 px-8 pt-8 pb-6 text-center">
               <h3 className="text-2xl font-extrabold tracking-tight text-indigo-600 dark:text-indigo-400">
                 {(modalState.editingEstimate !== null && modalState.editingEstimate !== undefined) ? '견적서 편집' : '새 견적서 작성'}
@@ -915,7 +915,7 @@ const Estimates: React.FC = () => {
               <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">견적 기본정보와 항목을 입력하세요</p>
             </div>
             <div className="px-6 pb-6">
-              <form onSubmit={handleSubmit} className="space-y-3">
+              <form id="estimate-form" onSubmit={handleSubmit} className="space-y-3">
                 
                 {/* 기본 정보 */}
                 <div className="bg-white dark:bg-gray-700 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600 p-4">
@@ -1234,23 +1234,27 @@ const Estimates: React.FC = () => {
                     placeholder="부가세 별도, 설계 변경 시 추가 견적 등..."
                   />
                 </div>
-
-                <div className="flex justify-end space-x-2 pt-2">
-                  <button
-                    type="button"
-                    onClick={resetForm}
-                    className="px-4 py-2 text-gray-600 hover:text-gray-800"
-                  >
-                    취소
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 rounded bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow"
-                  >
-                    {(modalState.editingEstimate !== null && modalState.editingEstimate !== undefined) ? '수정' : '작성'}
-                  </button>
-                </div>
               </form>
+            </div>
+
+            {/* Sticky 버튼 영역 */}
+            <div className="sticky bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700 px-6 py-4 rounded-b-2xl shadow-lg">
+              <div className="flex justify-end space-x-3">
+                <button
+                  type="button"
+                  onClick={resetForm}
+                  className="px-6 py-2.5 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition font-medium"
+                >
+                  취소
+                </button>
+                <button
+                  type="submit"
+                  form="estimate-form"
+                  className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-md transition font-bold"
+                >
+                  {(modalState.editingEstimate !== null && modalState.editingEstimate !== undefined) ? '수정' : '작성'}
+                </button>
+              </div>
             </div>
           </div>
         </div>
