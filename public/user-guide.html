@@ -904,11 +904,236 @@
                     <li>왼쪽 메뉴에서 <strong>"✓ 작업 항목 관리"</strong>를 클릭합니다</li>
                     <li><strong>"새 작업 항목"</strong> 또는 <strong>"➕ 추가"</strong> 버튼을 클릭합니다</li>
                     <li>기본 정보를 입력합니다</li>
+                    <li>작업 정보를 입력합니다</li>
                     <li>작업 상태를 설정합니다</li>
-                    <li>작업 일정을 설정합니다</li>
-                    <li>비용 정보를 입력합니다</li>
                     <li><strong>"추가"</strong> 버튼을 클릭합니다</li>
                 </ol>
+
+                <h4>📌 기본 정보 입력하기</h4>
+                <p>새 작업 항목 추가 화면이 나타나면 기본 정보부터 입력합니다.</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>항목</th>
+                            <th>설명</th>
+                            <th>예시</th>
+                            <th>필수</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>👤 건축주</td>
+                            <td>등록된 건축주 중 선택</td>
+                            <td>김철수</td>
+                            <td>✅</td>
+                        </tr>
+                        <tr>
+                            <td>🏗️ 작업장</td>
+                            <td>건축주 선택 후 작업장 선택</td>
+                            <td>신축 주택</td>
+                            <td>✅</td>
+                        </tr>
+                        <tr>
+                            <td>📋 프로젝트명</td>
+                            <td>프로젝트 이름 입력</td>
+                            <td>주방 리모델링</td>
+                            <td>✅</td>
+                        </tr>
+                        <tr>
+                            <td>📁 카테고리</td>
+                            <td>공사 종류 선택</td>
+                            <td>마감공사, 미장공사 등</td>
+                            <td>✅</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="highlight-box">
+                    💡 <strong>순서가 중요해요!</strong><br>
+                    1. 먼저 건축주를 선택합니다<br>
+                    2. 그래야 그 건축주의 작업장 목록이 나타납니다<br>
+                    3. 작업장을 선택하면 프로젝트명을 입력할 수 있습니다
+                </div>
+
+                <h4>📝 작업 정보 입력하기</h4>
+                <p>작업의 구체적인 내용을 입력합니다.</p>
+
+                <h5>작업 내용:</h5>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>항목</th>
+                            <th>설명</th>
+                            <th>예시</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>📅 작업일자</td>
+                            <td>작업 시작 날짜</td>
+                            <td>2025-10-21</td>
+                        </tr>
+                        <tr>
+                            <td>📝 내용</td>
+                            <td>작업 내용 간단 설명</td>
+                            <td>주방 타일 시공</td>
+                        </tr>
+                        <tr>
+                            <td>🔨 세부 작업</td>
+                            <td>작업 상세 내용</td>
+                            <td>600×600 타일, 줄눈 시공 포함</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h5>💰 금액 정보:</h5>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>항목</th>
+                            <th>설명</th>
+                            <th>예시</th>
+                            <th>자동 계산</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>🔢 수량</td>
+                            <td>작업 수량</td>
+                            <td>1</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>📏 단위</td>
+                            <td>수량 단위 선택</td>
+                            <td>㎡, 개, 식 등</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>💵 단가</td>
+                            <td>단위당 가격</td>
+                            <td>250,000</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>💰 합계</td>
+                            <td>수량 × 단가</td>
+                            <td>250,000원</td>
+                            <td>✅ 자동</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h5>👷 인부 정보:</h5>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>항목</th>
+                            <th>설명</th>
+                            <th>예시</th>
+                            <th>자동 계산</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>👨‍🔧 인부 인원</td>
+                            <td>투입 인력 수</td>
+                            <td>3</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>💵 인부 단가</td>
+                            <td>1인당 인건비</td>
+                            <td>250,000</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>💰 인부임 합계</td>
+                            <td>인원 × 단가</td>
+                            <td>750,000원</td>
+                            <td>✅ 자동</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h5>📝 비고:</h5>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>항목</th>
+                            <th>설명</th>
+                            <th>예시</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>📋 비고</td>
+                            <td>추가 메모나 특이사항</td>
+                            <td>우천 시 작업 연기 가능</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="highlight-box">
+                    💡 <strong>자동 계산 기능</strong><br>
+                    - "합계"와 "인부임 합계"는 자동으로 계산됩니다<br>
+                    - 수량이나 단가를 입력하면 실시간으로 계산됩니다<br>
+                    - 총합계 = 합계 + 인부임 합계
+                </div>
+
+                <h4>🎯 작업 상태 설정하기</h4>
+                <p>화면 하단에서 이 작업의 현재 상태를 선택합니다.</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>버튼</th>
+                            <th>의미</th>
+                            <th>언제 사용?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>🟡 예정</td>
+                            <td>아직 시작 안 함</td>
+                            <td>계획 단계</td>
+                        </tr>
+                        <tr>
+                            <td>🔄 진행중</td>
+                            <td>지금 작업 중</td>
+                            <td>작업 진행 중</td>
+                        </tr>
+                        <tr>
+                            <td>✅ 완료</td>
+                            <td>작업 완료됨</td>
+                            <td>작업 끝남</td>
+                        </tr>
+                        <tr>
+                            <td>⏸️ 보류</td>
+                            <td>일시 중단</td>
+                            <td>날씨, 자재 대기 등</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h5>💰 총합계 확인:</h5>
+                <p>화면 오른쪽 하단에 <strong>총합계 금액</strong>이 자동으로 표시됩니다.</p>
+                <pre>
+총합계 금액: ₩1,000,000
+(합계 250,000 + 인부임 750,000)
+                </pre>
+
+                <h4>💾 저장하기</h4>
+                <p>모든 정보를 입력하고 상태를 선택했으면:</p>
+                <ol>
+                    <li>화면 하단의 <strong>"0원"</strong> 버튼(총합계 표시 버튼)을 클릭합니다</li>
+                    <li>또는 <strong>"추가"</strong> 버튼을 클릭합니다</li>
+                </ol>
+
+                <div class="success-box">
+                    ✅ <strong>완료!</strong> 작업 항목이 저장되었습니다.
+                </div>
 
                 <h3>📊 작업 진행상황 확인하기</h3>
 
