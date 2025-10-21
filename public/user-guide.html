@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>건축 관리 시스템 - 초보자 사용 설명서</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+
+        .container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+        }
+
+        /* 사이드바 네비게이션 */
+        .sidebar {
+            width: 280px;
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+        }
+
+        .sidebar nav ul li {
+            margin-bottom: 8px;
+        }
+
+        .sidebar nav ul li a {
+            color: #ecf0f1;
+            text-decoration: none;
+            display: block;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.3s;
+            font-size: 0.9em;
+        }
+
+        .sidebar nav ul li a:hover {
+            background: #34495e;
+            padding-left: 16px;
+        }
+
+        .sidebar nav ul li a.active {
+            background: #3498db;
+            font-weight: bold;
+        }
+
+        /* 메인 콘텐츠 */
+        .main-content {
+            flex: 1;
+            padding: 40px 60px;
+            overflow-y: auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #3498db;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            font-size: 1.2em;
+            color: #7f8c8d;
+        }
+
+        .section {
+            margin-bottom: 60px;
+            scroll-margin-top: 20px;
+        }
+
+        .section h2 {
+            font-size: 2em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .section h3 {
+            font-size: 1.5em;
+            color: #34495e;
+            margin: 30px 0 15px 0;
+        }
+
+        .section h4 {
+            font-size: 1.2em;
+            color: #555;
+            margin: 20px 0 10px 0;
+        }
+
+        .section h5 {
+            font-size: 1.1em;
+            color: #666;
+            margin: 15px 0 10px 0;
+        }
+
+        .section p {
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .section ul, .section ol {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+
+        .section li {
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        /* 테이블 스타일 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        tr:hover {
+            background: #e8f4f8;
+        }
+
+        /* 코드 블록 */
+        pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        code {
+            background: #ecf0f1;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #e74c3c;
+        }
+
+        pre code {
+            background: none;
+            color: #ecf0f1;
+            padding: 0;
+        }
+
+        /* 인용구 */
+        blockquote {
+            background: #fff8dc;
+            border-left: 4px solid #f39c12;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        blockquote p {
+            margin: 0;
+            color: #795548;
+        }
+
+        blockquote strong {
+            color: #e67e22;
+        }
+
+        /* 구분선 */
+        hr {
+            border: none;
+            border-top: 2px solid #ecf0f1;
+            margin: 40px 0;
+        }
+
+        /* 버튼 스타일 */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+        }
+
+        /* 강조 박스 */
+        .highlight-box {
+            background: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box {
+            background: #ffebee;
+            border-left: 4px solid #e74c3c;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .success-box {
+            background: #e8f5e9;
+            border-left: 4px solid #27ae60;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        /* 푸터 */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            background: #ecf0f1;
+            color: #7f8c8d;
+            margin-top: 60px;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .section h2 {
+                font-size: 1.5em;
+            }
+        }
+
+        /* 스크롤 부드럽게 */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* 사이드바 스크롤바 스타일 */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: #34495e;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #3498db;
+            border-radius: 3px;
+        }
+
+        /* 스텝 리스트 스타일 */
+        .step-list {
+            counter-reset: step-counter;
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .step-list li {
+            counter-increment: step-counter;
+            margin-bottom: 20px;
+            padding-left: 50px;
+            position: relative;
+        }
+
+        .step-list li::before {
+            content: "Step " counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #3498db;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 사이드바 네비게이션 -->
+        <aside class="sidebar">
+            <h2>📚 목차</h2>
+            <nav>
+                <ul>
+                    <li><a href="#intro">📌 들어가기 전에</a></li>
+                    <li><a href="#start">🚀 시작하기</a></li>
+                    <li><a href="#login">🔐 로그인 방법</a></li>
+                    <li><a href="#first-use">🏠 처음 사용하기</a></li>
+                    <li><a href="#clients">👤 건축주 등록</a></li>
+                    <li><a href="#estimates">📋 견적서 만들기</a></li>
+                    <li><a href="#invoices">💳 청구서 만들기</a></li>
+                    <li><a href="#work-items">✓ 작업 관리</a></li>
+                    <li><a href="#schedules">📅 일정 관리</a></li>
+                    <li><a href="#settings">⚙️ 환경설정</a></li>
+                    <li><a href="#faq">❓ 자주 묻는 질문</a></li>
+                    <li><a href="#tips">💡 팁과 꿀팁</a></li>
+                    <li><a href="#support">🆘 도움말 및 지원</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- 메인 콘텐츠 -->
+        <main class="main-content">
+            <!-- 헤더 -->
+            <header class="header">
+                <h1>🏗️ 건축 관리 시스템</h1>
+                <p class="subtitle">초보자 사용 설명서</p>
+                <p>컴퓨터를 처음 다루는 분들도 쉽게 따라할 수 있도록 작성되었습니다.</p>
+            </header>
+
+            <!-- 들어가기 전에 -->
+            <section id="intro" class="section">
+                <h2>📌 들어가기 전에</h2>
+                <ul>
+                    <li>✅ 어려운 용어는 쉬운 설명과 함께 제시합니다</li>
+                    <li>✅ 각 단계마다 따라할 버튼 위치를 알려줍니다</li>
+                    <li>✅ "❓" 표시가 있으면 더 자세한 설명을 볼 수 있습니다</li>
+                </ul>
+            </section>
+
+            <hr>
+
+            <!-- 시작하기 -->
+            <section id="start" class="section">
+                <h2>🚀 시작하기</h2>
+
+                <h3>1️⃣ 웹사이트에 접속하기</h3>
+                <p>컴퓨터의 인터넷 브라우저(Chrome, Edge 등)를 열어주세요.</p>
+                <p><strong>주소창에 다음을 입력합니다:</strong></p>
+                <pre><code>https://architecture-management.vercel.app</code></pre>
+                <div class="highlight-box">
+                    💡 <strong>팁:</strong> 이 주소를 북마크에 추가해두면 다음부터 쉽게 접속할 수 있습니다!
+                </div>
+
+                <h3>2️⃣ 로그인 화면 보기</h3>
+                <p>접속하면 아래와 같은 화면이 보입니다:</p>
+                <pre>
+┌─────────────────────────────────────┐
+│   🏗️ 건축 관리 시스템               │
+│   로그인하여 시작하세요              │
+│                                     │
+│  [🔵 Google로 로그인]               │
+│  [🟡 Kakao로 로그인]                │
+│                                     │
+│  ──────── 또는 ────────            │
+│                                     │
+│  📧 이메일: [___________]           │
+│  🔒 비밀번호: [__________]          │
+│                                     │
+│  [로그인]                           │
+└─────────────────────────────────────┘
+                </pre>
+            </section>
+
+            <hr>
+
+            <!-- 로그인 방법 -->
+            <section id="login" class="section">
+                <h2>🔐 로그인 하는 방법</h2>
+
+                <h3>방법 1: Google로 간편하게 로그인 ⭐ 추천</h3>
+                <ol>
+                    <li><strong>"🔵 Google로 로그인"</strong> 버튼을 클릭합니다</li>
+                    <li>본인의 Google 계정(Gmail)을 선택합니다</li>
+                    <li>자동으로 로그인됩니다</li>
+                </ol>
+                <div class="success-box">
+                    ✅ <strong>장점:</strong> 비밀번호를 기억할 필요 없음!
+                </div>
+
+                <h3>방법 2: Kakao로 간편하게 로그인</h3>
+                <ol>
+                    <li><strong>"🟡 Kakao로 로그인"</strong> 버튼을 클릭합니다</li>
+                    <li>본인의 Kakao 계정을 입력합니다</li>
+                    <li>자동으로 로그인됩니다</li>
+                </ol>
+                <div class="success-box">
+                    ✅ <strong>장점:</strong> Kakao 계정이 있으면 빠름!
+                </div>
+
+                <h3>방법 3: 이메일과 비밀번호로 로그인</h3>
+                <div class="warning-box">
+                    ⚠️ 이 방법을 사용하려면 먼저 <strong>회원가입</strong>을 해야 합니다.
+                </div>
+
+                <h4>📝 회원가입하기</h4>
+                <ol class="step-list">
+                    <li>로그인 화면에서 <strong>"회원가입"</strong> 링크를 찾아 클릭합니다</li>
+                    <li>다음 정보를 입력합니다</li>
+                    <li><strong>회원가입</strong> 버튼을 클릭합니다</li>
+                    <li>입력한 이메일로 확인 메일이 옵니다</li>
+                    <li>메일 내의 확인 링크를 클릭하면 회원가입 완료!</li>
+                </ol>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>항목</th>
+                            <th>설명</th>
+                            <th>예시</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>📧 이메일</td>
+                            <td>본인의 이메일 주소</td>
+                            <td>abc@gmail.com</td>
+                        </tr>
+                        <tr>
+                            <td>🔒 비밀번호</td>
+                            <td>안전한 비밀번호<br>(최소 8자 이상, 특수문자 포함)</td>
+                            <td>Example@123!</td>
+                        </tr>
+                        <tr>
+                            <td>🔒 비밀번호 확인</td>
+                            <td>위와 같은 비밀번호 다시 입력</td>
+                            <td>Example@123!</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <blockquote>
+                    <strong>🆘 비밀번호를 잊었어요!</strong>
+                    <p>1. 로그인 화면에서 "비밀번호 찾기" 링크를 클릭합니다</p>
+                    <p>2. 이메일을 입력합니다</p>
+                    <p>3. 메일로 온 링크를 통해 새 비밀번호를 설정합니다</p>
+                </blockquote>
+            </section>
+
+            <hr>
+
+            <!-- 처음 사용하기 -->
+            <section id="first-use" class="section">
+                <h2>🏠 처음 사용하기</h2>
+
+                <h3>첫 로그인 후 보이는 화면</h3>
+                <pre>
+┌─────────────────────────────────────────────────┐
+│ 📂 좌측 메뉴        │  📊 메인 영역            │
+│                     │                          │
+│ ☰ 대시보드          │  🏗️ 건축 관리 시스템     │
+│ 📋 견적서 관리      │                          │
+│ 💳 청구서 관리      │  💰 완제 청구액:         │
+│ 👤 건축주 관리      │  ₩0                      │
+│ ✓ 작업 항목 관리    │                          │
+│ 📅 일정 관리        │  💵 결제액: ₩0           │
+│ ⚙️ 환경설정        │  ⚠️ 미수금: ₩0           │
+│ 👤 계정             │                          │
+└─────────────────────────────────────────────────┘
+                </pre>
+
+                <h3>화면 구성 설명</h3>
+
+                <h4>📂 왼쪽 (사이드바)</h4>
+                <ul>
+                    <li>모든 기능이 메뉴로 정렬되어 있습니다</li>
+                    <li>원하는 메뉴를 클릭하면 그 기능을 사용할 수 있습니다</li>
+                </ul>
+
+                <h4>📊 오른쪽 (메인 영역)</h4>
+                <ul>
+                    <li>선택한 메뉴의 내용이 표시됩니다</li>
+                    <li>현재는 대시보드(처음 화면)가 표시되고 있습니다</li>
+                </ul>
+
+                <h3>📈 대시보드 이해하기</h3>
+                <p>대시보드는 <strong>현재 상황을 한눈에 보는 판</strong>입니다.</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>항목</th>
+                            <th>설명</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>💰 완제 청구액</td>
+                            <td>지금까지 고객에게 청구한 총 금액</td>
+                        </tr>
+                        <tr>
+                            <td>💵 결제액</td>
+                            <td>고객이 실제로 낸 돈</td>
+                        </tr>
+                        <tr>
+                            <td>⚠️ 미수금</td>
+                            <td>아직 못 받은 돈 (받아야 할 돈)</td>
+                        </tr>
+                        <tr>
+                            <td>👥 등록된 건축주</td>
+                            <td>등록된 고객 수</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="highlight-box">
+                    💡 <strong>처음에는 모두 0이에요!</strong><br>
+                    데이터를 입력하면 이 숫자들이 자동으로 늘어납니다.
+                </div>
+            </section>
+
+            <hr>
+
+            <!-- 건축주 등록하기 -->
+            <section id="clients" class="section">
+                <h2>👤 건축주 등록하기</h2>
+                <p>건축주는 <strong>공사를 의뢰한 고객</strong>을 의미합니다.</p>
+
+                <h3>❓ 왜 먼저 건축주를 등록할까?</h3>
+                <p>견적서나 청구서를 만들 때 <strong>"누구에게 청구할 것인가"</strong>를 정해야 하는데, 그 고객 정보를 먼저 등록해두는 것입니다.</p>
+
+                <h3>📝 건축주 등록 방법</h3>
+
+                <ol class="step-list">
+                    <li>왼쪽 메뉴에서 <strong>"👤 건축주 관리"</strong>를 클릭합니다</li>
+                    <li>화면 우측 상단의 <strong>"새 건축주"</strong> 또는 <strong>"➕ 추가"</strong> 버튼을 클릭합니다</li>
+                    <li>건축주 유형을 선택합니다 (개인 또는 사업자)</li>
+                    <li>필요한 정보를 입력합니다</li>
+                    <li><strong>"추가"</strong> 또는 <strong>"저장"</strong> 버튼을 클릭합니다</li>
+                </ol>
+
+                <h4>1️⃣ 개인 고객 입력 정보</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>항목</th>
+                            <th>설명</th>
+                            <th>예시</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>📛 성명</td>
+                            <td>고객의 이름</td>
+                            <td>김철수</td>
+                        </tr>
+                        <tr>
+                            <td>📞 연락처</td>
+                            <td>전화번호</td>
+                            <td>010-1234-5678</td>
+                        </tr>
+                        <tr>
+                            <td>📧 이메일</td>
+                            <td>이메일 주소</td>
+                            <td>kim@gmail.com</td>
+                        </tr>
+                        <tr>
+                            <td>🏠 주소</td>
+                            <td>고객의 주소</td>
+                            <td>서울시 강남구 테헤란로 123</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>2️⃣ 사업자 고객 입력 정보</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>항목</th>
+                            <th>설명</th>
+                            <th>예시</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>🏢 회사명</td>
+                            <td>회사 이름</td>
+                            <td>홍길동 건설</td>
+                        </tr>
+                        <tr>
+                            <td>👨‍💼 대표자</td>
+                            <td>회사 대표 이름</td>
+                            <td>홍길동</td>
+                        </tr>
+                        <tr>
+                            <td>📋 사업자번호</td>
+                            <td>사업자등록번호</td>
+                            <td>123-45-67890</td>
+                        </tr>
+                        <tr>
+                            <td>🏭 업태</td>
+                            <td>회사 업종</td>
+                            <td>건설업</td>
+                        </tr>
+                        <tr>
+                            <td>📞 연락처</td>
+                            <td>회사 전화번호</td>
+                            <td>02-1234-5678</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="success-box">
+                    ✅ <strong>완료!</strong> 이제 이 고객 정보가 저장되었습니다.
+                </div>
+
+                <div class="warning-box">
+                    ⚠️ <strong>주의:</strong> 삭제하면 그 고객의 견적서나 청구서도 함께 삭제될 수 있습니다!
+                </div>
+            </section>
+
+            <hr>
+
+            <!-- 견적서 만들기 -->
+            <section id="estimates" class="section">
+                <h2>📋 견적서 만들기</h2>
+                <p>견적서는 <strong>고객에게 "이 일에 이 정도 비용이 들 것 같습니다"라고 알려주는 문서</strong>입니다.</p>
+
+                <h3>❓ 견적서가 필요한 이유</h3>
+                <ul>
+                    <li>✅ 고객과 비용을 사전에 합의합니다</li>
+                    <li>✅ 나중에 청구서를 만들 때 참고합니다</li>
+                    <li>✅ 전문적인 회사 이미지를 보여줍니다</li>
+                </ul>
+
+                <h3>📝 견적서 만드는 방법</h3>
+
+                <ol class="step-list">
+                    <li>왼쪽 메뉴에서 <strong>"📋 견적서 관리"</strong>를 클릭합니다</li>
+                    <li>화면 우측 상단의 <strong>"새 견적서"</strong> 또는 <strong>"➕ 작성"</strong> 버튼을 클릭합니다</li>
+                    <li>기본 정보를 입력합니다 (건축주, 프로젝트명)</li>
+                    <li>공사 항목을 추가합니다</li>
+                    <li>특이사항을 입력합니다</li>
+                    <li>상태를 설정합니다</li>
+                    <li><strong>"작성"</strong> 버튼을 클릭합니다</li>
+                </ol>
+
+                <h4>공사 항목 추가하기</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>항목</th>
+                            <th>설명</th>
+                            <th>예시</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>📁 카테고리</td>
+                            <td>공사 종류를 선택</td>
+                            <td>마감공사</td>
+                        </tr>
+                        <tr>
+                            <td>📝 내용</td>
+                            <td>구체적인 공사 내용</td>
+                            <td>거실 좌식 도배 시공</td>
+                        </tr>
+                        <tr>
+                            <td>🔢 수량</td>
+                            <td>공사 양</td>
+                            <td>100</td>
+                        </tr>
+                        <tr>
+                            <td>📏 단위</td>
+                            <td>수량의 단위</td>
+                            <td>㎡</td>
+                        </tr>
+                        <tr>
+                            <td>💰 단가</td>
+                            <td>단위당 가격</td>
+                            <td>5,000</td>
+                        </tr>
+                        <tr>
+                            <td>💵 금액</td>
+                            <td><strong>자동 계산됨</strong></td>
+                            <td>₩500,000</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="highlight-box">
+                    💡 <strong>한 번에 여러 항목 추가하고 싶다면?</strong><br>
+                    "일괄 추가" 기능을 사용합니다. Excel 파일로 데이터를 준비하고 업로드하면 모든 항목이 한 번에 추가됩니다.
+                </div>
+
+                <h3>🖨️ 견적서를 PDF로 출력하기</h3>
+                <ol>
+                    <li>견적서 상세 화면에서 <strong>"인쇄"</strong> 또는 <strong>"📄 PDF 다운로드"</strong> 버튼을 찾습니다</li>
+                    <li>버튼을 클릭하면 전문적인 견적서가 PDF로 생성됩니다</li>
+                    <li>고객 정보와 회사 도장이 자동으로 포함됩니다</li>
+                </ol>
+            </section>
+
+            <hr>
+
+            <!-- 청구서 만들기 -->
+            <section id="invoices" class="section">
+                <h2>💳 청구서 만들기</h2>
+                <p>청구서는 <strong>"공사가 완료되었으니 이 금액을 내세요"라고 고객에게 청구하는 문서</strong>입니다.</p>
+
+                <h3>❓ 견적서와 청구서의 차이</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>구분</th>
+                            <th>설명</th>
+                            <th>시점</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>📋 견적서</td>
+                            <td>"이 정도 비용이 들 것 같습니다"</td>
+                            <td>공사 <strong>전</strong></td>
+                        </tr>
+                        <tr>
+                            <td>💳 청구서</td>
+                            <td>"이 금액을 내세요"</td>
+                            <td>공사 <strong>후</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p><strong>순서:</strong> 견적서 → 공사 → 청구서</p>
+
+                <h3>📝 청구서 만드는 방법</h3>
+
+                <ol class="step-list">
+                    <li>왼쪽 메뉴에서 <strong>"💳 청구서 관리"</strong>를 클릭합니다</li>
+                    <li>화면 우측 상단의 <strong>"새 청구서"</strong> 또는 <strong>"➕ 생성"</strong> 버튼을 클릭합니다</li>
+                    <li>기본 정보를 입력합니다 (건축주, 프로젝트)</li>
+                    <li>공사 항목을 추가하거나 견적서에서 불러옵니다</li>
+                    <li><strong>"저장"</strong> 또는 <strong>"생성"</strong> 버튼을 클릭합니다</li>
+                </ol>
+
+                <h3>📧 청구서를 고객에게 발송하기</h3>
+
+                <h4>방법 1: PDF로 출력하기</h4>
+                <ol>
+                    <li>청구서 상세 화면에서 <strong>[🖨️ 인쇄]</strong> 버튼 클릭</li>
+                    <li>PDF 문서가 생성됩니다</li>
+                    <li>인쇄하거나 이메일로 전송합니다</li>
+                </ol>
+
+                <h4>방법 2: 이메일로 바로 발송하기</h4>
+                <ol>
+                    <li>청구서 상세 화면에서 <strong>[📧 발송]</strong> 버튼 클릭</li>
+                    <li>고객 이메일로 자동 발송됩니다</li>
+                    <li>발송 기록이 남습니다</li>
+                </ol>
+            </section>
+
+            <hr>
+
+            <!-- 작업 관리하기 -->
+            <section id="work-items" class="section">
+                <h2>✓ 작업 관리하기</h2>
+                <p>작업 관리는 <strong>실제로 시공 중인 일들을 추적</strong>하는 기능입니다.</p>
+
+                <p><strong>예를 들어:</strong></p>
+                <ul>
+                    <li>좌식 도배공사 - 🔄 진행중</li>
+                    <li>바닥 타일공사 - 🟡 예정</li>
+                    <li>페인트 칠하기 - ✅ 완료</li>
+                </ul>
+
+                <h3>📝 작업 항목 추가하기</h3>
+
+                <ol class="step-list">
+                    <li>왼쪽 메뉴에서 <strong>"✓ 작업 항목 관리"</strong>를 클릭합니다</li>
+                    <li><strong>"새 작업 항목"</strong> 또는 <strong>"➕ 추가"</strong> 버튼을 클릭합니다</li>
+                    <li>기본 정보를 입력합니다</li>
+                    <li>작업 상태를 설정합니다</li>
+                    <li>작업 일정을 설정합니다</li>
+                    <li>비용 정보를 입력합니다</li>
+                    <li><strong>"추가"</strong> 버튼을 클릭합니다</li>
+                </ol>
+
+                <h3>📊 작업 진행상황 확인하기</h3>
+
+                <h4>대시보드에서 보기</h4>
+                <pre>
+📈 총 작업 항목: 4개
+✅ 완료된 작업: 2개
+🔄 진행중인 작업: 1개
+🟡 예정된 작업: 1개
+                </pre>
+
+                <h4>작업 목록에서 보기</h4>
+                <p>작업 항목 관리 화면에서 모든 작업을 리스트로 볼 수 있습니다.</p>
+                <p><strong>색상으로 상태를 구분합니다:</strong></p>
+                <ul>
+                    <li>🟢 초록색: 완료</li>
+                    <li>🟠 주황색: 진행중</li>
+                    <li>⚪ 회색: 예정</li>
+                </ul>
+            </section>
+
+            <hr>
+
+            <!-- 일정 관리하기 -->
+            <section id="schedules" class="section">
+                <h2>📅 일정 관리하기</h2>
+                <p>일정 관리는 <strong>중요한 날짜와 마감일을 관리</strong>하는 기능입니다.</p>
+
+                <p><strong>예를 들어:</strong></p>
+                <ul>
+                    <li>10월 20일: 👤 고객 방문 예정</li>
+                    <li>10월 25일: 🏗️ 시공 완료 예정</li>
+                    <li>10월 30일: 🔧 하자 보수</li>
+                </ul>
+
+                <h3>➕ 새 일정 추가하기</h3>
+
+                <ol class="step-list">
+                    <li>왼쪽 메뉴에서 <strong>"📅 일정 관리"</strong>를 클릭합니다</li>
+                    <li><strong>[➕ 일정 추가]</strong> 버튼을 클릭하거나 달력에서 날짜를 직접 클릭합니다</li>
+                    <li>일정 정보를 입력합니다</li>
+                    <li><strong>"저장"</strong> 또는 <strong>"추가"</strong> 버튼을 클릭합니다</li>
+                </ol>
+
+                <h3>🔗 Google Calendar와 연동하기</h3>
+                <p>Google 캘린더(스마트폰 캘린더)와 자동으로 동기화할 수 있습니다.</p>
+
+                <h4>설정 방법</h4>
+                <ol>
+                    <li>일정 관리 화면 상단에서 <strong>[🔵 Google Calendar]</strong> 버튼을 찾습니다</li>
+                    <li>버튼을 클릭하면 Google 계정 로그인 화면이 나타납니다</li>
+                    <li>본인의 Google 계정으로 로그인합니다</li>
+                    <li>권한 요청에서 [동의] 또는 [허용]을 클릭합니다</li>
+                    <li>✅ 연동 완료!</li>
+                </ol>
+
+                <div class="success-box">
+                    <strong>연동 후 이점:</strong>
+                    <ul>
+                        <li>✅ 이 시스템에서 추가한 일정이 Google 캘린더에도 나타납니다</li>
+                        <li>✅ 스마트폰의 캘린더 앱에서도 볼 수 있습니다</li>
+                        <li>✅ 어디서나 일정을 확인할 수 있습니다</li>
+                    </ul>
+                </div>
+            </section>
+
+            <hr>
+
+            <!-- 환경설정 -->
+            <section id="settings" class="section">
+                <h2>⚙️ 환경설정</h2>
+                <p>환경설정은 <strong>시스템을 자신의 회사에 맞게 설정</strong>하는 곳입니다.</p>
+                <p>처음 한 번만 설정하면 나중에 계속 사용됩니다.</p>
+
+                <h3>1️⃣ 회사 정보 설정</h3>
+                <p>견적서나 청구서를 인쇄할 때 회사 정보가 자동으로 들어갑니다.</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>항목</th>
+                            <th>예시</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>🏢 회사명</td>
+                            <td>한국건설</td>
+                        </tr>
+                        <tr>
+                            <td>👨‍💼 대표자명</td>
+                            <td>홍길동</td>
+                        </tr>
+                        <tr>
+                            <td>📋 사업자등록번호</td>
+                            <td>123-45-67890</td>
+                        </tr>
+                        <tr>
+                            <td>☎️ 전화번호</td>
+                            <td>02-1234-5678</td>
+                        </tr>
+                        <tr>
+                            <td>🏠 주소</td>
+                            <td>서울시 강남구 테헤란로 123</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>2️⃣ 단위 설정</h3>
+                <p>단위란 <strong>수량을 나타내는 방법</strong>입니다.</p>
+                <p><strong>예:</strong> 10㎡ (제곱미터), 100개, 5식</p>
+
+                <h3>3️⃣ 카테고리 설정</h3>
+                <p>카테고리란 <strong>공사의 종류를 분류</strong>하는 것입니다.</p>
+                <p><strong>예:</strong> 마감공사, 미장공사, 도장공사</p>
+
+                <h3>4️⃣ 도장(인감) 이미지 설정</h3>
+                <p>청구서나 견적서에 회사 도장(인감)을 자동으로 포함시킬 수 있습니다.</p>
+
+                <ol>
+                    <li><strong>[이미지 선택]</strong> 버튼을 클릭합니다</li>
+                    <li>컴퓨터에서 도장 이미지 파일을 선택합니다 (PNG나 JPG 형식)</li>
+                    <li>이미지가 업로드됩니다</li>
+                    <li><strong>[저장]</strong> 또는 <strong>[확인]</strong> 버튼을 클릭합니다</li>
+                </ol>
+            </section>
+
+            <hr>
+
+            <!-- 자주 묻는 질문 -->
+            <section id="faq" class="section">
+                <h2>❓ 자주 묻는 질문</h2>
+
+                <h3>🔰 기본 사용법</h3>
+
+                <h4>Q1. 처음 사용하는데 어디서부터 시작해야 하나요?</h4>
+                <p><strong>A.</strong> 다음 순서로 진행하세요:</p>
+                <ol>
+                    <li>환경설정에서 회사 정보 입력</li>
+                    <li>건축주 관리에서 고객 등록</li>
+                    <li>견적서 관리에서 견적서 작성</li>
+                    <li>청구서 관리에서 청구서 발송</li>
+                    <li>작업 항목과 일정으로 진행상황 추적</li>
+                </ol>
+
+                <h4>Q2. 비밀번호를 잊어버렸어요. 어떻게 하나요?</h4>
+                <p><strong>A.</strong> 로그인 화면에서:</p>
+                <ol>
+                    <li>[비밀번호 찾기] 링크를 클릭합니다</li>
+                    <li>가입할 때 사용한 이메일을 입력합니다</li>
+                    <li>메일로 온 링크를 클릭합니다</li>
+                    <li>새로운 비밀번호를 설정합니다</li>
+                </ol>
+
+                <h4>Q3. 로그아웃하려면 어떻게 하나요?</h4>
+                <p><strong>A.</strong> 좌측 메뉴 하단의:</p>
+                <ol>
+                    <li>[👤 계정] 또는 프로필 아이콘을 클릭합니다</li>
+                    <li>[로그아웃] 버튼을 클릭합니다</li>
+                </ol>
+
+                <h3>📋 견적서 & 청구서</h3>
+
+                <h4>Q6. 견적서와 청구서는 무엇이 다른가요?</h4>
+                <p><strong>A.</strong> 간단히 말하면:</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>구분</th>
+                            <th>설명</th>
+                            <th>시점</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>📋 견적서</td>
+                            <td>"이 정도 비용이 들 것 같습니다"</td>
+                            <td>공사 <strong>전</strong></td>
+                        </tr>
+                        <tr>
+                            <td>💳 청구서</td>
+                            <td>"이 금액을 내세요"</td>
+                            <td>공사 <strong>후</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>Q8. 청구서를 고객에게 어떻게 보내나요?</h4>
+                <p><strong>A.</strong> 두 가지 방법이 있습니다:</p>
+                <div class="highlight-box">
+                    <strong>방법 1: 이메일로 직접 발송</strong>
+                    <ul>
+                        <li>청구서 화면에서 [📧 발송] 버튼 클릭</li>
+                        <li>고객 이메일로 자동 발송됨</li>
+                    </ul>
+                </div>
+                <div class="highlight-box">
+                    <strong>방법 2: 직접 전달</strong>
+                    <ul>
+                        <li>청구서 화면에서 [🖨️ 인쇄] 또는 [📄 PDF 다운로드] 클릭</li>
+                        <li>PDF 파일을 받아서 인쇄하거나 이메일로 직접 보냄</li>
+                    </ul>
+                </div>
+
+                <h3>🔒 기타</h3>
+
+                <h4>Q13. 데이터가 안전하게 보관되나요?</h4>
+                <p><strong>A.</strong> 네, 안전하게 보관됩니다:</p>
+                <ul>
+                    <li>✅ 클라우드 서버에 저장됩니다</li>
+                    <li>✅ 자동으로 백업됩니다</li>
+                    <li>✅ HTTPS 암호화로 보호됩니다</li>
+                    <li>✅ 본인과 관리자만 접근 가능합니다</li>
+                </ul>
+
+                <h4>Q15. 스마트폰에서도 사용할 수 있나요?</h4>
+                <p><strong>A.</strong> 네, 웹브라우저로 접속 가능합니다:</p>
+                <ol>
+                    <li>스마트폰의 인터넷 브라우저를 엽니다</li>
+                    <li>https://architecture-management.vercel.app 접속</li>
+                    <li>로그인합니다</li>
+                    <li>✅ 모바일 화면에 최적화되어 표시됩니다</li>
+                </ol>
+            </section>
+
+            <hr>
+
+            <!-- 팁과 꿀팁 -->
+            <section id="tips" class="section">
+                <h2>💡 팁과 꿀팁</h2>
+
+                <h3>⏰ 시간을 절약하는 팁들</h3>
+
+                <h4>1️⃣ 자주 쓰는 정보 미리 저장하기</h4>
+                <p>환경설정에서 단위와 카테고리를 미리 설정하면, 나중에 매번 입력할 필요가 없습니다.</p>
+                <div class="highlight-box">
+                    예: "좌식 도배공사", "바닥 타일공사" 같은 자주 쓰는 항목들을 카테고리에 미리 만들어두면 매번 선택하기만 하면 됩니다.
+                </div>
+
+                <h4>2️⃣ 일괄 추가 기능 활용하기</h4>
+                <p>여러 항목을 한 번에 입력할 때는 "일괄 추가" 기능을 사용합니다.</p>
+                <div class="highlight-box">
+                    Excel에서 한 번에 데이터를 입력하고 "일괄 추가"로 한 번에 업로드하면 됩니다. 한 개씩 입력하는 것보다 훨씬 빠릅니다.
+                </div>
+
+                <h4>3️⃣ Google Calendar 연동하기</h4>
+                <p>Google Calendar와 연동하면 어디서나 일정을 확인할 수 있습니다.</p>
+                <div class="success-box">
+                    스마트폰에서도 바로 확인 가능해서 약속을 놓칠 일이 없습니다.
+                </div>
+
+                <h4>4️⃣ PDF 저장해두기</h4>
+                <p>중요한 견적서나 청구서는 PDF로 저장해두세요.</p>
+                <ol>
+                    <li>문서 화면에서 [인쇄] 또는 [PDF 다운로드] 클릭</li>
+                    <li>자동으로 컴퓨터에 저장됩니다</li>
+                    <li>나중에 언제든 다시 볼 수 있습니다</li>
+                </ol>
+
+                <h3>🗂️ 정리 팁</h3>
+
+                <h4>주기적으로 정리하기</h4>
+                <ul>
+                    <li>📅 월 1회: 완료된 프로젝트를 체크합니다</li>
+                    <li>📅 분기 1회: 오래된 데이터를 정리합니다</li>
+                </ul>
+
+                <h4>📝 메모 잘 활용하기</h4>
+                <p>각 항목의 메모 칸에 특별한 사항을 기록합니다.</p>
+                <div class="highlight-box">
+                    예: "고객이 페인트 색상 변경 요청함", "추가 하자보수 비용 ₩50,000"
+                </div>
+            </section>
+
+            <hr>
+
+            <!-- 도움말 및 지원 -->
+            <section id="support" class="section">
+                <h2>🆘 도움말 및 지원</h2>
+
+                <h3>문제가 발생했을 때</h3>
+
+                <h4>1단계: FAQ에서 찾아보기</h4>
+                <p>위의 "자주 묻는 질문"을 먼저 확인해보세요. 같은 문제의 해결책이 있을 수 있습니다.</p>
+
+                <h4>2단계: 페이지 새로고침해보기</h4>
+                <p>대부분의 문제는 페이지 새로고침으로 해결됩니다:</p>
+                <ul>
+                    <li><strong>방법 1:</strong> <code>F5</code> 키를 누릅니다</li>
+                    <li><strong>방법 2:</strong> <code>Ctrl + R</code>을 누릅니다</li>
+                    <li><strong>방법 3:</strong> 브라우저 새로고침 버튼(⟳)을 클릭합니다</li>
+                </ul>
+
+                <h4>3단계: 다시 로그인해보기</h4>
+                <ol>
+                    <li>로그아웃합니다</li>
+                    <li>브라우저를 완전히 종료합니다</li>
+                    <li>다시 열고 로그인합니다</li>
+                </ol>
+
+                <h4>4단계: 개발자에게 문의하기</h4>
+                <p>위의 방법들로 해결되지 않으면:</p>
+                <div class="highlight-box">
+                    📧 이메일: support@architecture-management.com<br>
+                    또는<br>
+                    💬 시스템 내의 [문의]를 통해 연락합니다
+                </div>
+            </section>
+
+            <hr>
+
+            <!-- 마치면서 -->
+            <section class="section">
+                <h2>🎉 마치면서</h2>
+
+                <div class="success-box" style="text-align: center; font-size: 1.2em;">
+                    <strong>축하합니다! 이제 건축 관리 시스템을 사용할 수 있게 되었습니다.</strong>
+                </div>
+
+                <h3>📅 실제 사용 순서 정리</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>주차</th>
+                            <th>활동</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1주차</td>
+                            <td>기본 설정 및 고객 등록</td>
+                        </tr>
+                        <tr>
+                            <td>2주차</td>
+                            <td>견적서 만들기</td>
+                        </tr>
+                        <tr>
+                            <td>3주차</td>
+                            <td>청구서 및 작업 관리</td>
+                        </tr>
+                        <tr>
+                            <td>4주차</td>
+                            <td>일정 관리 및 최적화</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>📖 이 설명서 활용 팁</h3>
+                <ul>
+                    <li>✅ 처음에는 처음부터 끝까지 읽어보세요</li>
+                    <li>✅ 실제로 사용할 때는 필요한 부분만 찾아서 봅니다</li>
+                    <li>✅ 북마크하거나 인쇄해서 옆에 두고 보세요</li>
+                    <li>✅ 질문이 생기면 FAQ를 먼저 확인합니다</li>
+                </ul>
+
+                <blockquote style="background: #e8f4f8; border-left-color: #3498db; margin: 30px 0; padding: 20px;">
+                    <strong style="font-size: 1.2em;">💪 마지막으로:</strong>
+                    <p style="font-size: 1.1em; margin: 10px 0;">처음에는 어려울 수 있지만, 몇 번 사용하다 보면 금방 익숙해집니다!</p>
+                    <p style="font-size: 1.1em; margin: 10px 0;"><strong>🎯 성공적인 프로젝트 관리를 응원합니다!</strong></p>
+                </blockquote>
+            </section>
+
+            <!-- 푸터 -->
+            <footer class="footer">
+                <h3>📄 문서 정보</h3>
+                <table style="margin: 20px auto; max-width: 600px;">
+                    <tbody>
+                        <tr>
+                            <td><strong>📌 버전</strong></td>
+                            <td>v1.0 (초보자용)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>📅 작성일</strong></td>
+                            <td>2025년 10월</td>
+                        </tr>
+                        <tr>
+                            <td><strong>🔄 최신 업데이트</strong></td>
+                            <td>2025년 10월 21일</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="margin-top: 20px;">📢 이 설명서는 누구나 자유롭게 공유, 인쇄, 배포할 수 있습니다.</p>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        // 네비게이션 활성화 스크립트
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.sidebar nav a');
+            const sections = document.querySelectorAll('.section');
+
+            // 부드러운 스크롤
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+
+                    if (targetSection) {
+                        targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+
+            // 스크롤 시 현재 섹션 하이라이트
+            window.addEventListener('scroll', function() {
+                let current = '';
+
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+
+                    if (window.pageYOffset >= sectionTop - 100) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + current) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
