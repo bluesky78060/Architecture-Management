@@ -122,7 +122,8 @@ export async function authenticateGoogleCalendar(): Promise<boolean> {
     // 새로운 인증 요청
     console.log('🔓 OAuth 팝업 열기...');
     try {
-      tokenClient.requestAccessToken({ prompt: 'consent' });
+      // prompt: 'consent' 제거 - 처음 한 번만 인증, 이후 자동 갱신
+      tokenClient.requestAccessToken({ prompt: '' });
     } catch (error: any) {
       console.error('❌ OAuth 요청 실패:', error);
       alert(`OAuth 요청 실패:\n${error.message || '알 수 없는 오류'}\n\n팝업이 차단되었는지 확인해주세요.`);
