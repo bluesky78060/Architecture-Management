@@ -1,4 +1,5 @@
 import ReactMarkdown from 'react-markdown';
+import type { Components } from 'react-markdown';
 
 const PRIVACY_POLICY = `# 개인정보처리방침
 
@@ -189,12 +190,92 @@ Architecture Management("본 서비스")는 사용자의 개인정보를 중요�
 본 개인정보처리방침은 2025년 10월 20일부터 적용됩니다.
 `;
 
+const customComponents: Components = {
+  h1: ({ children }) => (
+    <h1 className="text-4xl font-bold text-indigo-600 dark:text-indigo-400 mb-4 pb-4 border-b-2 border-indigo-200 dark:border-indigo-800">
+      🔒 {children}
+    </h1>
+  ),
+  h2: ({ children }) => (
+    <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mt-8 mb-4 flex items-center">
+      <span className="w-1 h-6 bg-indigo-500 mr-3"></span>
+      {children}
+    </h2>
+  ),
+  h3: ({ children }) => (
+    <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-200 mt-6 mb-3">
+      {children}
+    </h3>
+  ),
+  p: ({ children }) => (
+    <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+      {children}
+    </p>
+  ),
+  ul: ({ children }) => (
+    <ul className="space-y-2 mb-4 ml-6">
+      {children}
+    </ul>
+  ),
+  li: ({ children }) => (
+    <li className="text-gray-700 dark:text-gray-300 flex items-start">
+      <span className="text-indigo-500 mr-2">•</span>
+      <span>{children}</span>
+    </li>
+  ),
+  strong: ({ children }) => (
+    <strong className="font-semibold text-indigo-600 dark:text-indigo-400">
+      {children}
+    </strong>
+  ),
+  hr: () => (
+    <hr className="my-8 border-gray-200 dark:border-gray-700" />
+  ),
+};
+
 export default function PrivacyPolicy() {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
-        <div className="prose dark:prose-invert max-w-none">
-          <ReactMarkdown>{PRIVACY_POLICY}</ReactMarkdown>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50 dark:from-gray-900 dark:to-indigo-950 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        {/* 헤더 카드 */}
+        <div className="bg-white dark:bg-gray-800 rounded-t-2xl shadow-xl p-8 border-b-4 border-indigo-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">개인정보처리방침</h1>
+              <p className="mt-2 text-gray-600 dark:text-gray-400">Architecture Management</p>
+            </div>
+            <div className="text-right">
+              <p className="text-sm text-gray-500 dark:text-gray-400">최종 수정일</p>
+              <p className="text-lg font-semibold text-indigo-600 dark:text-indigo-400">2025.10.20</p>
+            </div>
+          </div>
+        </div>
+
+        {/* 본문 카드 */}
+        <div className="bg-white dark:bg-gray-800 rounded-b-2xl shadow-xl p-8 sm:p-12">
+          <div className="prose prose-indigo dark:prose-invert max-w-none">
+            <ReactMarkdown components={customComponents}>
+              {PRIVACY_POLICY}
+            </ReactMarkdown>
+          </div>
+
+          {/* 푸터 */}
+          <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+            <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-6">
+              <h3 className="text-lg font-semibold text-indigo-900 dark:text-indigo-100 mb-3">
+                📧 문의하기
+              </h3>
+              <p className="text-gray-700 dark:text-gray-300 mb-2">
+                개인정보 처리에 관한 문의사항이 있으시면 언제든지 연락 주시기 바랍니다.
+              </p>
+              <div className="flex items-center space-x-2 text-indigo-600 dark:text-indigo-400">
+                <span className="font-medium">이메일:</span>
+                <a href="mailto:bluesky78060@gmail.com" className="hover:underline">
+                  bluesky78060@gmail.com
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
