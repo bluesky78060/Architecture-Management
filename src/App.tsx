@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import './App.css';
 // Theme support with dark mode
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -16,9 +16,12 @@ import Schedules from './components/schedules/Schedules';
 import Migration from './pages/Migration';
 import SupabaseTest from './pages/SupabaseTest';
 import Settings from './pages/Settings';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
 
 function AppContent() {
   const { isLoggedIn } = useUser();
+  const location = useLocation();
   const LOGIN_DISABLED = (process.env.REACT_APP_DISABLE_LOGIN === '1') ||
     (typeof window !== 'undefined' && window.localStorage !== null && window.localStorage.getItem('CMS_DISABLE_LOGIN') === '1');
 
@@ -27,7 +30,11 @@ function AppContent() {
   console.log('🔵 [App] LOGIN_DISABLED:', LOGIN_DISABLED);
   /* eslint-enable no-console */
 
-  if (LOGIN_DISABLED === false && isLoggedIn === false) {
+  // 공개 페이지는 로그인 체크 우회
+  const publicPaths = ['/privacy-policy', '/terms-of-service'];
+  const isPublicPath = publicPaths.includes(location.pathname);
+
+  if (!isPublicPath && LOGIN_DISABLED === false && isLoggedIn === false) {
     /* eslint-disable no-console */
     console.log('⚠️ [App] Redirecting to Login page');
     /* eslint-enable no-console */
@@ -37,6 +44,11 @@ function AppContent() {
   return (
     <AppProvider>
       <Routes>
+        {/* 공개 페이지 (로그인 불필요) */}
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-of-service" element={<TermsOfService />} />
+
+        {/* 보호된 페이지 (로그인 필요) */}
         <Route path="/supabase-test" element={<SupabaseTest />} />
         <Route element={<Layout />}>
           <Route index element={<Dashboard />} />
