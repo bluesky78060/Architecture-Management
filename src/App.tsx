@@ -41,14 +41,20 @@ function AppContent() {
     return <Login />;
   }
 
+  // 공개 페이지는 AppProvider 없이 바로 렌더링
+  if (isPublicPath) {
+    return (
+      <Routes>
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-of-service" element={<TermsOfService />} />
+      </Routes>
+    );
+  }
+
+  // 보호된 페이지는 AppProvider로 감싸기
   return (
     <AppProvider>
       <Routes>
-        {/* 공개 페이지 (로그인 불필요) */}
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/terms-of-service" element={<TermsOfService />} />
-
-        {/* 보호된 페이지 (로그인 필요) */}
         <Route path="/supabase-test" element={<SupabaseTest />} />
         <Route element={<Layout />}>
           <Route index element={<Dashboard />} />
