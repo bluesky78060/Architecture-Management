@@ -25,6 +25,8 @@ const Schedules = lazy(() => import('./components/schedules/Schedules'));
 const CompanyInfo = lazy(() => import('./components/CompanyInfo'));
 const Settings = lazy(() => import('./pages/Settings'));
 const AdminApproval = lazy(() => import('./pages/AdminApproval'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const TermsOfService = lazy(() => import('./pages/TermsOfService'));
 
 // Loading fallback component
 function LoadingFallback() {
@@ -187,7 +189,11 @@ function AppGate() {
     return <Navigate to="/login" replace />;
   }
 
-  return <Layout />;
+  return (
+    <AppProvider>
+      <Layout />
+    </AppProvider>
+  );
 }
 
 const routes = createRoutesFromElements(
@@ -196,6 +202,8 @@ const routes = createRoutesFromElements(
     <Route path="login" element={<Login />} />
     <Route path="forgot-password" element={<ForgotPassword />} />
     <Route path="pending-approval" element={<PendingApproval />} />
+    <Route path="privacy-policy" element={<Suspense fallback={<LoadingFallback />}><PrivacyPolicy /></Suspense>} />
+    <Route path="terms-of-service" element={<Suspense fallback={<LoadingFallback />}><TermsOfService /></Suspense>} />
 
     {/* Protected routes (authentication required) */}
     <Route element={<AppGate />}>
@@ -230,9 +238,7 @@ root.render(
   <ThemeProvider>
     <QueryClientProvider client={queryClient}>
       <UserProvider>
-        <AppProvider>
-          <RouterProvider router={router} future={{ v7_startTransition: true }} />
-        </AppProvider>
+        <RouterProvider router={router} future={{ v7_startTransition: true }} />
       </UserProvider>
     </QueryClientProvider>
   </ThemeProvider>
