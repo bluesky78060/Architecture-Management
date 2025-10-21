@@ -50,6 +50,7 @@ export interface AppContextValue {
   convertEstimateToWorkItems: (estimateId: string) => WorkItem[];
   saveSchedule: (schedule: Schedule) => Promise<void>;
   deleteSchedule: (id: number) => Promise<void>;
+  bulkDeleteSchedules: (ids: number[]) => Promise<void>;
   loading: boolean;
   error: string | null;
 }
@@ -752,6 +753,34 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   };
 
+  const bulkDeleteSchedules = async (ids: number[]) => {
+    if (!supabase || ids.length === 0) return;
+
+    try {
+      const deleteQuery = supabase!
+        .from('schedules')
+        .delete()
+        .in('schedule_id', ids);
+
+      // Only filter by user_id if user is logged in
+      if (userId) {
+        deleteQuery.eq('user_id', userId);
+      }
+
+      const { error } = await deleteQuery;
+      if (error) throw error;
+
+      // Update local state
+      setSchedules(prev => prev.filter(s => !ids.includes(s.id)));
+
+      // 알림 취소
+      ids.forEach(id => cancelScheduleNotification(id));
+    } catch (err) {
+      console.error('일정 일괄 삭제 실패:', err);
+      throw err;
+    }
+  };
+
   // Clients 저장 - Clients.tsx에서 즉시 저장하므로 디바운스 저장 비활성화
   // Clients.tsx에서 즉시 INSERT/UPDATE/DELETE 처리
   // 디바운스 저장은 중복 INSERT 409 Conflict를 발생시키므로 제거
@@ -1002,6 +1031,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     convertEstimateToWorkItems,
     saveSchedule,
     deleteSchedule,
+    bulkDeleteSchedules,
     loading,
     error
   };

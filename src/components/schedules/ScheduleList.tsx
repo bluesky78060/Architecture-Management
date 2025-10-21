@@ -1,4 +1,5 @@
 /* eslint-disable */
+import { useState } from 'react';
 import { useApp } from '../../contexts/AppContext';
 import type { Schedule } from '../../types/domain';
 import { getFileIcon } from '../../services/fileUploadService';
@@ -9,7 +10,8 @@ interface Props {
 }
 
 export default function ScheduleList({ schedules, onEdit }: Props) {
-  const { deleteSchedule, saveSchedule } = useApp();
+  const { deleteSchedule, bulkDeleteSchedules, saveSchedule } = useApp();
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   /* eslint-disable no-console */
   console.log('📅 [ScheduleList] Schedules data:', schedules);
@@ -38,6 +40,31 @@ export default function ScheduleList({ schedules, onEdit }: Props) {
   const handleDelete = (id: number) => {
     if (window.confirm('일정을 삭제하시겠습니까?')) {
       deleteSchedule(id);
+    }
+  };
+
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setSelectedIds(schedules.map(s => s.id));
+    } else {
+      setSelectedIds([]);
+    }
+  };
+
+  const handleSelectOne = (id: number, checked: boolean) => {
+    if (checked) {
+      setSelectedIds(prev => [...prev, id]);
+    } else {
+      setSelectedIds(prev => prev.filter(selectedId => selectedId !== id));
+    }
+  };
+
+  const handleBulkDelete = () => {
+    if (selectedIds.length === 0) return;
+
+    if (window.confirm(`선택한 ${selectedIds.length}개의 일정을 삭제하시겠습니까?`)) {
+      bulkDeleteSchedules(selectedIds);
+      setSelectedIds([]);
     }
   };
 
@@ -73,13 +100,48 @@ export default function ScheduleList({ schedules, onEdit }: Props) {
 
   return (
     <div className="space-y-4">
+      {/* 일괄 선택 및 삭제 컨트롤 */}
+      {schedules.length > 0 && (
+        <div className="flex items-center justify-between bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+          <div className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              checked={selectedIds.length === schedules.length && schedules.length > 0}
+              onChange={handleSelectAll}
+              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+            />
+            <span className="text-sm text-gray-700 dark:text-gray-300">
+              {selectedIds.length > 0 ? `${selectedIds.length}개 선택됨` : '전체 선택'}
+            </span>
+          </div>
+
+          {selectedIds.length > 0 && (
+            <button
+              onClick={handleBulkDelete}
+              className="px-4 py-2 text-sm text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors"
+            >
+              선택 삭제 ({selectedIds.length})
+            </button>
+          )}
+        </div>
+      )}
+
       {schedules.map((schedule: Schedule) => (
         <div
           key={schedule.id}
           className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
         >
           <div className="flex justify-between items-start">
-            <div className="flex-1">
+            {/* 체크박스 */}
+            <input
+              type="checkbox"
+              checked={selectedIds.includes(schedule.id)}
+              onChange={(e) => handleSelectOne(schedule.id, e.target.checked)}
+              onClick={(e) => e.stopPropagation()}
+              className="w-4 h-4 mt-1 text-blue-600 border-gray-300 rounded focus:ring-blue-500 flex-shrink-0"
+            />
+
+            <div className="flex-1 ml-3">
               <div className="flex items-center gap-2 mb-2">
                 {getTypeBadge(schedule.scheduleType)}
 
