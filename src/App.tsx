@@ -19,52 +19,48 @@ import Settings from './pages/Settings';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 
-function AppContent() {
+// 보호된 라우트를 위한 래퍼 컴포넌트
+function ProtectedRoutes() {
   const { isLoggedIn } = useUser();
   const LOGIN_DISABLED = (process.env.REACT_APP_DISABLE_LOGIN === '1') ||
     (typeof window !== 'undefined' && window.localStorage !== null && window.localStorage.getItem('CMS_DISABLE_LOGIN') === '1');
 
-  /* eslint-disable no-console */
-  console.log('🔵 [App] isLoggedIn:', isLoggedIn);
-  console.log('🔵 [App] LOGIN_DISABLED:', LOGIN_DISABLED);
-  /* eslint-enable no-console */
-
-  // 로그인 체크 (공개 페이지 제외)
   const needsLogin = LOGIN_DISABLED === false && isLoggedIn === false;
 
+  if (needsLogin) {
+    return <Login />;
+  }
+
+  return (
+    <AppProvider>
+      <Routes>
+        <Route path="/supabase-test" element={<SupabaseTest />} />
+        <Route element={<Layout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="estimates" element={<EstimatesPage />} />
+          <Route path="invoices" element={<InvoicesPage />} />
+          <Route path="clients" element={<Clients />} />
+          <Route path="work-items" element={<WorkItemsPage />} />
+          <Route path="schedules" element={<Schedules />} />
+          <Route path="company-info" element={<CompanyInfo />} />
+          <Route path="settings" element={<Settings />} />
+          <Route path="migration" element={<Migration />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </AppProvider>
+  );
+}
+
+function AppContent() {
   return (
     <Routes>
-      {/* 공개 페이지 (로그인 불필요, AppProvider 불필요) */}
+      {/* 공개 페이지 (로그인 불필요) */}
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="/terms-of-service" element={<TermsOfService />} />
 
-      {/* 보호된 페이지들 */}
-      <Route
-        path="/*"
-        element={
-          needsLogin ? (
-            <Login />
-          ) : (
-            <AppProvider>
-              <Routes>
-                <Route path="/supabase-test" element={<SupabaseTest />} />
-                <Route element={<Layout />}>
-                  <Route index element={<Dashboard />} />
-                  <Route path="/estimates" element={<EstimatesPage />} />
-                  <Route path="/invoices" element={<InvoicesPage />} />
-                  <Route path="/clients" element={<Clients />} />
-                  <Route path="/work-items" element={<WorkItemsPage />} />
-                  <Route path="/schedules" element={<Schedules />} />
-                  <Route path="/company-info" element={<CompanyInfo />} />
-                  <Route path="/settings" element={<Settings />} />
-                  <Route path="/migration" element={<Migration />} />
-                </Route>
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </AppProvider>
-          )
-        }
-      />
+      {/* 모든 나머지 라우트는 보호됨 */}
+      <Route path="/*" element={<ProtectedRoutes />} />
     </Routes>
   );
 }
