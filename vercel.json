@@ -1,12 +1,23 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "CI=false npm run build",
   "outputDirectory": "build",
-  "installCommand": "npm install",
+  "installCommand": "npm ci --legacy-peer-deps",
   "framework": "create-react-app",
   "rewrites": [
     {
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ]
+  ],
+  "build": {
+    "env": {
+      "NODE_VERSION": "18",
+      "NPM_CONFIG_LEGACY_PEER_DEPS": "true",
+      "GENERATE_SOURCEMAP": "false",
+      "CI": "false"
+    }
+  },
+  "functions": {
+    "maxDuration": 30
+  }
 }
