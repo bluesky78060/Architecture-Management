@@ -525,38 +525,76 @@
                 </ul>
 
                 <h3>📈 대시보드 이해하기</h3>
-                <p>대시보드는 <strong>현재 상황을 한눈에 보는 판</strong>입니다.</p>
+                <p>대시보드는 <strong>현장 작업 현황과 청구 관리 상태를 한눈에 확인</strong>하는 화면입니다.</p>
+
+                <h4>📊 주요 지표 카드 (4개)</h4>
+                <p>상단에 4개의 색상별 카드가 표시됩니다:</p>
 
                 <table>
                     <thead>
                         <tr>
-                            <th>항목</th>
+                            <th>카드</th>
+                            <th>아이콘</th>
                             <th>설명</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>💰 완제 청구액</td>
-                            <td>지금까지 고객에게 청구한 총 금액</td>
+                            <td><span style="background-color: #e0e7ff; color: #4f46e5; padding: 4px 12px; border-radius: 6px; font-weight: 600;">전체 청구액</span></td>
+                            <td>📊</td>
+                            <td>지금까지 고객에게 청구한 총 금액 (원 단위 표시)</td>
                         </tr>
                         <tr>
-                            <td>💵 결제액</td>
-                            <td>고객이 실제로 낸 돈</td>
+                            <td><span style="background-color: #d1fae5; color: #059669; padding: 4px 12px; border-radius: 6px; font-weight: 600;">결제완료</span></td>
+                            <td>💰</td>
+                            <td>고객이 실제로 결제한 총 금액</td>
                         </tr>
                         <tr>
-                            <td>⚠️ 미수금</td>
-                            <td>아직 못 받은 돈 (받아야 할 돈)</td>
+                            <td><span style="background-color: #fed7aa; color: #ea580c; padding: 4px 12px; border-radius: 6px; font-weight: 600;">미수금</span></td>
+                            <td>📄</td>
+                            <td>아직 받지 못한 금액 (전체 청구액 - 결제완료)</td>
                         </tr>
                         <tr>
-                            <td>👥 등록된 건축주</td>
-                            <td>등록된 고객 수</td>
+                            <td><span style="background-color: #ddd6fe; color: #7c3aed; padding: 4px 12px; border-radius: 6px; font-weight: 600;">등록된 건축주</span></td>
+                            <td>👥</td>
+                            <td>등록된 건축주 수 (명 단위 표시)</td>
                         </tr>
                     </tbody>
                 </table>
 
                 <div class="highlight-box">
                     💡 <strong>처음에는 모두 0이에요!</strong><br>
-                    데이터를 입력하면 이 숫자들이 자동으로 늘어납니다.
+                    건축주, 작업 항목, 청구서를 등록하면 이 숫자들이 자동으로 계산됩니다.
+                </div>
+
+                <h4>📋 최근 활동 섹션 (2개)</h4>
+                <p>주요 지표 아래에 2개의 최근 활동 카드가 표시됩니다:</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>섹션</th>
+                            <th>표시 내용</th>
+                            <th>상태 종류</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>최근 견적</strong></td>
+                            <td>최근 작성된 견적서 3개<br>(견적서 번호, 건축주명, 날짜, 프로젝트명)</td>
+                            <td><span style="background-color: #fef3c7; color: #d97706; padding: 2px 10px; border-radius: 12px; font-size: 0.85em;">검토중</span> <span style="background-color: #d1fae5; color: #059669; padding: 2px 10px; border-radius: 12px; font-size: 0.85em;">승인됨</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>최근 청구서</strong></td>
+                            <td>최근 발행된 청구서 5개<br>(청구서 번호, 건축주명, 프로젝트명, 금액)</td>
+                            <td><span style="background-color: #fef3c7; color: #d97706; padding: 2px 10px; border-radius: 12px; font-size: 0.85em;">발송대기</span> <span style="background-color: #dbeafe; color: #2563eb; padding: 2px 10px; border-radius: 12px; font-size: 0.85em;">발송됨</span> <span style="background-color: #d1fae5; color: #059669; padding: 2px 10px; border-radius: 12px; font-size: 0.85em;">결제완료</span> <span style="background-color: #fee2e2; color: #dc2626; padding: 2px 10px; border-radius: 12px; font-size: 0.85em;">미결제</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="success-box">
+                    ✅ <strong>실시간 업데이트!</strong><br>
+                    청구서나 견적서를 새로 만들거나 상태를 변경하면 대시보드가 자동으로 업데이트됩니다.
                 </div>
             </section>
 
