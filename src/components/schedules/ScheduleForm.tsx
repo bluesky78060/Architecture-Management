@@ -241,7 +241,7 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="px-6 pb-6 pt-3 space-y-4">
+        <form id="schedule-form" onSubmit={handleSubmit} className="px-6 pb-6 pt-3 space-y-4">
           {/* 충돌 경고 */}
           {showConflictWarning && conflicts.length > 0 && (
             <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 dark:border-yellow-600 p-4">
@@ -716,23 +716,27 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
             )}
           </div>
 
-          {/* 버튼 영역 */}
-          <div className="flex justify-end space-x-3 mt-6">
+        </form>
+
+        {/* Sticky 버튼 영역 */}
+        <div className="sticky bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700 px-6 py-4 rounded-b-2xl shadow-lg">
+          <div className="flex justify-end space-x-3">
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2.5 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition font-medium"
+              className="px-6 py-2.5 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition font-medium"
             >
               취소
             </button>
             <button
               type="submit"
-              className="px-6 py-2.5 bg-indigo-600 dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-600 text-white rounded-md transition font-bold"
+              form="schedule-form"
+              className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-md transition font-bold"
             >
               {schedule ? '수정' : '추가'}
             </button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );
