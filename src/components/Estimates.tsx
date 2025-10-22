@@ -1212,7 +1212,7 @@ const Estimates: React.FC = () => {
                             </select>
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">합계</label>
+                            <div className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">합계</div>
                             <div className="w-full bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm">
                               {(() => {
                                 const MIN_VALUE = 0;
