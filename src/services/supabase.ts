@@ -35,6 +35,12 @@ class SupabaseService {
         auth: {
           persistSession: true,
           autoRefreshToken: true,
+          // Chrome third-party cookie 차단 대응: localStorage 명시적 사용
+          storage: window.localStorage,
+          storageKey: 'supabase.auth.token',
+          // OAuth 콜백 URL에서 세션 자동 감지 (PKCE flow)
+          detectSessionInUrl: true,
+          flowType: 'pkce',
         },
         db: {
           schema: 'public',
