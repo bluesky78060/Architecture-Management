@@ -285,12 +285,42 @@
 
   /* Schedule Date Input - Larger Calendar */
   .schedule-date-input {
-    font-size: 18px;
+    font-size: 16px;
+    line-height: 1.5;
   }
 
+  /* 달력 아이콘 크기 조정 */
   .schedule-date-input::-webkit-calendar-picker-indicator {
-    transform: scale(1.5);
-    @apply cursor-pointer hover:scale-150 transition-transform duration-200;
+    width: 28px;
+    height: 28px;
+    @apply cursor-pointer transition-transform duration-200;
+  }
+
+  .schedule-date-input::-webkit-calendar-picker-indicator:hover {
+    transform: scale(1.15);
+  }
+
+  /* 입력된 날짜 텍스트 크기 */
+  .schedule-date-input::-webkit-datetime-edit-fields-wrapper {
+    font-size: 16px;
+  }
+
+  .schedule-date-input::-webkit-datetime-edit-text,
+  .schedule-date-input::-webkit-datetime-edit-month-field,
+  .schedule-date-input::-webkit-datetime-edit-day-field,
+  .schedule-date-input::-webkit-datetime-edit-year-field {
+    font-size: 16px;
+    padding: 2px 4px;
+  }
+
+  /* 달력 팝업 자체 크기 조정 (Chrome/Edge) */
+  .schedule-date-input::-webkit-calendar-picker-indicator {
+    filter: none;
+  }
+
+  /* Input에 zoom 적용하여 전체 UI 확대 */
+  .schedule-date-input {
+    zoom: 1.3;
   }
 
   /* Focus Ring Enhancement */
