@@ -63,6 +63,21 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     (async () => {
       await migrateSensitiveData();
 
+      /* eslint-disable no-console */
+      // OAuth 콜백 디버깅
+      const urlParams = new URLSearchParams(window.location.search);
+      const hasOAuthCode = urlParams.has('code');
+      const hasAccessToken = urlParams.has('access_token');
+      const hasError = urlParams.has('error');
+
+      console.log('🟢 [UserContext] URL params check:', {
+        hasOAuthCode,
+        hasAccessToken,
+        hasError,
+        fullURL: window.location.href
+      });
+      /* eslint-enable no-console */
+
       // Support URL toggle: ?bypassLogin=1 sets runtime flag
       try {
         const params = new URLSearchParams(window.location.search);
@@ -91,7 +106,22 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       } else {
         // Supabase 세션 확인
         if (supabase !== null) {
-          supabase.auth.getSession().then(({ data: { session } }) => {
+          /* eslint-disable no-console */
+          console.log('🟢 [UserContext] Checking Supabase session...');
+          /* eslint-enable no-console */
+
+          try {
+            const { data: { session }, error } = await supabase.auth.getSession();
+
+            /* eslint-disable no-console */
+            console.log('🟢 [UserContext] getSession result:', {
+              hasSession: session !== null,
+              hasUser: session?.user !== undefined && session?.user !== null,
+              error: error?.message,
+              userEmail: session?.user?.email
+            });
+            /* eslint-enable no-console */
+
             if (session?.user !== undefined && session?.user !== null) {
               const supabaseUser: User = {
                 id: 1,
@@ -99,22 +129,33 @@ export const UserProvider = ({ children }: UserProviderProps) => {
                 name: session.user.user_metadata?.name ?? session.user.email ?? 'User',
                 role: 'admin'
               };
+              /* eslint-disable no-console */
+              console.log('✅ [UserContext] Session found, logging in:', supabaseUser.username);
+              /* eslint-enable no-console */
               setCurrentUser(supabaseUser);
               setIsLoggedIn(true);
               try { sessionStorage.setItem('CURRENT_USER', JSON.stringify(supabaseUser)); } catch (e) {}
               return;
             }
-          }).catch(() => {
-            // Supabase 세션 확인 실패 시 로컬 세션 확인
-          });
+          } catch (err) {
+            /* eslint-disable no-console */
+            console.error('❌ [UserContext] getSession error:', err);
+            /* eslint-enable no-console */
+          }
         }
 
         // 로컬 세션 확인
         const savedUser = sessionStorage.getItem('CURRENT_USER');
         if (savedUser !== null && savedUser !== '') {
+          /* eslint-disable no-console */
+          console.log('🟢 [UserContext] Restoring from sessionStorage');
+          /* eslint-enable no-console */
           setCurrentUser(JSON.parse(savedUser) as User);
           setIsLoggedIn(true);
         } else {
+          /* eslint-disable no-console */
+          console.log('⚠️ [UserContext] No saved session found');
+          /* eslint-enable no-console */
           // 과거 잔존 세션 제거
           removeSecureItem('CURRENT_USER');
         }
