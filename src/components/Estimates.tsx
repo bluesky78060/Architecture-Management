@@ -1061,15 +1061,14 @@ const Estimates: React.FC = () => {
                       </div>
                     </div>
                     <div className="col-span-2">
-                      <label htmlFor="estimate-status-hidden" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">상태</label>
+                      <div className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">상태</div>
                       <input
-                        id="estimate-status-hidden"
-                        name="estimate-status-hidden"
                         type="hidden"
+                        name="status"
                         value={newEstimate.status}
                         readOnly
                       />
-                      <div className="flex flex-wrap gap-1.5">
+                      <div className="flex flex-wrap gap-1.5" role="group" aria-label="견적서 상태 선택">
                         {statuses.map((s) => {
                           const active = newEstimate.status === s;
                           const classes = active
