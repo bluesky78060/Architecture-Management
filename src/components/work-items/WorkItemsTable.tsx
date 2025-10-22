@@ -34,7 +34,7 @@ export default function WorkItemsTable({ items, selection, format, getLaborCost,
                   onChange={(e) => selection.toggleAll(e.target.checked)}
                   checked={selection.selected.length > 0 && selection.selected.length === items.length}
                   className="w-4 h-4 rounded border-gray-300"
-                  title="전체 선택"
+                  aria-label="전체 선택"
                 />
               </th>
               <th className="px-2 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider w-24">
@@ -77,7 +77,7 @@ export default function WorkItemsTable({ items, selection, format, getLaborCost,
                     checked={selection.selected.includes(item.id)}
                     onChange={(e) => selection.toggleOne(item.id, e.target.checked)}
                     className="w-4 h-4 rounded border-gray-300"
-                    title="항목 선택"
+                    aria-label="항목 선택"
                   />
                 </td>
                 <td className="px-2 py-3 whitespace-nowrap">
@@ -129,14 +129,14 @@ export default function WorkItemsTable({ items, selection, format, getLaborCost,
                 <td className="px-3 py-3 whitespace-nowrap text-sm font-medium w-24">
                   <div className="flex">
                     <Tooltip label="편집">
-                      <button onClick={() => onEdit(item)} className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 mx-2" title="작업 항목 편집">✏️</button>
+                      <button onClick={() => onEdit(item)} className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 mx-2" aria-label="작업 항목 편집">✏️</button>
                     </Tooltip>
                     <Tooltip label="삭제">
-                      <button onClick={() => onDelete(item.id)} className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 mx-2" title="작업 항목 삭제">🗑️</button>
+                      <button onClick={() => onDelete(item.id)} className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 mx-2" aria-label="작업 항목 삭제">🗑️</button>
                     </Tooltip>
                     {item.status === '완료' && (
                       <Tooltip label="청구서 생성">
-                        <button onClick={() => onCreateInvoice(item)} className="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300 mx-2" title="청구서 생성">🧾</button>
+                        <button onClick={() => onCreateInvoice(item)} className="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-300 mx-2" aria-label="청구서 생성">🧾</button>
                       </Tooltip>
                     )}
                   </div>
