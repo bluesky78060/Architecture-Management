@@ -62,8 +62,8 @@ const Settings: React.FC = () => {
             if (user.identities && user.identities.length > 0) {
               // identities를 last_sign_in_at 기준으로 정렬 (최신이 먼저)
               const sortedIdentities = [...user.identities].sort((a, b) => {
-                const aTime = new Date(a.last_sign_in_at ?? a.created_at).getTime();
-                const bTime = new Date(b.last_sign_in_at ?? b.created_at).getTime();
+                const aTime = new Date(a.last_sign_in_at ?? a.created_at ?? 0).getTime();
+                const bTime = new Date(b.last_sign_in_at ?? b.created_at ?? 0).getTime();
                 return bTime - aTime; // 최근이 먼저
               });
 
