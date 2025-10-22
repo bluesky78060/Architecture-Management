@@ -28,6 +28,8 @@ export default function WorkItemsTable({ items, selection, format, getLaborCost,
             <tr>
               <th className="px-3 py-3 text-center text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-12">
                 <input
+                  id="workitem-select-all"
+                  name="workitem-select-all"
                   type="checkbox"
                   onChange={(e) => selection.toggleAll(e.target.checked)}
                   checked={selection.selected.length > 0 && selection.selected.length === items.length}
@@ -69,6 +71,8 @@ export default function WorkItemsTable({ items, selection, format, getLaborCost,
               <tr key={`${item.id}-${idx}`} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                 <td className="px-3 py-4 whitespace-nowrap">
                   <input
+                    id={`workitem-select-${item.id}`}
+                    name={`workitem-select-${item.id}`}
                     type="checkbox"
                     checked={selection.selected.includes(item.id)}
                     onChange={(e) => selection.toggleOne(item.id, e.target.checked)}

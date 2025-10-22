@@ -23,7 +23,7 @@ export default function InvoicesTable({ items, allSelected, selectedIds, onToggl
         <thead className="bg-gray-50 dark:bg-gray-700">
           <tr>
             <th className="px-3 py-3 text-center text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-12">
-              <input type="checkbox" className="w-4 h-4 rounded border-gray-300 dark:border-gray-600" checked={allSelected} onChange={(e) => onToggleAll(e.target.checked)} title="전체 선택" />
+              <input id="invoice-select-all" name="invoice-select-all" type="checkbox" className="w-4 h-4 rounded border-gray-300 dark:border-gray-600" checked={allSelected} onChange={(e) => onToggleAll(e.target.checked)} title="전체 선택" />
             </th>
             <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
               청구서 번호
@@ -55,7 +55,7 @@ export default function InvoicesTable({ items, allSelected, selectedIds, onToggl
           {items.map((invoice) => (
             <tr key={invoice.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
               <td className="px-3 py-2 whitespace-nowrap">
-                <input type="checkbox" className="w-4 h-4 rounded border-gray-300 dark:border-gray-600" checked={selectedIds.includes(invoice.id)} onChange={(e) => onToggleOne(invoice.id as string, e.target.checked)} title="선택" />
+                <input id={`invoice-select-${invoice.id}`} name={`invoice-select-${invoice.id}`} type="checkbox" className="w-4 h-4 rounded border-gray-300 dark:border-gray-600" checked={selectedIds.includes(invoice.id)} onChange={(e) => onToggleOne(invoice.id as string, e.target.checked)} title="선택" />
               </td>
               <td className="px-3 py-2 whitespace-nowrap">
                 <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{invoice.id}</div>
