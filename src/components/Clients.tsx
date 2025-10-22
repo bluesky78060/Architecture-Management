@@ -800,11 +800,13 @@ const Clients: React.FC = () => {
             <tr>
               <th className="px-3 py-3 text-center text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-12">
                 <input
+                  id="clients-select-all"
+                  name="clients-select-all"
                   type="checkbox"
                   className="w-4 h-4 rounded border-gray-300"
                   checked={allSelected}
                   onChange={(e) => toggleSelectAll(e.target.checked)}
-                  title="전체 선택"
+                  aria-label="전체 선택"
                 />
               </th>
               <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-40">
@@ -835,11 +837,13 @@ const Clients: React.FC = () => {
               <tr key={client.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                 <td className="px-3 py-3 whitespace-nowrap text-center">
                   <input
+                    id={`client-select-${client.id}`}
+                    name={`client-select-${client.id}`}
                     type="checkbox"
                     className="w-4 h-4 rounded border-gray-300"
                     checked={selection.selected.includes(client.id)}
                     onChange={(e) => toggleSelectOne(client.id, e.target.checked)}
-                    title="항목 선택"
+                    aria-label={`${client.name} 선택`}
                   />
                 </td>
                 <td className="px-3 py-3 whitespace-nowrap">
@@ -1090,7 +1094,7 @@ const Clients: React.FC = () => {
                       <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-50 dark:bg-slate-900">
                         <UsersIcon className="h-4 w-4 text-slate-600 dark:text-slate-300" aria-hidden="true" />
                       </span>
-                      <label className="text-sm font-semibold text-gray-900 dark:text-gray-100">작업장 정보</label>
+                      <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">작업장 정보</div>
                     </div>
                     <button type="button" onClick={addWorkplace} className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm">+ 작업장 추가</button>
                   </div>
