@@ -47,51 +47,63 @@ const Settings: React.FC = () => {
         setNewEmail((currentUser.username !== null && currentUser.username !== undefined) ? currentUser.username : '');
       }
 
-      // Supabase에서 provider 정보 가져오기
+      // Supabase에서 provider 정보 가져오기 (현재 세션 기준)
       if (supabase !== null) {
         try {
-          const { data: { user } } = await supabase.auth.getUser();
-          if (user !== null && user !== undefined) {
-            // 디버깅: 전체 user 객체 출력
-            console.log('🔍 DEBUG: user.identities:', user.identities);
-            console.log('🔍 DEBUG: user.app_metadata:', user.app_metadata);
+          // 현재 활성화된 세션에서 provider 확인
+          const { data: { session } } = await supabase.auth.getSession();
 
-            // identities 배열에서 provider 확인 (가장 최근 로그인 기준)
-            let detectedProvider: 'email' | 'google' | 'kakao' = 'email';
+          console.log('🔍 DEBUG: Full session object:', session);
+          console.log('🔍 DEBUG: session.user.app_metadata:', session?.user?.app_metadata);
+          console.log('🔍 DEBUG: session.user.identities:', session?.user?.identities);
 
+          let detectedProvider: 'email' | 'google' | 'kakao' = 'email';
+
+          if (session?.user) {
+            const user = session.user;
+
+            // 1순위: 현재 세션의 app_metadata.provider 확인
+            const sessionProvider = user.app_metadata?.provider;
+            console.log('🔍 DEBUG: session provider:', sessionProvider);
+
+            // 2순위: identities 배열에서 현재 세션과 일치하는 identity 찾기
             if (user.identities && user.identities.length > 0) {
-              // identities를 last_sign_in_at 기준으로 정렬 (최신이 먼저)
-              const sortedIdentities = [...user.identities].sort((a, b) => {
-                const aTime = new Date(a.last_sign_in_at ?? a.created_at ?? 0).getTime();
-                const bTime = new Date(b.last_sign_in_at ?? b.created_at ?? 0).getTime();
-                return bTime - aTime; // 최근이 먼저
-              });
+              // 세션에 연결된 identity 찾기 (session의 sub와 identity의 user_id 비교)
+              const currentIdentity = user.identities.find(
+                (identity) => identity.user_id === user.id
+              );
 
-              const recentIdentity = sortedIdentities[0];
-              console.log('🔍 DEBUG: Most recent identity:', recentIdentity);
-              console.log('🔍 DEBUG: Most recent provider:', recentIdentity.provider);
+              console.log('🔍 DEBUG: Current session identity:', currentIdentity);
 
-              // provider 매핑: google, kakao 등
-              const identityProvider = recentIdentity.provider;
-              if (identityProvider === 'google') {
-                detectedProvider = 'google';
-              } else if (identityProvider === 'kakao') {
-                detectedProvider = 'kakao';
-              } else if (identityProvider === 'email') {
-                detectedProvider = 'email';
-              } else {
-                detectedProvider = 'email';
+              // identity에서 provider 확인
+              if (currentIdentity) {
+                const identityProvider = currentIdentity.provider;
+                console.log('🔍 DEBUG: Identity provider:', identityProvider);
+
+                if (identityProvider === 'google') {
+                  detectedProvider = 'google';
+                } else if (identityProvider === 'kakao') {
+                  detectedProvider = 'kakao';
+                } else if (identityProvider === 'email') {
+                  detectedProvider = 'email';
+                }
+              } else if (sessionProvider) {
+                // currentIdentity를 못 찾은 경우 sessionProvider 사용
+                if (sessionProvider === 'google') {
+                  detectedProvider = 'google';
+                } else if (sessionProvider === 'kakao') {
+                  detectedProvider = 'kakao';
+                } else if (sessionProvider === 'email') {
+                  detectedProvider = 'email';
+                }
               }
-            } else {
-              // identities가 없으면 app_metadata.provider 사용
-              const providerValue = user.app_metadata?.provider;
-              console.log('🔍 DEBUG: fallback to app_metadata.provider:', providerValue);
-
-              if (providerValue === 'google') {
+            } else if (sessionProvider) {
+              // identities가 없으면 sessionProvider만 사용
+              if (sessionProvider === 'google') {
                 detectedProvider = 'google';
-              } else if (providerValue === 'kakao') {
+              } else if (sessionProvider === 'kakao') {
                 detectedProvider = 'kakao';
-              } else {
+              } else if (sessionProvider === 'email') {
                 detectedProvider = 'email';
               }
             }
@@ -100,6 +112,7 @@ const Settings: React.FC = () => {
             setProvider(detectedProvider);
           }
         } catch (err) {
+          console.error('❌ DEBUG: Error getting session:', err);
           // 에러 시 기본값 email
           setProvider('email');
         }
