@@ -390,12 +390,15 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
             {/* 시작 날짜/시간 */}
             <div className="grid grid-cols-2 gap-3 mb-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label htmlFor="start-date" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   시작일 *
                 </label>
                 <div className="relative inline-block w-full" ref={startDateRef}>
                   <div className="flex items-center gap-2">
                     <input
+                      id="start-date"
+                      name="startDate"
+                      autoComplete="off"
                       type="text"
                       value={startDate}
                       onChange={(e) => setStartDate(e.target.value)}
@@ -409,7 +412,7 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
                       type="button"
                       className="px-2 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
                       onClick={() => startDateCal.setOpen((v) => !v)}
-                      title="달력 열기"
+                      aria-label="달력 열기"
                     >
                       📅
                     </button>
@@ -482,10 +485,13 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
 
               {!allDay && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label htmlFor="start-time" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     시작 시간
                   </label>
                   <input
+                    id="start-time"
+                    name="startTime"
+                    autoComplete="off"
                     type="time"
                     value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
@@ -498,12 +504,15 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
             {/* 종료 날짜/시간 */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label htmlFor="end-date" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   종료일
                 </label>
                 <div className="relative inline-block w-full" ref={endDateRef}>
                   <div className="flex items-center gap-2">
                     <input
+                      id="end-date"
+                      name="endDate"
+                      autoComplete="off"
                       type="text"
                       value={endDate}
                       onChange={(e) => setEndDate(e.target.value)}
@@ -516,7 +525,7 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
                       type="button"
                       className="px-2 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
                       onClick={() => endDateCal.setOpen((v) => !v)}
-                      title="달력 열기"
+                      aria-label="달력 열기"
                     >
                       📅
                     </button>
@@ -589,10 +598,13 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
 
               {!allDay && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label htmlFor="end-time" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     종료 시간
                   </label>
                   <input
+                    id="end-time"
+                    name="endTime"
+                    autoComplete="off"
                     type="time"
                     value={endTime}
                     onChange={(e) => setEndTime(e.target.value)}
@@ -809,12 +821,15 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
 
                 {/* 종료일 */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label htmlFor="recurrence-end-date" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     반복 종료일 (선택)
                   </label>
                   <div className="relative inline-block w-full" ref={recurrenceEndDateRef}>
                     <div className="flex items-center gap-2">
                       <input
+                        id="recurrence-end-date"
+                        name="recurrenceEndDate"
+                        autoComplete="off"
                         type="text"
                         value={recurrenceEndDate}
                         onChange={(e) => setRecurrenceEndDate(e.target.value)}
@@ -827,7 +842,7 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
                         type="button"
                         className="px-2 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
                         onClick={() => recurrenceEndDateCal.setOpen((v) => !v)}
-                        title="달력 열기"
+                        aria-label="달력 열기"
                       >
                         📅
                       </button>
