@@ -119,6 +119,8 @@ export default function ScheduleFilters({
         {/* 검색 입력 */}
         <div className="flex-1 relative">
           <input
+            id="schedule-search"
+            name="schedule-search"
             type="text"
             value={filters.searchText}
             onChange={(e) => handleSearchChange(e.target.value)}
@@ -194,10 +196,12 @@ export default function ScheduleFilters({
 
           {/* 건축주 필터 */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label htmlFor="schedule-client-filter" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               건축주
             </label>
             <select
+              id="schedule-client-filter"
+              name="schedule-client-filter"
               value={filters.clientId || ''}
               onChange={(e) => handleClientChange(e.target.value)}
               className="w-full px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
