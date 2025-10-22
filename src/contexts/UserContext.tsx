@@ -142,7 +142,8 @@ export const UserProvider = ({ children }: UserProviderProps) => {
         setCurrentUser(supabaseUser);
         setIsLoggedIn(true);
         try { sessionStorage.setItem('CURRENT_USER', JSON.stringify(supabaseUser)); } catch (e) {}
-      } else if (!getLoginDisabled()) {
+      } else if (!getLoginDisabled() && event !== 'INITIAL_SESSION') {
+        // Only clear session for explicit sign out events, not for initial session check
         console.log('⚠️ [UserContext] No session, logging out');
         setCurrentUser(null);
         setIsLoggedIn(false);
