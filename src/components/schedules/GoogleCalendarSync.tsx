@@ -139,8 +139,10 @@ export default function GoogleCalendarSync({ onClose }: Props) {
                   동기화 옵션
                 </label>
 
-                <label className="flex items-center gap-2">
+                <label htmlFor="import-from-google" className="flex items-center gap-2">
                   <input
+                    id="import-from-google"
+                    name="importFromGoogle"
                     type="checkbox"
                     checked={options.importFromGoogle}
                     onChange={(e) => setOptions({ ...options, importFromGoogle: e.target.checked })}
@@ -151,8 +153,10 @@ export default function GoogleCalendarSync({ onClose }: Props) {
                   </span>
                 </label>
 
-                <label className="flex items-center gap-2">
+                <label htmlFor="export-to-google" className="flex items-center gap-2">
                   <input
+                    id="export-to-google"
+                    name="exportToGoogle"
                     type="checkbox"
                     checked={options.exportToGoogle}
                     onChange={(e) => setOptions({ ...options, exportToGoogle: e.target.checked })}
@@ -172,10 +176,12 @@ export default function GoogleCalendarSync({ onClose }: Props) {
                   </label>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                      <label htmlFor="sync-start-date" className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
                         시작일
                       </label>
                       <input
+                        id="sync-start-date"
+                        name="startDate"
                         type="date"
                         value={options.startDate}
                         onChange={(e) => setOptions({ ...options, startDate: e.target.value })}
@@ -183,10 +189,12 @@ export default function GoogleCalendarSync({ onClose }: Props) {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                      <label htmlFor="sync-end-date" className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
                         종료일
                       </label>
                       <input
+                        id="sync-end-date"
+                        name="endDate"
                         type="date"
                         value={options.endDate}
                         onChange={(e) => setOptions({ ...options, endDate: e.target.value })}
