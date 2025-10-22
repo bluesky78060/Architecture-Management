@@ -895,8 +895,8 @@ export default function Invoices(): JSX.Element {
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
                   <div className="grid grid-cols-3 gap-3">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">상태</label>
-                      <select name="status" value={form.status} onChange={onFormChange} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+                      <label htmlFor="invoice-status" className="block text-sm font-medium text-gray-700 dark:text-gray-300">상태</label>
+                      <select id="invoice-status" name="status" value={form.status} onChange={onFormChange} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
                         <option value="발송대기">발송대기</option>
                         <option value="발송됨">발송됨</option>
                         <option value="미결제">미결제</option>
