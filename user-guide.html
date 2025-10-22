@@ -612,105 +612,159 @@
 
                 <ol class="step-list">
                     <li>왼쪽 메뉴에서 <strong>"👤 건축주 관리"</strong>를 클릭합니다</li>
-                    <li>화면 우측 상단의 <strong>"새 건축주"</strong> 또는 <strong>"➕ 추가"</strong> 버튼을 클릭합니다</li>
+                    <li>화면 우측 상단의 <strong>"✨ 새 건축주"</strong> 버튼을 클릭합니다</li>
                 </ol>
 
                 <div style="margin: 30px 0;">
                     <img src="images/새 건축주 추가.png" alt="새 건축주 추가 화면" style="max-width: 50%; height: auto; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                 </div>
 
-                <ol class="step-list" start="3">
-                    <li>건축주 유형을 선택합니다 (개인 또는 사업자)</li>
-                    <li>필요한 정보를 입력합니다</li>
-                    <li><strong>"추가"</strong> 또는 <strong>"저장"</strong> 버튼을 클릭합니다</li>
-                </ol>
+                <h4>📋 입력 폼 구조 (3개 섹션)</h4>
+                <p>새 건축주 추가 화면은 3개의 섹션으로 구성되어 있습니다:</p>
 
-                <h4>1️⃣ 개인 고객 입력 정보</h4>
+                <h4>1️⃣ 기본 정보 섹션</h4>
+                <p>먼저 <strong>유형</strong>을 선택합니다 (개인 또는 사업자 라디오 버튼):</p>
+
+                <h5>개인 선택 시:</h5>
                 <table>
                     <thead>
                         <tr>
                             <th>항목</th>
                             <th>설명</th>
+                            <th>필수 여부</th>
                             <th>예시</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>📛 성명</td>
+                            <td>📛 이름</td>
                             <td>고객의 이름</td>
+                            <td>✅ 필수</td>
                             <td>김철수</td>
-                        </tr>
-                        <tr>
-                            <td>📞 연락처</td>
-                            <td>전화번호</td>
-                            <td>010-1234-5678</td>
-                        </tr>
-                        <tr>
-                            <td>📧 이메일</td>
-                            <td>이메일 주소</td>
-                            <td>kim@gmail.com</td>
-                        </tr>
-                        <tr>
-                            <td>🏠 주소</td>
-                            <td>고객의 주소</td>
-                            <td>서울시 강남구 테헤란로 123</td>
                         </tr>
                     </tbody>
                 </table>
 
-                <h4>2️⃣ 사업자 고객 입력 정보</h4>
+                <h5>사업자 선택 시:</h5>
+                <p><span style="background-color: #fef3c7; color: #d97706; padding: 4px 12px; border-radius: 6px; font-weight: 600;">🏢 사업자 정보</span> 노란색 박스가 나타나며 다음 항목을 입력합니다:</p>
+
                 <table>
                     <thead>
                         <tr>
                             <th>항목</th>
                             <th>설명</th>
+                            <th>필수 여부</th>
                             <th>예시</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>🏢 회사명</td>
+                            <td>🏢 상호</td>
                             <td>회사 이름</td>
+                            <td>✅ 필수</td>
                             <td>홍길동 건설</td>
                         </tr>
                         <tr>
                             <td>👨‍💼 대표자</td>
                             <td>회사 대표 이름</td>
+                            <td>✅ 필수</td>
                             <td>홍길동</td>
                         </tr>
                         <tr>
-                            <td>📋 사업자번호</td>
+                            <td>📋 사업자등록번호</td>
                             <td>사업자등록번호</td>
-                            <td>123-45-67890</td>
+                            <td>✅ 필수</td>
+                            <td>000-00-00000</td>
+                        </tr>
+                        <tr>
+                            <td>📧 발행 이메일</td>
+                            <td>세금계산서 발행 이메일</td>
+                            <td>✅ 필수</td>
+                            <td>company@example.com</td>
                         </tr>
                         <tr>
                             <td>🏭 업태</td>
-                            <td>회사 업종</td>
+                            <td>사업 업태</td>
+                            <td>선택</td>
                             <td>건설업</td>
                         </tr>
                         <tr>
-                            <td>📞 연락처</td>
-                            <td>회사 전화번호</td>
-                            <td>02-1234-5678</td>
+                            <td>📊 업종</td>
+                            <td>사업 업종</td>
+                            <td>선택</td>
+                            <td>종합건설업</td>
+                        </tr>
+                        <tr>
+                            <td>🏢 사업장 주소</td>
+                            <td>사업장 소재지</td>
+                            <td>선택</td>
+                            <td>서울시 강남구 테헤란로 123</td>
                         </tr>
                     </tbody>
                 </table>
 
-                <h4>📍 작업장 정보 추가하기</h4>
+                <h4>2️⃣ 연락처 / 주소 섹션</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>항목</th>
+                            <th>설명</th>
+                            <th>필수 여부</th>
+                            <th>예시</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>📞 전화번호</td>
+                            <td>유선 전화번호</td>
+                            <td>선택</td>
+                            <td>02-1234-5678</td>
+                        </tr>
+                        <tr>
+                            <td>📱 휴대전화</td>
+                            <td>휴대폰 번호</td>
+                            <td>선택</td>
+                            <td>010-1234-5678</td>
+                        </tr>
+                        <tr>
+                            <td>📧 이메일</td>
+                            <td>이메일 주소</td>
+                            <td>선택</td>
+                            <td>kim@gmail.com</td>
+                        </tr>
+                        <tr>
+                            <td>🏠 주소</td>
+                            <td>주소 (개인) 또는 별도 주소 (사업자)</td>
+                            <td>선택</td>
+                            <td>서울시 서초구 서초대로 123</td>
+                        </tr>
+                        <tr>
+                            <td>📝 메모</td>
+                            <td>추가 메모사항</td>
+                            <td>선택</td>
+                            <td>오후 연락 가능</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="highlight-box">
+                    💡 <strong>사업자의 주소 입력 방법:</strong><br>
+                    - 기본적으로 사업장 주소가 일반 주소로 자동 설정됩니다<br>
+                    - "☐ 사업장 주소와 다른 주소 입력" 체크박스를 선택하면 별도 주소 입력 가능<br>
+                    - 예: 사업장은 강남구, 실제 연락 주소는 서초구인 경우
+                </div>
+
+                <h4>3️⃣ 작업장 정보 섹션</h4>
                 <p>건축주가 여러 곳에서 공사를 진행하는 경우, 각 작업장 정보를 등록할 수 있습니다.</p>
 
                 <div class="highlight-box">
-                    <strong>작업장 정보란?</strong><br>
+                    💡 <strong>작업장 정보란?</strong><br>
                     - 한 건축주가 여러 현장에서 공사를 진행할 때 사용합니다<br>
-                    - 예: 김철수 고객이 강남구와 서초구 두 곳에서 공사 진행
+                    - 예: 김철수 고객이 강남구와 서초구 두 곳에서 공사 진행<br>
+                    - 기본적으로 작업장 1개가 제공되며, <strong>"+ 작업장 추가"</strong> 버튼으로 추가 가능
                 </div>
 
-                <h5>작업장 추가 방법:</h5>
-                <ol class="step-list">
-                    <li>화면에서 "작업장 정보" 섹션을 찾아 <strong>"+ 작업장 추가"</strong> 버튼을 클릭합니다</li>
-                    <li>작업장 정보를 입력합니다</li>
-                    <li>필요한 경우 여러 작업장을 추가할 수 있습니다</li>
-                </ol>
+                <h5>각 작업장마다 입력 항목:</h5>
 
                 <table>
                     <thead>
@@ -743,19 +797,26 @@
                     </tbody>
                 </table>
 
+                <div class="warning-box">
+                    ⚠️ <strong>작업장 삭제 버튼</strong><br>
+                    - 각 작업장 우측 상단에 "삭제" 버튼이 있습니다<br>
+                    - 작업장이 2개 이상일 때만 삭제 버튼이 표시됩니다<br>
+                    - 작업장이 1개만 있을 때는 삭제 불가능 (최소 1개는 필수)
+                </div>
+
                 <h5>여러 작업장 관리 예시:</h5>
                 <pre>
 작업장 1                              [삭제]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🏗️ 신축 주택
 📍 서울시 강남구 테헤란로 123
-📋 주방 리모델링 공사
+📋 프로젝트: 주방 리모델링 공사
 
 작업장 2                              [삭제]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🏗️ 카페 인테리어
 📍 서울시 서초구 서초대로 456
-📋 카페 내부 인테리어 공사
+📋 프로젝트: 카페 내부 인테리어 공사
                 </pre>
 
                 <div class="highlight-box">
@@ -765,14 +826,32 @@
                     - 나중에 "어느 현장에서 얼마를 받았지?" 같은 정보를 쉽게 확인할 수 있습니다
                 </div>
 
-                <div class="warning-box">
-                    ⚠️ <strong>주의사항</strong><br>
-                    - 작업장 정보는 나중에 수정할 수 있지만, 처음부터 정확히 입력하는 것이 좋습니다<br>
-                    - 작업장명은 구분하기 쉬운 이름으로 작성하세요 (예: "1차 공사", "2차 공사"보다는 "주방 리모델링", "거실 확장" 등)
-                </div>
+                <h4>✅ 저장하기</h4>
+                <p>모든 정보 입력 완료 후 하단의 버튼을 클릭합니다:</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>버튼</th>
+                            <th>기능</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span style="background-color: #e5e7eb; color: #374151; padding: 6px 16px; border-radius: 8px; font-weight: 500;">취소</span></td>
+                            <td>입력한 내용을 저장하지 않고 모달 닫기</td>
+                        </tr>
+                        <tr>
+                            <td><span style="background-color: #4f46e5; color: white; padding: 6px 16px; border-radius: 8px; font-weight: 500;">추가</span> (또는 <span style="background-color: #4f46e5; color: white; padding: 6px 16px; border-radius: 8px; font-weight: 500;">저장</span>)</td>
+                            <td>건축주 정보를 Supabase 데이터베이스에 저장</td>
+                        </tr>
+                    </tbody>
+                </table>
 
                 <div class="success-box">
-                    ✅ <strong>완료!</strong> 이제 이 고객 정보가 저장되었습니다.
+                    ✅ <strong>완료!</strong><br>
+                    - 저장 후 건축주 목록에 새로운 건축주가 추가됩니다<br>
+                    - 이제 이 건축주로 견적서나 청구서를 작성할 수 있습니다
                 </div>
 
                 <div class="warning-box">
