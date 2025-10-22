@@ -25,7 +25,7 @@ export default function EstimatesTable({ items, allSelected, onToggleAll, onTogg
         <thead className="bg-gray-50 dark:bg-gray-700">
           <tr>
             <th className="px-3 py-3 text-center text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider w-12">
-              <input type="checkbox" className="w-4 h-4 rounded border-gray-300 dark:border-gray-600" checked={allSelected} onChange={(e) => onToggleAll(e.target.checked)} title="전체 선택" />
+              <input id="estimate-select-all" name="estimate-select-all" type="checkbox" className="w-4 h-4 rounded border-gray-300 dark:border-gray-600" checked={allSelected} onChange={(e) => onToggleAll(e.target.checked)} title="전체 선택" />
             </th>
             <th className="px-3 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
               견적서 번호
@@ -57,7 +57,7 @@ export default function EstimatesTable({ items, allSelected, onToggleAll, onTogg
           {items.map((estimate, idx) => (
             <tr key={`${estimate.id}-${idx}`} className="hover:bg-gray-50 dark:hover:bg-gray-700">
               <td className="px-3 py-2 text-left w-10">
-                <input type="checkbox" className="w-4 h-4 rounded border-gray-300 dark:border-gray-600" checked={selectedIds.includes(estimate.id)} onChange={(e) => onToggleOne(estimate.id, e.target.checked)} title="선택" />
+                <input id={`estimate-select-${estimate.id}`} name={`estimate-select-${estimate.id}`} type="checkbox" className="w-4 h-4 rounded border-gray-300 dark:border-gray-600" checked={selectedIds.includes(estimate.id)} onChange={(e) => onToggleOne(estimate.id, e.target.checked)} title="선택" />
               </td>
               <td className="px-3 py-2 text-sm text-gray-900 dark:text-gray-100">{estimate.id}</td>
               <td className="px-3 py-2 text-sm text-gray-900 dark:text-gray-100">{estimate.clientName}</td>
