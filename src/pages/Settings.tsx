@@ -56,26 +56,36 @@ const Settings: React.FC = () => {
             console.log('🔍 DEBUG: user.identities:', user.identities);
             console.log('🔍 DEBUG: user.app_metadata:', user.app_metadata);
 
-            // identities 배열에서 provider 확인 (더 정확함)
+            // identities 배열에서 provider 확인 (가장 최근 로그인 기준)
             let detectedProvider: 'email' | 'google' | 'kakao' = 'email';
 
             if (user.identities && user.identities.length > 0) {
-              const identity = user.identities[0];
-              const identityProvider = identity.provider;
-              console.log('🔍 DEBUG: identity.provider from identities[0]:', identityProvider);
+              // identities를 last_sign_in_at 기준으로 정렬 (최신이 먼저)
+              const sortedIdentities = [...user.identities].sort((a, b) => {
+                const aTime = new Date(a.last_sign_in_at ?? a.created_at).getTime();
+                const bTime = new Date(b.last_sign_in_at ?? b.created_at).getTime();
+                return bTime - aTime; // 최근이 먼저
+              });
+
+              const recentIdentity = sortedIdentities[0];
+              console.log('🔍 DEBUG: Most recent identity:', recentIdentity);
+              console.log('🔍 DEBUG: Most recent provider:', recentIdentity.provider);
 
               // provider 매핑: google, kakao 등
+              const identityProvider = recentIdentity.provider;
               if (identityProvider === 'google') {
                 detectedProvider = 'google';
               } else if (identityProvider === 'kakao') {
                 detectedProvider = 'kakao';
+              } else if (identityProvider === 'email') {
+                detectedProvider = 'email';
               } else {
                 detectedProvider = 'email';
               }
             } else {
               // identities가 없으면 app_metadata.provider 사용
               const providerValue = user.app_metadata?.provider;
-              console.log('🔍 DEBUG: provider from app_metadata:', providerValue);
+              console.log('🔍 DEBUG: fallback to app_metadata.provider:', providerValue);
 
               if (providerValue === 'google') {
                 detectedProvider = 'google';
