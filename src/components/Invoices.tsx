@@ -756,16 +756,16 @@ export default function Invoices(): JSX.Element {
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">건축주 *</label>
-                      <select name="clientId" value={String(form.clientId)} onChange={onFormChange} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required>
+                      <label htmlFor="invoice-client" className="block text-sm font-medium text-gray-700 dark:text-gray-300">건축주 *</label>
+                      <select id="invoice-client" name="clientId" value={String(form.clientId)} onChange={onFormChange} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required>
                         <option value="">건축주 선택</option>
                         {clients.map(c => (<option key={c.id} value={String(c.id)}>{c.name}</option>))}
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">프로젝트 *</label>
+                      <label htmlFor="invoice-project" className="block text-sm font-medium text-gray-700 dark:text-gray-300">프로젝트 *</label>
                       {!showCustomProject ? (
-                        <select name="project" value={form.project} onChange={onFormChange} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required disabled={(typeof form.clientId === 'string' && form.clientId === '') || (typeof form.clientId === 'number' && (form.clientId === 0 || isNaN(form.clientId)))}>
+                        <select id="invoice-project" name="project" value={form.project} onChange={onFormChange} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required disabled={(typeof form.clientId === 'string' && form.clientId === '') || (typeof form.clientId === 'number' && (form.clientId === 0 || isNaN(form.clientId)))}>
                           <option value="">{(typeof form.clientId === 'string' ? form.clientId !== '' : (form.clientId !== 0 && !isNaN(form.clientId))) ? '프로젝트 선택' : '먼저 건축주를 선택하세요'}</option>
                           {(typeof form.clientId === 'string' ? form.clientId !== '' : (form.clientId !== 0 && !isNaN(form.clientId))) && getClientProjects(form.clientId).map((proj, idx) => (
                             <option key={idx} value={proj}>{proj}</option>
@@ -775,15 +775,15 @@ export default function Invoices(): JSX.Element {
                           )}
                         </select>
                       ) : (
-                        <input type="text" name="project" value={form.project} onChange={onFormChange} placeholder="프로젝트명을 입력하세요" className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required />
+                        <input id="invoice-project" type="text" name="project" value={form.project} onChange={onFormChange} placeholder="프로젝트명을 입력하세요" className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required />
                       )}
                       {showCustomProject && (
                         <button type="button" onClick={() => { setShowCustomProject(false); setForm(prev => ({ ...prev, project: '' })); }} className="mt-1 text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300">← 목록에서 선택</button>
                       )}
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">작업장 *</label>
-                      <select name="workplaceId" value={String(form.workplaceId)} onChange={onFormChange} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required disabled={(typeof form.clientId === 'string' && form.clientId === '') || (typeof form.clientId === 'number' && (form.clientId === 0 || isNaN(form.clientId)))}>
+                      <label htmlFor="invoice-workplace" className="block text-sm font-medium text-gray-700 dark:text-gray-300">작업장 *</label>
+                      <select id="invoice-workplace" name="workplaceId" value={String(form.workplaceId)} onChange={onFormChange} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required disabled={(typeof form.clientId === 'string' && form.clientId === '') || (typeof form.clientId === 'number' && (form.clientId === 0 || isNaN(form.clientId)))}>
                         <option value="">{(typeof form.clientId === 'string' ? form.clientId !== '' : (form.clientId !== 0 && !isNaN(form.clientId))) ? '작업장 선택' : '먼저 건축주를 선택하세요'}</option>
                         {(typeof form.clientId === 'string' ? form.clientId !== '' : (form.clientId !== 0 && !isNaN(form.clientId))) && getClientWorkplaces(form.clientId).map(wp => (
                           <option key={wp.id} value={String(wp.id)}>{wp.name} - {wp.address}</option>
@@ -794,8 +794,8 @@ export default function Invoices(): JSX.Element {
                       )}
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">발행일</label>
-                      <input type="date" name="date" value={form.date} onChange={onFormChange} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
+                      <label htmlFor="invoice-date" className="block text-sm font-medium text-gray-700 dark:text-gray-300">발행일</label>
+                      <input id="invoice-date" type="date" name="date" value={form.date} onChange={onFormChange} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
                     </div>
                   </div>
                 </div>
@@ -810,23 +810,23 @@ export default function Invoices(): JSX.Element {
                       <div key={idx} className="border border-gray-200 dark:border-gray-600 rounded-lg p-3 bg-gray-50 dark:bg-gray-700">
                         <div className="grid grid-cols-4 gap-2 mb-2">
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">내용</label>
-                            <input type="text" value={it.name} onChange={(e) => onFormItemChange(idx, 'name', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" required />
+                            <label htmlFor={`invoice-item-name-${idx}`} className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">내용</label>
+                            <input id={`invoice-item-name-${idx}`} name={`invoice-item-name-${idx}`} type="text" value={it.name} onChange={(e) => onFormItemChange(idx, 'name', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" required />
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">카테고리</label>
-                            <select value={(it.category !== null && it.category !== undefined && it.category !== '') ? it.category : ''} onChange={(e) => onFormItemChange(idx, 'category', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+                            <label htmlFor={`invoice-item-category-${idx}`} className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">카테고리</label>
+                            <select id={`invoice-item-category-${idx}`} name={`invoice-item-category-${idx}`} value={(it.category !== null && it.category !== undefined && it.category !== '') ? it.category : ''} onChange={(e) => onFormItemChange(idx, 'category', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
                               <option value="">선택</option>
                               {categories.map(cat => (<option key={cat} value={cat}>{cat}</option>))}
                             </select>
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">수량</label>
-                            <input type="text" value={it.quantity === '' ? '' : String(it.quantity)} onChange={(e) => onFormItemChange(idx, 'quantity', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" />
+                            <label htmlFor={`invoice-item-quantity-${idx}`} className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">수량</label>
+                            <input id={`invoice-item-quantity-${idx}`} name={`invoice-item-quantity-${idx}`} type="text" value={it.quantity === '' ? '' : String(it.quantity)} onChange={(e) => onFormItemChange(idx, 'quantity', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" />
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">단위</label>
-                            <select value={(it.unit !== null && it.unit !== undefined && it.unit !== '') ? it.unit : ''} onChange={(e) => onFormItemChange(idx, 'unit', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+                            <label htmlFor={`invoice-item-unit-${idx}`} className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">단위</label>
+                            <select id={`invoice-item-unit-${idx}`} name={`invoice-item-unit-${idx}`} value={(it.unit !== null && it.unit !== undefined && it.unit !== '') ? it.unit : ''} onChange={(e) => onFormItemChange(idx, 'unit', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
                               <option value="">선택</option>
                               {units.map(unit => (<option key={unit} value={unit}>{unit}</option>))}
                             </select>
@@ -834,12 +834,12 @@ export default function Invoices(): JSX.Element {
                         </div>
                         <div className="grid grid-cols-2 gap-2 mb-2">
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">단가</label>
-                            <input type="text" value={it.unitPrice === '' ? '' : String(it.unitPrice)} onChange={(e) => onFormItemChange(idx, 'unitPrice', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" />
+                            <label htmlFor={`invoice-item-unitprice-${idx}`} className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">단가</label>
+                            <input id={`invoice-item-unitprice-${idx}`} name={`invoice-item-unitprice-${idx}`} type="text" value={it.unitPrice === '' ? '' : String(it.unitPrice)} onChange={(e) => onFormItemChange(idx, 'unitPrice', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" />
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">상세 설명</label>
-                            <textarea value={(it.description !== null && it.description !== undefined && it.description !== '') ? it.description : ''} onChange={(e) => onFormItemChange(idx, 'description', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm h-8 resize-none bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" placeholder="작업 상세 내용"></textarea>
+                            <label htmlFor={`invoice-item-description-${idx}`} className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">상세 설명</label>
+                            <textarea id={`invoice-item-description-${idx}`} name={`invoice-item-description-${idx}`} value={(it.description !== null && it.description !== undefined && it.description !== '') ? it.description : ''} onChange={(e) => onFormItemChange(idx, 'description', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm h-8 resize-none bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" placeholder="작업 상세 내용"></textarea>
                           </div>
                         </div>
                         {/* 인부임 섹션 */}
@@ -847,34 +847,34 @@ export default function Invoices(): JSX.Element {
                           <div className="text-xs font-medium text-blue-700 dark:text-blue-400 mb-1">인부임 정보</div>
                           <div className="grid grid-cols-4 gap-2">
                             <div>
-                              <label className="block text-xs text-blue-600 dark:text-blue-400 mb-1">인부수</label>
-                              <input type="text" value={it.laborPersons === '' ? '' : String(it.laborPersons)} onChange={(e) => onFormItemChange(idx, 'laborPersons', e.target.value)} className="w-full border border-blue-200 dark:border-blue-700 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" placeholder="명" />
+                              <label htmlFor={`invoice-item-labor-persons-${idx}`} className="block text-xs text-blue-600 dark:text-blue-400 mb-1">인부수</label>
+                              <input id={`invoice-item-labor-persons-${idx}`} name={`invoice-item-labor-persons-${idx}`} type="text" value={it.laborPersons === '' ? '' : String(it.laborPersons)} onChange={(e) => onFormItemChange(idx, 'laborPersons', e.target.value)} className="w-full border border-blue-200 dark:border-blue-700 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" placeholder="명" />
                             </div>
                             <div>
-                              <label className="block text-xs text-blue-600 dark:text-blue-400 mb-1">단가</label>
-                              <input type="text" value={it.laborUnitRate === '' ? '' : String(it.laborUnitRate)} onChange={(e) => onFormItemChange(idx, 'laborUnitRate', e.target.value)} className="w-full border border-blue-200 dark:border-blue-700 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" placeholder="원" />
+                              <label htmlFor={`invoice-item-labor-rate-${idx}`} className="block text-xs text-blue-600 dark:text-blue-400 mb-1">단가</label>
+                              <input id={`invoice-item-labor-rate-${idx}`} name={`invoice-item-labor-rate-${idx}`} type="text" value={it.laborUnitRate === '' ? '' : String(it.laborUnitRate)} onChange={(e) => onFormItemChange(idx, 'laborUnitRate', e.target.value)} className="w-full border border-blue-200 dark:border-blue-700 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" placeholder="원" />
                             </div>
                             <div>
-                              <label className="block text-xs text-blue-600 dark:text-blue-400 mb-1">인부수</label>
-                              <input type="text" value={it.laborPersonsGeneral === '' ? '' : String(it.laborPersonsGeneral)} onChange={(e) => onFormItemChange(idx, 'laborPersonsGeneral', e.target.value)} className="w-full border border-blue-200 dark:border-blue-700 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" placeholder="명" />
+                              <label htmlFor={`invoice-item-labor-persons-general-${idx}`} className="block text-xs text-blue-600 dark:text-blue-400 mb-1">인부수</label>
+                              <input id={`invoice-item-labor-persons-general-${idx}`} name={`invoice-item-labor-persons-general-${idx}`} type="text" value={it.laborPersonsGeneral === '' ? '' : String(it.laborPersonsGeneral)} onChange={(e) => onFormItemChange(idx, 'laborPersonsGeneral', e.target.value)} className="w-full border border-blue-200 dark:border-blue-700 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" placeholder="명" />
                             </div>
                             <div>
-                              <label className="block text-xs text-blue-600 dark:text-blue-400 mb-1">단가</label>
-                              <input type="text" value={it.laborUnitRateGeneral === '' ? '' : String(it.laborUnitRateGeneral)} onChange={(e) => onFormItemChange(idx, 'laborUnitRateGeneral', e.target.value)} className="w-full border border-blue-200 dark:border-blue-700 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" placeholder="원" />
+                              <label htmlFor={`invoice-item-labor-rate-general-${idx}`} className="block text-xs text-blue-600 dark:text-blue-400 mb-1">단가</label>
+                              <input id={`invoice-item-labor-rate-general-${idx}`} name={`invoice-item-labor-rate-general-${idx}`} type="text" value={it.laborUnitRateGeneral === '' ? '' : String(it.laborUnitRateGeneral)} onChange={(e) => onFormItemChange(idx, 'laborUnitRateGeneral', e.target.value)} className="w-full border border-blue-200 dark:border-blue-700 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" placeholder="원" />
                             </div>
                           </div>
                         </div>
                         <div className="grid grid-cols-3 gap-2">
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">비고</label>
-                            <input type="text" value={(it.notes !== null && it.notes !== undefined && it.notes !== '') ? it.notes : ''} onChange={(e) => onFormItemChange(idx, 'notes', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" />
+                            <label htmlFor={`invoice-item-notes-${idx}`} className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">비고</label>
+                            <input id={`invoice-item-notes-${idx}`} name={`invoice-item-notes-${idx}`} type="text" value={(it.notes !== null && it.notes !== undefined && it.notes !== '') ? it.notes : ''} onChange={(e) => onFormItemChange(idx, 'notes', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" />
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">날짜</label>
-                            <input type="date" value={(it.date !== null && it.date !== undefined && it.date !== '') ? it.date : ''} onChange={(e) => onFormItemChange(idx, 'date', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" />
+                            <label htmlFor={`invoice-item-date-${idx}`} className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">날짜</label>
+                            <input id={`invoice-item-date-${idx}`} name={`invoice-item-date-${idx}`} type="date" value={(it.date !== null && it.date !== undefined && it.date !== '') ? it.date : ''} onChange={(e) => onFormItemChange(idx, 'date', e.target.value)} className="w-full border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100" />
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">합계</label>
+                            <div className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">합계</div>
                             <div className="w-full bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-sm text-gray-900 dark:text-gray-100">{(() => {
                               const MIN_VALUE = 0;
                               const total = Number(it.total);
