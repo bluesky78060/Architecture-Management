@@ -944,12 +944,18 @@ const Clients: React.FC = () => {
 
       {/* 새 건축주 모달 */}
       {showModal && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-10 mx-auto p-5 border border-gray-200 dark:border-gray-600 w-4/5 max-w-2xl shadow-lg rounded-md bg-white dark:bg-gray-800 mb-8">
-            <div className="mt-3">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4 text-center">
+        <div className="fixed inset-0 bg-gray-800/50 dark:bg-black/60 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
+          <div className="relative top-8 mx-auto w-4/5 max-w-2xl shadow-2xl rounded-2xl bg-white/80 dark:bg-gray-800/90 ring-1 ring-black/5 dark:ring-white/10 mb-8">
+            <div className="rounded-t-2xl bg-gradient-to-br from-indigo-50 via-purple-50 to-white dark:from-gray-700 dark:via-gray-800 dark:to-gray-900 px-8 pt-8 pb-6 text-center">
+              <h3 className="text-2xl font-extrabold tracking-tight text-indigo-600 dark:text-indigo-400">
                 {isEditing ? '건축주 정보 수정' : '새 건축주 추가'}
               </h3>
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                {isEditing ? '건축주 정보를 수정하세요' : '건축주 기본정보와 작업장을 입력하세요'}
+              </p>
+            </div>
+            <div className="px-6 pb-6">
+              <div className="mt-3">
               <form id="client-form" onSubmit={handleSubmit} className="space-y-3">
                 {/* 섹션: 기본 정보 */}
                 <div className="rounded-xl border border-gray-100 dark:border-gray-600 bg-white dark:bg-gray-600 shadow-sm p-4">
@@ -1125,10 +1131,11 @@ const Clients: React.FC = () => {
                   ))}
                 </div>
               </form>
+              </div>
             </div>
 
             {/* Sticky 버튼 영역 */}
-            <div className="sticky bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700 px-6 py-4 rounded-b-md shadow-lg -mx-5 -mb-5">
+            <div className="sticky bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700 px-6 py-4 rounded-b-2xl shadow-lg">
               <div className="flex justify-end space-x-3">
                 <button
                   type="button"
