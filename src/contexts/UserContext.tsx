@@ -108,45 +108,6 @@ export const UserProvider = ({ children }: UserProviderProps) => {
         if (supabase !== null) {
           /* eslint-disable no-console */
           console.log('🟢 [UserContext] Checking Supabase session...');
-
-          // CRITICAL FIX: OAuth 콜백 처리 (Chrome third-party cookie 우회)
-          if (hasOAuthCode) {
-            console.log('🔵 [UserContext] OAuth code detected, exchanging for session...');
-            try {
-              // URL에서 code 파라미터 추출
-              const code = urlParams.get('code');
-              if (code !== null) {
-                const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
-
-                console.log('🔵 [UserContext] exchangeCodeForSession result:', {
-                  hasSession: data.session !== null,
-                  hasUser: data.session?.user !== undefined && data.session?.user !== null,
-                  error: exchangeError?.message
-                });
-
-                if (exchangeError === null && data.session?.user !== undefined && data.session?.user !== null) {
-                  const supabaseUser: User = {
-                    id: 1,
-                    username: data.session.user.email ?? 'user',
-                    name: data.session.user.user_metadata?.name ?? data.session.user.email ?? 'User',
-                    role: 'admin'
-                  };
-                  console.log('✅ [UserContext] OAuth session created:', supabaseUser.username);
-                  setCurrentUser(supabaseUser);
-                  setIsLoggedIn(true);
-                  try { sessionStorage.setItem('CURRENT_USER', JSON.stringify(supabaseUser)); } catch (e) {}
-
-                  // URL에서 code 파라미터 제거 (깔끔한 URL)
-                  window.history.replaceState({}, document.title, window.location.pathname);
-                  return;
-                } else {
-                  console.error('❌ [UserContext] exchangeCodeForSession failed:', exchangeError);
-                }
-              }
-            } catch (err) {
-              console.error('❌ [UserContext] exchangeCodeForSession error:', err);
-            }
-          }
           /* eslint-enable no-console */
 
           try {
@@ -207,11 +168,12 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     }
 
     /* eslint-disable no-console */
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('🔵 [UserContext] onAuthStateChange triggered:', event);
       console.log('🔵 [UserContext] session:', (session?.user !== undefined && session?.user !== null) ? 'has user' : 'no user');
 
-      if (session?.user !== undefined && session?.user !== null) {
+      // PKCE 플로우: URL에 code 파라미터가 있으면 자동으로 세션 교환
+      if (event === 'SIGNED_IN' && session?.user !== undefined && session?.user !== null) {
         const supabaseUser: User = {
           id: 1,
           username: session.user.email ?? 'user',
@@ -219,6 +181,25 @@ export const UserProvider = ({ children }: UserProviderProps) => {
           role: 'admin'
         };
         console.log('✅ [UserContext] Setting logged in:', supabaseUser.username);
+        setCurrentUser(supabaseUser);
+        setIsLoggedIn(true);
+        try { sessionStorage.setItem('CURRENT_USER', JSON.stringify(supabaseUser)); } catch (e) {}
+
+        // OAuth 콜백 후 URL 파라미터 정리
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('code')) {
+          console.log('🔵 [UserContext] Cleaning OAuth params from URL');
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      } else if (session?.user !== undefined && session?.user !== null) {
+        // 일반 세션 복원
+        const supabaseUser: User = {
+          id: 1,
+          username: session.user.email ?? 'user',
+          name: session.user.user_metadata?.name ?? session.user.email ?? 'User',
+          role: 'admin'
+        };
+        console.log('✅ [UserContext] Session restored:', supabaseUser.username);
         setCurrentUser(supabaseUser);
         setIsLoggedIn(true);
         try { sessionStorage.setItem('CURRENT_USER', JSON.stringify(supabaseUser)); } catch (e) {}
