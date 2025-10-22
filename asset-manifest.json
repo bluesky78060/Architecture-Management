@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "https://bluesky78060.github.io/Architecture-Management/static/css/main.0390a4d4.css",
-    "main.js": "https://bluesky78060.github.io/Architecture-Management/static/js/main.40de5bdb.js",
+    "main.js": "https://bluesky78060.github.io/Architecture-Management/static/js/main.70ab5ff2.js",
     "static/js/940.64d615e5.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/940.64d615e5.chunk.js",
     "static/js/347.ea9ccc5a.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/347.ea9ccc5a.chunk.js",
     "static/js/399.f5623933.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/399.f5623933.chunk.js",
     "static/js/28.7b535cc1.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/28.7b535cc1.chunk.js",
     "static/js/355.9779bf72.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/355.9779bf72.chunk.js",
-    "static/js/703.3aba4127.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/703.3aba4127.chunk.js",
-    "static/js/217.0a511a43.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/217.0a511a43.chunk.js",
+    "static/js/703.1bdb081c.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/703.1bdb081c.chunk.js",
+    "static/js/217.88f5c99a.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/217.88f5c99a.chunk.js",
     "static/js/93.75a12726.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/93.75a12726.chunk.js",
     "static/js/776.43b535c8.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/776.43b535c8.chunk.js",
     "static/js/290.ae619ba9.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/290.ae619ba9.chunk.js",
@@ -28,14 +28,14 @@
     "static/media/SCDream4.otf": "https://bluesky78060.github.io/Architecture-Management/static/media/SCDream4.64c9dc7c860af7a004ad.otf",
     "index.html": "https://bluesky78060.github.io/Architecture-Management/index.html",
     "main.0390a4d4.css.map": "https://bluesky78060.github.io/Architecture-Management/static/css/main.0390a4d4.css.map",
-    "main.40de5bdb.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/main.40de5bdb.js.map",
+    "main.70ab5ff2.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/main.70ab5ff2.js.map",
     "940.64d615e5.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/940.64d615e5.chunk.js.map",
     "347.ea9ccc5a.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/347.ea9ccc5a.chunk.js.map",
     "399.f5623933.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/399.f5623933.chunk.js.map",
     "28.7b535cc1.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/28.7b535cc1.chunk.js.map",
     "355.9779bf72.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/355.9779bf72.chunk.js.map",
-    "703.3aba4127.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/703.3aba4127.chunk.js.map",
-    "217.0a511a43.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/217.0a511a43.chunk.js.map",
+    "703.1bdb081c.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/703.1bdb081c.chunk.js.map",
+    "217.88f5c99a.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/217.88f5c99a.chunk.js.map",
     "93.75a12726.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/93.75a12726.chunk.js.map",
     "776.43b535c8.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/776.43b535c8.chunk.js.map",
     "290.ae619ba9.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/290.ae619ba9.chunk.js.map",
@@ -48,6 +48,6 @@
   "entrypoints": [
     "static/js/vendors.65ebf488.js",
     "static/css/main.0390a4d4.css",
-    "static/js/main.40de5bdb.js"
+    "static/js/main.70ab5ff2.js"
   ]
 }
