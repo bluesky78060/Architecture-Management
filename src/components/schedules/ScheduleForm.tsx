@@ -239,7 +239,7 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 bg-gray-800/50 dark:bg-gray-900/70 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
-      <div className="relative top-8 mx-auto w-[980px] max-w-[95vw] shadow-2xl rounded-2xl bg-white/80 dark:bg-gray-800/90 ring-1 ring-black/5 dark:ring-white/10 mb-8">
+      <div className="relative top-8 mx-auto w-[800px] max-w-[95vw] shadow-2xl rounded-2xl bg-white/80 dark:bg-gray-800/90 ring-1 ring-black/5 dark:ring-white/10 mb-8">
         <div className="rounded-t-2xl bg-gradient-to-br from-indigo-50 via-purple-50 to-white dark:from-indigo-900/30 dark:via-purple-900/30 dark:to-gray-800 px-8 pt-5 pb-3">
           <div className="text-center">
             <h3 className="text-2xl font-extrabold tracking-tight text-indigo-600 dark:text-indigo-400">
@@ -251,7 +251,7 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
           </div>
         </div>
 
-        <form id="schedule-form" onSubmit={handleSubmit} className="px-6 pb-6 pt-3 space-y-4">
+        <form id="schedule-form" onSubmit={handleSubmit} className="px-5 pb-5 pt-3 space-y-3">
           {/* 충돌 경고 */}
           {showConflictWarning && conflicts.length > 0 && (
             <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 dark:border-yellow-600 p-4">
@@ -293,14 +293,14 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
           )}
 
           {/* 기본 정보 섹션 */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
-            <div className="flex items-center mb-3 gap-3">
-              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">📝</span>
-              <h4 className="text-base font-semibold text-gray-900 dark:text-gray-100">기본 정보</h4>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-3">
+            <div className="flex items-center mb-2 gap-2">
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-sm">📝</span>
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">기본 정보</h4>
             </div>
 
             {/* 제목 */}
-            <div className="mb-3">
+            <div className="mb-2">
               <label htmlFor="schedule-title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 제목 *
               </label>
@@ -315,7 +315,7 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
             </div>
 
             {/* 설명 */}
-            <div className="mb-3">
+            <div className="mb-2">
               <label htmlFor="schedule-description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 설명
               </label>
@@ -329,7 +329,7 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
             </div>
 
             {/* 일정 유형 & 상태 */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2">
               <div>
                 <label htmlFor="schedule-type" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   유형 *
@@ -367,14 +367,14 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
           </div>
 
           {/* 일시 정보 섹션 */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
-            <div className="flex items-center mb-3 gap-3">
-              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400">📅</span>
-              <h4 className="text-base font-semibold text-gray-900 dark:text-gray-100">일시 정보</h4>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-3">
+            <div className="flex items-center mb-2 gap-2">
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-sm">📅</span>
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">일시 정보</h4>
             </div>
 
             {/* 종일 체크박스 */}
-            <div className="flex items-center mb-3">
+            <div className="flex items-center mb-2">
               <input
                 type="checkbox"
                 id="allDay"
@@ -388,7 +388,7 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
             </div>
 
             {/* 시작 날짜/시간 */}
-            <div className="grid grid-cols-2 gap-3 mb-3">
+            <div className="grid grid-cols-2 gap-2 mb-2">
               <div>
                 <label htmlFor="start-date" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   시작일 *
@@ -502,7 +502,7 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
             </div>
 
             {/* 종료 날짜/시간 */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2">
               <div>
                 <label htmlFor="end-date" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   종료일
@@ -616,14 +616,14 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
           </div>
 
           {/* 관련 정보 섹션 */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
-            <div className="flex items-center mb-3 gap-3">
-              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">👥</span>
-              <h4 className="text-base font-semibold text-gray-900 dark:text-gray-100">관련 정보</h4>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-3">
+            <div className="flex items-center mb-2 gap-2">
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-sm">👥</span>
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">관련 정보</h4>
             </div>
 
             {/* 건축주 */}
-            <div className="mb-3">
+            <div className="mb-2">
               <label htmlFor="schedule-client" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 건축주
               </label>
@@ -643,7 +643,7 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
             </div>
 
             {/* 장소 */}
-            <div className="mb-3">
+            <div className="mb-2">
               <label htmlFor="schedule-location" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 장소
               </label>
@@ -676,10 +676,10 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
           </div>
 
           {/* 추가 정보 섹션 */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
-            <div className="flex items-center mb-3 gap-3">
-              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">📌</span>
-              <h4 className="text-base font-semibold text-gray-900 dark:text-gray-100">추가 정보</h4>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-3">
+            <div className="flex items-center mb-2 gap-2">
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-sm">📌</span>
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">추가 정보</h4>
             </div>
 
             {/* 메모 */}
@@ -698,8 +698,8 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
           </div>
 
           {/* 알림 설정 섹션 */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
-            <div className="flex items-center mb-3">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-3">
+            <div className="flex items-center mb-2">
               <input
                 type="checkbox"
                 id="reminderEnabled"
@@ -736,8 +736,8 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
           </div>
 
           {/* 반복 일정 설정 섹션 */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
-            <div className="flex items-center mb-3">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-3">
+            <div className="flex items-center mb-2">
               <input
                 type="checkbox"
                 id="isRecurring"
@@ -751,9 +751,9 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
             </div>
 
             {isRecurring && (
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {/* 반복 유형 & 간격 */}
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2">
                   <div>
                     <label htmlFor="recurrence-frequency" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       반복 유형
@@ -917,13 +917,13 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
           </div>
 
           {/* 첨부파일 섹션 */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-3">
             <div className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               📎 첨부파일
             </div>
 
             {/* File input */}
-            <div className="mb-3">
+            <div className="mb-2">
               <input
                 type="file"
                 multiple
