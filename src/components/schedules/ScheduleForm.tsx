@@ -1,11 +1,12 @@
 /* eslint-disable */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useApp } from '../../contexts/AppContext';
 import type { Schedule, ScheduleType, ScheduleStatus, SchedulePriority, Client } from '../../types/domain';
 import { detectScheduleConflicts, formatConflictMessage } from '../../utils/scheduleConflict';
 import { uploadFile, getFileIcon } from '../../services/fileUploadService';
 import type { Attachment } from '../../types/domain';
 import { supabase } from '../../services/supabase';
+import { useCalendar } from '../../hooks/useCalendar';
 
 interface Props {
   schedule: Schedule | null;
@@ -24,6 +25,7 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
   const [endDate, setEndDate] = useState('');
   const [endTime, setEndTime] = useState('');
   const [allDay, setAllDay] = useState(false);
+
   const [clientId, setClientId] = useState<number | ''>('');
   const [location, setLocation] = useState('');
   const [status, setStatus] = useState<ScheduleStatus>('scheduled');
@@ -35,6 +37,14 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
   const [recurrenceFrequency, setRecurrenceFrequency] = useState<'daily' | 'weekly' | 'monthly' | 'yearly'>('weekly');
   const [recurrenceInterval, setRecurrenceInterval] = useState<number>(1);
   const [recurrenceEndDate, setRecurrenceEndDate] = useState('');
+
+  // Custom calendar hooks
+  const startDateCal = useCalendar({ value: startDate, onChange: setStartDate });
+  const endDateCal = useCalendar({ value: endDate, onChange: setEndDate });
+  const recurrenceEndDateCal = useCalendar({ value: recurrenceEndDate, onChange: setRecurrenceEndDate });
+  const startDateRef = useRef<HTMLDivElement>(null);
+  const endDateRef = useRef<HTMLDivElement>(null);
+  const recurrenceEndDateRef = useRef<HTMLDivElement>(null);
   const [recurrenceDaysOfWeek, setRecurrenceDaysOfWeek] = useState<number[]>([]);
 
   // Conflict detection
@@ -379,13 +389,91 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   시작일 *
                 </label>
-                <input
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 schedule-date-input"
-                  required
-                />
+                <div className="relative inline-block w-full" ref={startDateRef}>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      placeholder="YYYY-MM-DD"
+                      inputMode="numeric"
+                      className="block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400 dark:placeholder-gray-500"
+                      onFocus={() => startDateCal.setOpen(true)}
+                      required
+                    />
+                    <button
+                      type="button"
+                      className="px-2 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+                      onClick={() => startDateCal.setOpen((v) => !v)}
+                      title="달력 열기"
+                    >
+                      📅
+                    </button>
+                  </div>
+                  {startDateCal.open && (
+                    <div className="absolute z-50 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg mt-2 p-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <button
+                          type="button"
+                          className="px-2 py-1 text-sm border dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                          onClick={startDateCal.prevMonth}
+                        >
+                          ◀
+                        </button>
+                        <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                          {startDateCal.month.getFullYear()}년 {startDateCal.month.getMonth() + 1}월
+                        </div>
+                        <button
+                          type="button"
+                          className="px-2 py-1 text-sm border dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                          onClick={startDateCal.nextMonth}
+                        >
+                          ▶
+                        </button>
+                      </div>
+                      <table className="text-sm select-none">
+                        <thead>
+                          <tr className="text-left text-gray-600 dark:text-gray-400">
+                            {['일', '월', '화', '수', '목', '금', '토'].map((d, idx) => (
+                              <th
+                                key={d}
+                                className={`px-2 py-1 ${
+                                  idx === 0 ? 'text-red-600 dark:text-red-400' : idx === 6 ? 'text-blue-600 dark:text-blue-400' : ''
+                                }`}
+                              >
+                                {d}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {startDateCal.getCalendarGrid().map((row, idx) => (
+                            <tr key={idx} className="text-left">
+                              {row.map((d, i2) => {
+                                const clickable = typeof d === 'number' && d !== 0 && !Number.isNaN(d);
+                                return (
+                                  <td
+                                    key={i2}
+                                    className={`px-2 py-1 ${
+                                      clickable
+                                        ? 'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded'
+                                        : ''
+                                    }`}
+                                    onClick={() => {
+                                      if (clickable) startDateCal.pickDate(d as number);
+                                    }}
+                                  >
+                                    {clickable ? d : ''}
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {!allDay && (
@@ -409,12 +497,90 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   종료일
                 </label>
-                <input
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 schedule-date-input"
-                />
+                <div className="relative inline-block w-full" ref={endDateRef}>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      placeholder="YYYY-MM-DD"
+                      inputMode="numeric"
+                      className="block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400 dark:placeholder-gray-500"
+                      onFocus={() => endDateCal.setOpen(true)}
+                    />
+                    <button
+                      type="button"
+                      className="px-2 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+                      onClick={() => endDateCal.setOpen((v) => !v)}
+                      title="달력 열기"
+                    >
+                      📅
+                    </button>
+                  </div>
+                  {endDateCal.open && (
+                    <div className="absolute z-50 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg mt-2 p-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <button
+                          type="button"
+                          className="px-2 py-1 text-sm border dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                          onClick={endDateCal.prevMonth}
+                        >
+                          ◀
+                        </button>
+                        <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                          {endDateCal.month.getFullYear()}년 {endDateCal.month.getMonth() + 1}월
+                        </div>
+                        <button
+                          type="button"
+                          className="px-2 py-1 text-sm border dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                          onClick={endDateCal.nextMonth}
+                        >
+                          ▶
+                        </button>
+                      </div>
+                      <table className="text-sm select-none">
+                        <thead>
+                          <tr className="text-left text-gray-600 dark:text-gray-400">
+                            {['일', '월', '화', '수', '목', '금', '토'].map((d, idx) => (
+                              <th
+                                key={d}
+                                className={`px-2 py-1 ${
+                                  idx === 0 ? 'text-red-600 dark:text-red-400' : idx === 6 ? 'text-blue-600 dark:text-blue-400' : ''
+                                }`}
+                              >
+                                {d}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {endDateCal.getCalendarGrid().map((row, idx) => (
+                            <tr key={idx} className="text-left">
+                              {row.map((d, i2) => {
+                                const clickable = typeof d === 'number' && d !== 0 && !Number.isNaN(d);
+                                return (
+                                  <td
+                                    key={i2}
+                                    className={`px-2 py-1 ${
+                                      clickable
+                                        ? 'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded'
+                                        : ''
+                                    }`}
+                                    onClick={() => {
+                                      if (clickable) endDateCal.pickDate(d as number);
+                                    }}
+                                  >
+                                    {clickable ? d : ''}
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {!allDay && (
@@ -632,12 +798,90 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     반복 종료일 (선택)
                   </label>
-                  <input
-                    type="date"
-                    value={recurrenceEndDate}
-                    onChange={(e) => setRecurrenceEndDate(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 schedule-date-input"
-                  />
+                  <div className="relative inline-block w-full" ref={recurrenceEndDateRef}>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={recurrenceEndDate}
+                        onChange={(e) => setRecurrenceEndDate(e.target.value)}
+                        placeholder="YYYY-MM-DD"
+                        inputMode="numeric"
+                        className="block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400 dark:placeholder-gray-500"
+                        onFocus={() => recurrenceEndDateCal.setOpen(true)}
+                      />
+                      <button
+                        type="button"
+                        className="px-2 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+                        onClick={() => recurrenceEndDateCal.setOpen((v) => !v)}
+                        title="달력 열기"
+                      >
+                        📅
+                      </button>
+                    </div>
+                    {recurrenceEndDateCal.open && (
+                      <div className="absolute z-50 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg mt-2 p-3">
+                        <div className="flex items-center justify-between mb-2">
+                          <button
+                            type="button"
+                            className="px-2 py-1 text-sm border dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                            onClick={recurrenceEndDateCal.prevMonth}
+                          >
+                            ◀
+                          </button>
+                          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                            {recurrenceEndDateCal.month.getFullYear()}년 {recurrenceEndDateCal.month.getMonth() + 1}월
+                          </div>
+                          <button
+                            type="button"
+                            className="px-2 py-1 text-sm border dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                            onClick={recurrenceEndDateCal.nextMonth}
+                          >
+                            ▶
+                          </button>
+                        </div>
+                        <table className="text-sm select-none">
+                          <thead>
+                            <tr className="text-left text-gray-600 dark:text-gray-400">
+                              {['일', '월', '화', '수', '목', '금', '토'].map((d, idx) => (
+                                <th
+                                  key={d}
+                                  className={`px-2 py-1 ${
+                                    idx === 0 ? 'text-red-600 dark:text-red-400' : idx === 6 ? 'text-blue-600 dark:text-blue-400' : ''
+                                  }`}
+                                >
+                                  {d}
+                                </th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {recurrenceEndDateCal.getCalendarGrid().map((row, idx) => (
+                              <tr key={idx} className="text-left">
+                                {row.map((d, i2) => {
+                                  const clickable = typeof d === 'number' && d !== 0 && !Number.isNaN(d);
+                                  return (
+                                    <td
+                                      key={i2}
+                                      className={`px-2 py-1 ${
+                                        clickable
+                                          ? 'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded'
+                                          : ''
+                                      }`}
+                                      onClick={() => {
+                                        if (clickable) recurrenceEndDateCal.pickDate(d as number);
+                                      }}
+                                    >
+                                      {clickable ? d : ''}
+                                    </td>
+                                  );
+                                })}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             )}

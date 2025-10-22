@@ -283,17 +283,6 @@
     @apply cursor-pointer hover:scale-150 transition-transform duration-200;
   }
 
-  /* Schedule Date Input - Larger Calendar Icon */
-  .schedule-date-input::-webkit-calendar-picker-indicator {
-    width: 20px;
-    height: 20px;
-    @apply cursor-pointer transition-transform duration-200;
-  }
-
-  .schedule-date-input::-webkit-calendar-picker-indicator:hover {
-    transform: scale(1.2);
-  }
-
   /* Focus Ring Enhancement */
   .focus-ring {
     @apply focus:outline-none focus:ring-4 focus:ring-primary-500/20 focus:border-primary-500;
