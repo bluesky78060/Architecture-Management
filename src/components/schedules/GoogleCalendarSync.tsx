@@ -135,9 +135,9 @@ export default function GoogleCalendarSync({ onClose }: Props) {
           {isAuthenticated && (
             <>
               <div className="space-y-3">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <div className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   동기화 옵션
-                </label>
+                </div>
 
                 <label htmlFor="import-from-google" className="flex items-center gap-2">
                   <input
@@ -171,9 +171,9 @@ export default function GoogleCalendarSync({ onClose }: Props) {
               {/* 날짜 범위 (가져오기용) */}
               {options.importFromGoogle && (
                 <div className="space-y-3">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <div className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                     가져올 날짜 범위 (선택사항)
-                  </label>
+                  </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label htmlFor="sync-start-date" className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
