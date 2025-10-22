@@ -228,21 +228,20 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white dark:bg-gray-800 border-b dark:border-gray-700 px-6 py-4 flex justify-between items-center">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-            {schedule ? '일정 수정' : '일정 추가'}
-          </h2>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-          >
-            ✕
-          </button>
+    <div className="fixed inset-0 bg-gray-800/50 dark:bg-gray-900/70 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
+      <div className="relative top-8 mx-auto w-[980px] max-w-[95vw] shadow-2xl rounded-2xl bg-white/80 dark:bg-gray-800/90 ring-1 ring-black/5 dark:ring-white/10 mb-8">
+        <div className="rounded-t-2xl bg-gradient-to-br from-indigo-50 via-purple-50 to-white dark:from-indigo-900/30 dark:via-purple-900/30 dark:to-gray-800 px-8 pt-5 pb-3">
+          <div className="text-center">
+            <h3 className="text-2xl font-extrabold tracking-tight text-indigo-600 dark:text-indigo-400">
+              {schedule ? '일정 수정' : '일정 추가'}
+            </h3>
+            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+              공사 일정과 상담 일정을 등록하고 관리하세요
+            </p>
+          </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-3">
+        <form onSubmit={handleSubmit} className="px-6 pb-6 pt-3 space-y-4">
           {/* 충돌 경고 */}
           {showConflictWarning && conflicts.length > 0 && (
             <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 dark:border-yellow-600 p-4">
@@ -283,205 +282,237 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
             </div>
           )}
 
-          {/* 제목 */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              제목 *
-            </label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              required
-            />
-          </div>
-
-          {/* 설명 */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              설명
-            </label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={3}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-            />
-          </div>
-
-          {/* 일정 유형 & 상태 */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                유형 *
-              </label>
-              <select
-                value={scheduleType}
-                onChange={(e) => setScheduleType(e.target.value as ScheduleType)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              >
-                <option value="construction">공사</option>
-                <option value="consultation">상담</option>
-                <option value="meeting">회의</option>
-                <option value="other">기타</option>
-              </select>
+          {/* 기본 정보 섹션 */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
+            <div className="flex items-center mb-3 gap-3">
+              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">📝</span>
+              <h4 className="text-base font-semibold text-gray-900 dark:text-gray-100">기본 정보</h4>
             </div>
 
-            <div>
+            {/* 제목 */}
+            <div className="mb-3">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                상태
-              </label>
-              <select
-                value={status}
-                onChange={(e) => setStatus(e.target.value as ScheduleStatus)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              >
-                <option value="scheduled">예정</option>
-                <option value="in_progress">진행중</option>
-                <option value="completed">완료</option>
-                <option value="cancelled">취소</option>
-              </select>
-            </div>
-          </div>
-
-          {/* 종일 체크박스 */}
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="allDay"
-              checked={allDay}
-              onChange={(e) => setAllDay(e.target.checked)}
-              className="w-4 h-4 rounded border-gray-300"
-            />
-            <label htmlFor="allDay" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-              종일
-            </label>
-          </div>
-
-          {/* 시작 날짜/시간 */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                시작일 *
+                제목 *
               </label>
               <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 required
               />
             </div>
 
-            {!allDay && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  시작 시간
-                </label>
-                <input
-                  type="time"
-                  value={startTime}
-                  onChange={(e) => setStartTime(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                />
-              </div>
-            )}
-          </div>
-
-          {/* 종료 날짜/시간 */}
-          <div className="grid grid-cols-2 gap-3">
-            <div>
+            {/* 설명 */}
+            <div className="mb-3">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                종료일
+                설명
               </label>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={2}
+                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
 
-            {!allDay && (
+            {/* 일정 유형 & 상태 */}
+            <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  종료 시간
+                  유형 *
+                </label>
+                <select
+                  value={scheduleType}
+                  onChange={(e) => setScheduleType(e.target.value as ScheduleType)}
+                  className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                >
+                  <option value="construction">공사</option>
+                  <option value="consultation">상담</option>
+                  <option value="meeting">회의</option>
+                  <option value="other">기타</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  상태
+                </label>
+                <select
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value as ScheduleStatus)}
+                  className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                >
+                  <option value="scheduled">예정</option>
+                  <option value="in_progress">진행중</option>
+                  <option value="completed">완료</option>
+                  <option value="cancelled">취소</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* 일시 정보 섹션 */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
+            <div className="flex items-center mb-3 gap-3">
+              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400">📅</span>
+              <h4 className="text-base font-semibold text-gray-900 dark:text-gray-100">일시 정보</h4>
+            </div>
+
+            {/* 종일 체크박스 */}
+            <div className="flex items-center mb-3">
+              <input
+                type="checkbox"
+                id="allDay"
+                checked={allDay}
+                onChange={(e) => setAllDay(e.target.checked)}
+                className="w-4 h-4 rounded border-gray-300"
+              />
+              <label htmlFor="allDay" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                종일
+              </label>
+            </div>
+
+            {/* 시작 날짜/시간 */}
+            <div className="grid grid-cols-2 gap-3 mb-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  시작일 *
                 </label>
                 <input
-                  type="time"
-                  value={endTime}
-                  onChange={(e) => setEndTime(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  required
                 />
               </div>
-            )}
+
+              {!allDay && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    시작 시간
+                  </label>
+                  <input
+                    type="time"
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* 종료 날짜/시간 */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  종료일
+                </label>
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                />
+              </div>
+
+              {!allDay && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    종료 시간
+                  </label>
+                  <input
+                    type="time"
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  />
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* 건축주 */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              건축주
-            </label>
-            <select
-              value={clientId}
-              onChange={(e) => setClientId(e.target.value ? Number(e.target.value) : '')}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-            >
-              <option value="">선택 안함</option>
-              {clients.map((client: Client) => (
-                <option key={client.id} value={client.id}>
-                  {client.name}
-                </option>
-              ))}
-            </select>
+          {/* 관련 정보 섹션 */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
+            <div className="flex items-center mb-3 gap-3">
+              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">👥</span>
+              <h4 className="text-base font-semibold text-gray-900 dark:text-gray-100">관련 정보</h4>
+            </div>
+
+            {/* 건축주 */}
+            <div className="mb-3">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                건축주
+              </label>
+              <select
+                value={clientId}
+                onChange={(e) => setClientId(e.target.value ? Number(e.target.value) : '')}
+                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <option value="">선택 안함</option>
+                {clients.map((client: Client) => (
+                  <option key={client.id} value={client.id}>
+                    {client.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* 장소 */}
+            <div className="mb-3">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                장소
+              </label>
+              <input
+                type="text"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+
+            {/* 우선순위 */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                우선순위
+              </label>
+              <select
+                value={priority}
+                onChange={(e) => setPriority(e.target.value as SchedulePriority)}
+                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <option value="low">낮음</option>
+                <option value="normal">보통</option>
+                <option value="high">높음</option>
+                <option value="urgent">긴급</option>
+              </select>
+            </div>
           </div>
 
-          {/* 장소 */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              장소
-            </label>
-            <input
-              type="text"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-            />
+          {/* 추가 정보 섹션 */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
+            <div className="flex items-center mb-3 gap-3">
+              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">📌</span>
+              <h4 className="text-base font-semibold text-gray-900 dark:text-gray-100">추가 정보</h4>
+            </div>
+
+            {/* 메모 */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                메모
+              </label>
+              <textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                rows={3}
+                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
           </div>
 
-          {/* 우선순위 */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              우선순위
-            </label>
-            <select
-              value={priority}
-              onChange={(e) => setPriority(e.target.value as SchedulePriority)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-            >
-              <option value="low">낮음</option>
-              <option value="normal">보통</option>
-              <option value="high">높음</option>
-              <option value="urgent">긴급</option>
-            </select>
-          </div>
-
-          {/* 메모 */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              메모
-            </label>
-            <textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows={3}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-            />
-          </div>
-
-          {/* 알림 설정 */}
-          <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+          {/* 알림 설정 섹션 */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
             <div className="flex items-center mb-3">
               <input
                 type="checkbox"
@@ -503,7 +534,7 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
                 <select
                   value={reminderMinutesBefore}
                   onChange={(e) => setReminderMinutesBefore(Number(e.target.value))}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 >
                   <option value={15}>15분 전</option>
                   <option value={30}>30분 전</option>
@@ -515,8 +546,8 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
             )}
           </div>
 
-          {/* 반복 일정 설정 */}
-          <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+          {/* 반복 일정 설정 섹션 */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
             <div className="flex items-center mb-3">
               <input
                 type="checkbox"
@@ -541,7 +572,7 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
                     <select
                       value={recurrenceFrequency}
                       onChange={(e) => setRecurrenceFrequency(e.target.value as 'daily' | 'weekly' | 'monthly' | 'yearly')}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     >
                       <option value="daily">매일</option>
                       <option value="weekly">매주</option>
@@ -560,7 +591,7 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
                       max="365"
                       value={recurrenceInterval}
                       onChange={(e) => setRecurrenceInterval(Number(e.target.value))}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     />
                   </div>
                 </div>
@@ -583,7 +614,7 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
                               setRecurrenceDaysOfWeek([...recurrenceDaysOfWeek, index]);
                             }
                           }}
-                          className={`px-3 py-1 rounded-lg text-sm ${
+                          className={`px-3 py-1 rounded-md text-sm ${
                             recurrenceDaysOfWeek.includes(index)
                               ? 'bg-blue-600 text-white dark:bg-blue-500'
                               : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
@@ -605,15 +636,15 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
                     type="date"
                     value={recurrenceEndDate}
                     onChange={(e) => setRecurrenceEndDate(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   />
                 </div>
               </div>
             )}
           </div>
 
-          {/* 첨부파일 */}
-          <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+          {/* 첨부파일 섹션 */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               📎 첨부파일
             </label>
@@ -630,7 +661,7 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
               />
               <label
                 htmlFor="file-upload"
-                className={`inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium cursor-pointer
+                className={`inline-flex items-center px-4 py-2 border border-gray-200 dark:border-gray-600 rounded-md text-sm font-medium cursor-pointer
                   ${uploadingFiles
                     ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 cursor-not-allowed'
                     : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
@@ -649,7 +680,7 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
                 {attachments.map((attachment, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                    className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-700 rounded-md"
                   >
                     <div className="flex items-center gap-2 flex-1 min-w-0">
                       <span className="text-xl">{getFileIcon(attachment.name)}</span>
@@ -685,23 +716,21 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
             )}
           </div>
 
-          {/* Sticky 버튼 영역 */}
-          <div className="sticky bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700 px-6 py-4 rounded-b-2xl shadow-lg">
-            <div className="flex justify-end space-x-3">
-              <button
-                type="button"
-                onClick={onClose}
-                className="px-6 py-2.5 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition font-medium"
-              >
-                취소
-              </button>
-              <button
-                type="submit"
-                className="px-6 py-2.5 bg-indigo-600 dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-600 text-white rounded-lg transition font-bold"
-              >
-                {schedule ? '수정' : '추가'}
-              </button>
-            </div>
+          {/* 버튼 영역 */}
+          <div className="flex justify-end space-x-3 mt-6">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-6 py-2.5 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition font-medium"
+            >
+              취소
+            </button>
+            <button
+              type="submit"
+              className="px-6 py-2.5 bg-indigo-600 dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-600 text-white rounded-md transition font-bold"
+            >
+              {schedule ? '수정' : '추가'}
+            </button>
           </div>
         </form>
       </div>
