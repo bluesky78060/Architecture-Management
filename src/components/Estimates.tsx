@@ -1252,8 +1252,9 @@ const Estimates: React.FC = () => {
                 </div>
 
                 <div className="bg-white dark:bg-gray-700 rounded-xl shadow-sm border border-gray-100 dark:border-gray-600 p-4">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">특이사항 및 조건</label>
+                  <label htmlFor="estimate-notes" className="block text-sm font-medium text-gray-700 dark:text-gray-300">특이사항 및 조건</label>
                   <textarea
+                    id="estimate-notes"
                     name="notes"
                     value={newEstimate.notes}
                     onChange={handleInputChange}
