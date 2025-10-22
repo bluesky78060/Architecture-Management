@@ -906,7 +906,7 @@ export default function Invoices(): JSX.Element {
                             <button
                               key={s}
                               type="button"
-                              onClick={() => setForm(prev => ({ ...prev, status: s }))}
+                              onClick={() => setForm(prev => ({ ...prev, status: s as typeof form.status }))}
                               className={`px-3 py-1.5 rounded-full text-sm transition ${classes}`}
                               aria-pressed={active}
                             >
