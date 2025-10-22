@@ -893,19 +893,32 @@ export default function Invoices(): JSX.Element {
                 </div>
 
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
-                  <div className="grid grid-cols-3 gap-3">
-                    <div>
-                      <label htmlFor="invoice-status" className="block text-sm font-medium text-gray-700 dark:text-gray-300">상태</label>
-                      <select id="invoice-status" name="status" value={form.status} onChange={onFormChange} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
-                        <option value="발송대기">발송대기</option>
-                        <option value="발송됨">발송됨</option>
-                        <option value="미결제">미결제</option>
-                        <option value="결제완료">결제완료</option>
-                      </select>
+                  <div className="flex justify-between items-center">
+                    <div className="flex-1">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">상태</label>
+                      <div className="flex flex-wrap gap-1.5">
+                        {statuses.map((s) => {
+                          const active = form.status === s;
+                          const classes = active
+                            ? 'bg-indigo-600 dark:bg-indigo-500 text-white border-transparent shadow'
+                            : 'bg-gray-100 dark:bg-gray-600 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-500 hover:bg-gray-200 dark:hover:bg-gray-500';
+                          return (
+                            <button
+                              key={s}
+                              type="button"
+                              onClick={() => setForm(prev => ({ ...prev, status: s }))}
+                              className={`px-3 py-1.5 rounded-full text-sm transition ${classes}`}
+                              aria-pressed={active}
+                            >
+                              {s}
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
-                    <div className="col-span-2 text-right">
-                      <div className="text-sm text-gray-600 dark:text-gray-300">총 금액</div>
-                      <div className="text-lg font-bold text-gray-900 dark:text-gray-100">{format(getFormTotal())}원</div>
+                    <div className="ml-6">
+                      <div className="text-sm text-gray-600 dark:text-gray-300 mb-1 text-right">총 금액</div>
+                      <div className="bg-blue-600 dark:bg-blue-700 text-white rounded-lg px-4 py-2 text-lg font-bold shadow-md">{format(getFormTotal())}원</div>
                     </div>
                   </div>
                 </div>
