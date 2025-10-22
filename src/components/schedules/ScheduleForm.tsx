@@ -301,10 +301,11 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
 
             {/* 제목 */}
             <div className="mb-3">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label htmlFor="schedule-title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 제목 *
               </label>
               <input
+                id="schedule-title"
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -315,10 +316,11 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
 
             {/* 설명 */}
             <div className="mb-3">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label htmlFor="schedule-description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 설명
               </label>
               <textarea
+                id="schedule-description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={2}
@@ -329,10 +331,11 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
             {/* 일정 유형 & 상태 */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label htmlFor="schedule-type" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   유형 *
                 </label>
                 <select
+                  id="schedule-type"
                   value={scheduleType}
                   onChange={(e) => setScheduleType(e.target.value as ScheduleType)}
                   className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -345,10 +348,11 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label htmlFor="schedule-status" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   상태
                 </label>
                 <select
+                  id="schedule-status"
                   value={status}
                   onChange={(e) => setStatus(e.target.value as ScheduleStatus)}
                   className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -608,10 +612,11 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
 
             {/* 건축주 */}
             <div className="mb-3">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label htmlFor="schedule-client" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 건축주
               </label>
               <select
+                id="schedule-client"
                 value={clientId}
                 onChange={(e) => setClientId(e.target.value ? Number(e.target.value) : '')}
                 className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -627,10 +632,11 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
 
             {/* 장소 */}
             <div className="mb-3">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label htmlFor="schedule-location" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 장소
               </label>
               <input
+                id="schedule-location"
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
@@ -640,10 +646,11 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
 
             {/* 우선순위 */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label htmlFor="schedule-priority" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 우선순위
               </label>
               <select
+                id="schedule-priority"
                 value={priority}
                 onChange={(e) => setPriority(e.target.value as SchedulePriority)}
                 className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -665,10 +672,11 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
 
             {/* 메모 */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label htmlFor="schedule-notes" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 메모
               </label>
               <textarea
+                id="schedule-notes"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 rows={3}
