@@ -371,6 +371,7 @@ const Login: React.FC = () => {
                   </span>
                   <input
                     id="name"
+                    name="name"
                     type="text"
                     autoComplete="name"
                     value={name}
@@ -398,6 +399,7 @@ const Login: React.FC = () => {
                 </span>
                 <input
                   id="email"
+                  name="email"
                   type="email"
                   autoComplete="email"
                   value={email}
@@ -424,6 +426,7 @@ const Login: React.FC = () => {
                 </span>
                 <input
                   id="password"
+                  name="password"
                   type="password"
                   autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
                   value={password}
@@ -445,6 +448,8 @@ const Login: React.FC = () => {
               <div className="flex items-center justify-between">
                 <label className="flex items-center cursor-pointer">
                   <input
+                    id="remember"
+                    name="remember"
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
