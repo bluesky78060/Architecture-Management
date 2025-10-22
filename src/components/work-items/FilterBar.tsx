@@ -48,7 +48,11 @@ export default function FilterBar({
         <div className="flex items-center space-x-3 flex-wrap">
           <span className="text-xs font-medium text-gray-500 dark:text-gray-400">필터:</span>
           <div className="relative inline-flex items-center">
+            <label htmlFor="filter-client" className="sr-only">건축주 필터</label>
             <select
+              id="filter-client"
+              name="filterClient"
+              autoComplete="off"
               value={selectedClient == null ? '' : String(selectedClient)}
               onChange={(e) => onChangeClient(e.target.value)}
               className="border border-gray-300 dark:border-gray-600 rounded-md px-3 pr-8 py-1.5 bg-white dark:bg-gray-700 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-indigo-500 appearance-none cursor-pointer min-w-0"
@@ -60,7 +64,11 @@ export default function FilterBar({
             </select>
           </div>
           <div className="relative inline-flex items-center">
+            <label htmlFor="filter-project" className="sr-only">프로젝트 필터</label>
             <select
+              id="filter-project"
+              name="filterProject"
+              autoComplete="off"
               value={selectedProject}
               onChange={(e) => onChangeProject(e.target.value)}
               className={`border border-gray-300 dark:border-gray-600 rounded-md px-3 pr-8 py-1.5 bg-white dark:bg-gray-700 text-xs hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-indigo-500 appearance-none cursor-pointer min-w-0 ${!hasClient ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 dark:text-gray-300'}`}
@@ -93,8 +101,11 @@ export default function FilterBar({
           {hasSelection && (
             <>
               <div className="flex items-center space-x-2 mr-2">
-                <label className="text-xs text-gray-600 dark:text-gray-300">상태 일괄 변경</label>
+                <label htmlFor="bulk-status-select" className="text-xs text-gray-600 dark:text-gray-300">상태 일괄 변경</label>
                 <select
+                  id="bulk-status-select"
+                  name="bulkStatus"
+                  autoComplete="off"
                   value={bulkStatus}
                   onChange={(e) => onBulkStatusChange(e.target.value)}
                   className="border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1 text-xs bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
