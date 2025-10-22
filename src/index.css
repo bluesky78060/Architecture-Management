@@ -290,7 +290,7 @@
 
   .schedule-date-input::-webkit-calendar-picker-indicator {
     transform: scale(1.5);
-    @apply cursor-pointer hover:scale-175 transition-transform duration-200;
+    @apply cursor-pointer hover:scale-150 transition-transform duration-200;
   }
 
   /* Focus Ring Enhancement */
