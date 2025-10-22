@@ -702,10 +702,13 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
 
             {reminderEnabled && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label htmlFor="reminder-minutes" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   알림 시간
                 </label>
                 <select
+                  id="reminder-minutes"
+                  name="reminderMinutesBefore"
+                  autoComplete="off"
                   value={reminderMinutesBefore}
                   onChange={(e) => setReminderMinutesBefore(Number(e.target.value))}
                   className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -740,10 +743,13 @@ export default function ScheduleForm({ schedule, onClose }: Props) {
                 {/* 반복 유형 & 간격 */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label htmlFor="recurrence-frequency" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       반복 유형
                     </label>
                     <select
+                      id="recurrence-frequency"
+                      name="recurrenceFrequency"
+                      autoComplete="off"
                       value={recurrenceFrequency}
                       onChange={(e) => setRecurrenceFrequency(e.target.value as 'daily' | 'weekly' | 'monthly' | 'yearly')}
                       className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
