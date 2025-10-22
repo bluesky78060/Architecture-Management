@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "https://bluesky78060.github.io/Architecture-Management/static/css/main.d00eedab.css",
-    "main.js": "https://bluesky78060.github.io/Architecture-Management/static/js/main.b64be631.js",
+    "main.css": "https://bluesky78060.github.io/Architecture-Management/static/css/main.d1efe7b4.css",
+    "main.js": "https://bluesky78060.github.io/Architecture-Management/static/js/main.68afd0bf.js",
     "static/js/940.64d615e5.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/940.64d615e5.chunk.js",
     "static/js/347.b6c8afc6.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/347.b6c8afc6.chunk.js",
     "static/js/399.14145b1e.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/399.14145b1e.chunk.js",
     "static/js/28.2bebae8e.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/28.2bebae8e.chunk.js",
     "static/js/355.91977f4e.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/355.91977f4e.chunk.js",
-    "static/js/703.36d18f8b.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/703.36d18f8b.chunk.js",
+    "static/js/703.181c1763.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/703.181c1763.chunk.js",
     "static/js/217.6b5cabf2.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/217.6b5cabf2.chunk.js",
     "static/js/93.75a12726.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/93.75a12726.chunk.js",
     "static/js/776.43b535c8.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/776.43b535c8.chunk.js",
@@ -27,14 +27,14 @@
     "static/media/SCDream5.otf": "https://bluesky78060.github.io/Architecture-Management/static/media/SCDream5.ae5ee4933db75a3ccb04.otf",
     "static/media/SCDream4.otf": "https://bluesky78060.github.io/Architecture-Management/static/media/SCDream4.64c9dc7c860af7a004ad.otf",
     "index.html": "https://bluesky78060.github.io/Architecture-Management/index.html",
-    "main.d00eedab.css.map": "https://bluesky78060.github.io/Architecture-Management/static/css/main.d00eedab.css.map",
-    "main.b64be631.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/main.b64be631.js.map",
+    "main.d1efe7b4.css.map": "https://bluesky78060.github.io/Architecture-Management/static/css/main.d1efe7b4.css.map",
+    "main.68afd0bf.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/main.68afd0bf.js.map",
     "940.64d615e5.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/940.64d615e5.chunk.js.map",
     "347.b6c8afc6.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/347.b6c8afc6.chunk.js.map",
     "399.14145b1e.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/399.14145b1e.chunk.js.map",
     "28.2bebae8e.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/28.2bebae8e.chunk.js.map",
     "355.91977f4e.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/355.91977f4e.chunk.js.map",
-    "703.36d18f8b.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/703.36d18f8b.chunk.js.map",
+    "703.181c1763.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/703.181c1763.chunk.js.map",
     "217.6b5cabf2.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/217.6b5cabf2.chunk.js.map",
     "93.75a12726.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/93.75a12726.chunk.js.map",
     "776.43b535c8.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/776.43b535c8.chunk.js.map",
@@ -47,7 +47,7 @@
   },
   "entrypoints": [
     "static/js/vendors.65ebf488.js",
-    "static/css/main.d00eedab.css",
-    "static/js/main.b64be631.js"
+    "static/css/main.d1efe7b4.css",
+    "static/js/main.68afd0bf.js"
   ]
 }
