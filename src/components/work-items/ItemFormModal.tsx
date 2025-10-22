@@ -43,18 +43,18 @@ export default function ItemFormModal({ open, editingItem, newItem, clients, uni
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300">건축주</label>
-                  <select name="clientId" value={String(newItem.clientId ?? '')} onChange={(e) => onChangeField(e.target.name, e.target.value)} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required>
+                  <label htmlFor="item-client" className="block text-sm font-medium text-gray-700 dark:text-gray-300">건축주</label>
+                  <select id="item-client" name="clientId" autoComplete="organization" value={String(newItem.clientId ?? '')} onChange={(e) => onChangeField(e.target.name, e.target.value)} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required>
                     <option value="">건축주 선택</option>
                     {clients.map(c => (<option key={c.id} value={String(c.id)}>{c.name}</option>))}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300">작업장</label>
+                  <label htmlFor="item-workplace" className="block text-sm font-medium text-gray-700 dark:text-gray-300">작업장</label>
                   {(() => {
                     const hasClient = String(newItem.clientId ?? '') !== '';
                     return (
-                      <select name="workplaceId" value={String(newItem.workplaceId ?? '')} onChange={(e) => onChangeField(e.target.name, e.target.value)} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed" required disabled={!hasClient}>
+                      <select id="item-workplace" name="workplaceId" autoComplete="off" value={String(newItem.workplaceId ?? '')} onChange={(e) => onChangeField(e.target.name, e.target.value)} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed" required disabled={!hasClient}>
                         <option value="">{hasClient ? '작업장 선택' : '작업장 선택(먼저 건축주를 선택하세요)'}</option>
                         {hasClient && getClientWorkplaces(newItem.clientId).map(wp => (<option key={wp.id} value={String(wp.id)}>{wp.name} - {wp.address}</option>))}
                       </select>
@@ -64,25 +64,25 @@ export default function ItemFormModal({ open, editingItem, newItem, clients, uni
               </div>
               <div className="grid grid-cols-2 gap-3 mt-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300">프로젝트명</label>
+                  <label htmlFor="item-project" className="block text-sm font-medium text-gray-700 dark:text-gray-300">프로젝트명</label>
                   {(() => {
                     const selectedClient = clients.find(c => String(c.id) === String(newItem.clientId));
                     const projects: string[] = (selectedClient !== undefined && Array.isArray(selectedClient.projects)) ? selectedClient.projects : [];
                     const hasProjects = Array.isArray(projects) && projects.length > 0;
 
                     return hasProjects ? (
-                      <select name="projectName" value={newItem.projectName ?? ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required>
+                      <select id="item-project" name="projectName" autoComplete="off" value={newItem.projectName ?? ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required>
                         <option value="">프로젝트 선택</option>
                         {projects.map(proj => (<option key={proj} value={proj}>{proj}</option>))}
                       </select>
                     ) : (
-                      <input type="text" name="projectName" value={newItem.projectName ?? ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} placeholder="프로젝트명 입력" className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required />
+                      <input id="item-project" type="text" name="projectName" autoComplete="off" value={newItem.projectName ?? ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} placeholder="프로젝트명 입력" className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required />
                     );
                   })()}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300">카테고리</label>
-                  <select name="category" value={newItem.category ?? ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required>
+                  <label htmlFor="item-category" className="block text-sm font-medium text-gray-700 dark:text-gray-300">카테고리</label>
+                  <select id="item-category" name="category" autoComplete="off" value={newItem.category ?? ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required>
                     <option value="">카테고리 선택</option>
                     {categories.map(cat => (<option key={cat} value={cat}>{cat}</option>))}
                   </select>
@@ -96,11 +96,11 @@ export default function ItemFormModal({ open, editingItem, newItem, clients, uni
                 <h4 className="text-base font-semibold text-gray-900 dark:text-gray-100">작업 정보</h4>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">작업일자</label>
+                <label htmlFor="item-date" className="block text-sm font-medium text-gray-700 dark:text-gray-300">작업일자</label>
                 <div className="mt-1 relative inline-block" ref={calRef}>
                   <div className="flex items-center gap-2">
-                    <input type="text" name="date" value={newItem?.date ?? ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} placeholder="YYYY-MM-DD" inputMode="numeric" className="block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400" onFocus={() => cal.setOpen(true)} required />
-                    <button type="button" className="px-2 py-2 text-gray-600 hover:text-gray-800" onClick={() => cal.setOpen(v => !v)} title="달력 열기">📅</button>
+                    <input id="item-date" type="text" name="date" autoComplete="off" value={newItem?.date ?? ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} placeholder="YYYY-MM-DD" inputMode="numeric" className="block w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-400" onFocus={() => cal.setOpen(true)} required />
+                    <button type="button" className="px-2 py-2 text-gray-600 hover:text-gray-800" onClick={() => cal.setOpen(v => !v)} aria-label="달력 열기">📅</button>
                   </div>
                   {cal.open && (
                     <div className="absolute z-50 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg mt-2 p-3" style={{ transform: 'scale(1)', transformOrigin: 'top left' }}>
@@ -142,30 +142,30 @@ export default function ItemFormModal({ open, editingItem, newItem, clients, uni
 
               <div className="grid grid-cols-2 gap-3 mt-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">내용</label>
-                  <input type="text" name="name" value={newItem.name ?? ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required />
+                  <label htmlFor="item-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">내용</label>
+                  <input id="item-name" type="text" name="name" autoComplete="off" value={newItem.name ?? ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">세부 작업</label>
-                  <input type="text" name="description" value={newItem.description ?? ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+                  <label htmlFor="item-description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">세부 작업</label>
+                  <input id="item-description" type="text" name="description" autoComplete="off" value={newItem.description ?? ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
                 </div>
               </div>
 
               <div className="grid grid-cols-4 gap-3 mt-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">수량</label>
-                  <input type="text" name="quantity" value={newItem.quantity ?? ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} onFocus={(e) => e.target.select()} placeholder="예: 1" className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+                  <label htmlFor="item-quantity" className="block text-sm font-medium text-gray-700 dark:text-gray-300">수량</label>
+                  <input id="item-quantity" type="text" name="quantity" autoComplete="off" value={newItem.quantity ?? ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} onFocus={(e) => e.target.select()} placeholder="예: 1" className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">단위</label>
-                  <select name="unit" value={newItem.unit ?? ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                  <label htmlFor="item-unit" className="block text-sm font-medium text-gray-700 dark:text-gray-300">단위</label>
+                  <select id="item-unit" name="unit" autoComplete="off" value={newItem.unit ?? ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                     <option value="">단위 선택</option>
                     {units.map(u => (<option key={u} value={u}>{u}</option>))}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">단가</label>
-                  <input type="text" name="defaultPrice" value={(() => {
+                  <label htmlFor="item-price" className="block text-sm font-medium text-gray-700 dark:text-gray-300">단가</label>
+                  <input id="item-price" type="text" name="defaultPrice" autoComplete="off" value={(() => {
                     const val = newItem.defaultPrice;
                     if (val === null || val === undefined) return '';
                     const num = Number(val);
@@ -173,7 +173,7 @@ export default function ItemFormModal({ open, editingItem, newItem, clients, uni
                   })()} onChange={(e) => onChangeField(e.target.name, e.target.value)} onFocus={(e) => e.target.select()} placeholder="예: 200,000" className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">합계</label>
+                  <div className="block text-sm font-medium text-gray-700 dark:text-gray-300">합계</div>
                   <div className="mt-1 w-full bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded px-3 py-2 text-sm font-semibold text-green-900 dark:text-green-300">{
                     (() => {
                       const pRaw = newItem.defaultPrice;
@@ -190,15 +190,15 @@ export default function ItemFormModal({ open, editingItem, newItem, clients, uni
 
               <div className="grid grid-cols-3 gap-3 mt-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">인부 인원</label>
-                  <input type="text" name="laborPersons" value={String(newItem.laborPersons ?? '')} onChange={(e) => onChangeField(e.target.name, e.target.value)} onFocus={(e) => e.target.select()} placeholder="예: 3" className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+                  <label htmlFor="item-labor-persons" className="block text-sm font-medium text-gray-700 dark:text-gray-300">인부 인원</label>
+                  <input id="item-labor-persons" type="text" name="laborPersons" autoComplete="off" value={String(newItem.laborPersons ?? '')} onChange={(e) => onChangeField(e.target.name, e.target.value)} onFocus={(e) => e.target.select()} placeholder="예: 3" className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">인부 단가</label>
-                  <input type="text" name="laborUnitRate" value={typeof newItem.laborUnitRate === 'number' ? format(newItem.laborUnitRate) : ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} onFocus={(e) => e.target.select()} placeholder="예: 250,000" className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+                  <label htmlFor="item-labor-rate" className="block text-sm font-medium text-gray-700 dark:text-gray-300">인부 단가</label>
+                  <input id="item-labor-rate" type="text" name="laborUnitRate" autoComplete="off" value={typeof newItem.laborUnitRate === 'number' ? format(newItem.laborUnitRate) : ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} onFocus={(e) => e.target.select()} placeholder="예: 250,000" className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">인부임 합계</label>
+                  <div className="block text-sm font-medium text-gray-700 dark:text-gray-300">인부임 합계</div>
                   <div className="mt-1 w-full bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700 rounded px-3 py-2 text-sm font-semibold text-indigo-900 dark:text-indigo-300">{
                     (() => {
                       const persons = Number(newItem.laborPersons ?? 0);
@@ -212,16 +212,16 @@ export default function ItemFormModal({ open, editingItem, newItem, clients, uni
               </div>
 
               <div className="mt-3">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">비고</label>
-                <input type="text" name="notes" value={newItem.notes ?? ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} placeholder="추가 메모나 특이사항을 입력하세요" className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+                <label htmlFor="item-notes" className="block text-sm font-medium text-gray-700 dark:text-gray-300">비고</label>
+                <input id="item-notes" type="text" name="notes" autoComplete="off" value={newItem.notes ?? ''} onChange={(e) => onChangeField(e.target.name, e.target.value)} placeholder="추가 메모나 특이사항을 입력하세요" className="mt-1 block w-full border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
               </div>
             </div>
 
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
               <div className="flex justify-between items-center">
                 <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">상태</label>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">상태</div>
+                  <div className="flex flex-wrap gap-1.5" role="group" aria-label="작업 항목 상태 선택">
                     {statuses.map((s) => {
                       const active = newItem.status === s;
                       const classes = active ? 'bg-indigo-600 dark:bg-indigo-500 text-white border-transparent shadow' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600';
@@ -232,7 +232,7 @@ export default function ItemFormModal({ open, editingItem, newItem, clients, uni
                   </div>
                 </div>
                 <div className="ml-4">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-right">총합계 금액</label>
+                  <div className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-right">총합계 금액</div>
                   <div className="bg-blue-600 dark:bg-blue-700 text-white rounded-lg px-4 py-2 text-base font-bold shadow-md">{
                     (() => {
                       const pRaw = newItem.defaultPrice;
