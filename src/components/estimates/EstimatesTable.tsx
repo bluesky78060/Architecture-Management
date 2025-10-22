@@ -66,6 +66,8 @@ export default function EstimatesTable({ items, allSelected, onToggleAll, onTogg
               <td className="px-3 py-2 text-sm text-gray-900 dark:text-gray-100 text-center">{format(estimate.totalAmount)}원</td>
               <td className="px-3 py-2 whitespace-nowrap">
                 <select
+                  id={`estimate-status-${estimate.id}`}
+                  name={`estimate-status-${estimate.id}`}
                   className={`px-2 py-1 text-xs font-semibold rounded-full border-0 ${getStatusColor(estimate.status)} focus:outline-none focus:ring-0`}
                   value={estimate.status}
                   onChange={(e) => onStatusChange(estimate.id, e.target.value)}
