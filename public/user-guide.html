@@ -877,63 +877,149 @@
 
                 <ol class="step-list">
                     <li>왼쪽 메뉴에서 <strong>"📋 견적서 관리"</strong>를 클릭합니다</li>
-                    <li>화면 우측 상단의 <strong>"새 견적서"</strong> 또는 <strong>"➕ 작성"</strong> 버튼을 클릭합니다</li>
+                    <li>화면 우측 상단의 <strong>"✨ 새 견적서"</strong> 버튼을 클릭합니다</li>
                 </ol>
 
                 <div style="margin: 30px 0;">
                     <img src="images/새 견적서 작성.png" alt="새 견적서 작성 화면" style="max-width: 50%; height: auto; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                 </div>
 
-                <ol class="step-list" start="3">
-                    <li>기본 정보를 입력합니다 (건축주, 프로젝트명)</li>
-                    <li>공사 항목을 추가합니다</li>
-                    <li>특이사항을 입력합니다</li>
-                    <li>상태를 설정합니다</li>
-                    <li><strong>"작성"</strong> 버튼을 클릭합니다</li>
-                </ol>
+                <h4>📋 입력 폼 구조 (2개 섹션)</h4>
+                <p>새 견적서 작성 화면은 2개의 섹션으로 구성되어 있습니다:</p>
 
-                <h4>공사 항목 추가하기</h4>
+                <h4>1️⃣ 기본 정보 섹션 (📄 아이콘)</h4>
+
                 <table>
                     <thead>
                         <tr>
                             <th>항목</th>
                             <th>설명</th>
+                            <th>필수 여부</th>
+                            <th>예시</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>👤 건축주</td>
+                            <td>등록된 건축주 중 선택</td>
+                            <td>✅ 필수</td>
+                            <td>김철수</td>
+                        </tr>
+                        <tr>
+                            <td>🏗️ 작업장</td>
+                            <td>선택한 건축주의 작업장 선택</td>
+                            <td>✅ 필수</td>
+                            <td>신축 주택 - 서울시 강남구...</td>
+                        </tr>
+                        <tr>
+                            <td>📋 프로젝트명</td>
+                            <td>프로젝트명 입력</td>
+                            <td>✅ 필수</td>
+                            <td>주방 리모델링</td>
+                        </tr>
+                        <tr>
+                            <td>📄 견적서 제목</td>
+                            <td>견적서 제목 입력</td>
+                            <td>✅ 필수</td>
+                            <td>2025년 1월 주방공사 견적</td>
+                        </tr>
+                        <tr>
+                            <td>📅 유효기한</td>
+                            <td>날짜 선택 (달력 📅 버튼)</td>
+                            <td>✅ 필수</td>
+                            <td>2025-02-28</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <div class="highlight-box">
+                                    💡 <strong>유효기한 선택 안함 체크박스</strong><br>
+                                    - 체크하면 유효기한 없이 발행됩니다<br>
+                                    - "유효기한 없이 발행됩니다. 견적 조건을 비고에 명시하세요." 안내 표시
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>🎯 상태</td>
+                            <td>버튼 선택 (검토중, 발송됨, 승인됨, 거부됨)</td>
+                            <td>✅ 필수</td>
+                            <td>검토중 (기본값)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>2️⃣ 견적 항목 섹션 (🗂️ 아이콘)</h4>
+                <p>우측 상단의 <strong>"+ 항목 추가"</strong> 버튼으로 여러 항목 추가 가능</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>항목</th>
+                            <th>설명</th>
+                            <th>필수 여부</th>
                             <th>예시</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>📁 카테고리</td>
-                            <td>공사 종류를 선택</td>
-                            <td>마감공사</td>
+                            <td>공사 종류 선택 (드롭다운)</td>
+                            <td>✅ 필수</td>
+                            <td>마감공사, 조적공사 등</td>
                         </tr>
                         <tr>
                             <td>📝 내용</td>
                             <td>구체적인 공사 내용</td>
+                            <td>✅ 필수</td>
                             <td>거실 좌식 도배 시공</td>
                         </tr>
                         <tr>
+                            <td>📄 설명</td>
+                            <td>추가 상세 설명</td>
+                            <td>선택</td>
+                            <td>실크벽지 사용</td>
+                        </tr>
+                        <tr>
                             <td>🔢 수량</td>
-                            <td>공사 양</td>
+                            <td>공사 양 (포커스 시 자동 선택)</td>
+                            <td>✅ 필수</td>
                             <td>100</td>
                         </tr>
                         <tr>
-                            <td>📏 단위</td>
-                            <td>수량의 단위</td>
-                            <td>㎡</td>
-                        </tr>
-                        <tr>
                             <td>💰 단가</td>
-                            <td>단위당 가격</td>
+                            <td>단위당 가격 (포커스 시 자동 선택)</td>
+                            <td>✅ 필수</td>
                             <td>5,000</td>
                         </tr>
                         <tr>
-                            <td>💵 금액</td>
-                            <td><strong>자동 계산됨</strong></td>
-                            <td>₩500,000</td>
+                            <td>📏 단위</td>
+                            <td>수량의 단위 선택 (드롭다운)</td>
+                            <td>✅ 필수</td>
+                            <td>㎡, 식, 개, m 등</td>
+                        </tr>
+                        <tr>
+                            <td>💵 합계</td>
+                            <td><strong>자동 계산</strong> (수량 × 단가)</td>
+                            <td>자동</td>
+                            <td>500,000원</td>
+                        </tr>
+                        <tr>
+                            <td>📝 비고</td>
+                            <td>항목별 추가 메모 (2줄 텍스트 영역)</td>
+                            <td>선택</td>
+                            <td>주말 작업 가능</td>
                         </tr>
                     </tbody>
                 </table>
+
+                <div class="warning-box">
+                    ⚠️ <strong>항목 삭제 버튼</strong><br>
+                    - 각 항목 우측 상단에 "삭제" 버튼이 있습니다<br>
+                    - 항목이 2개 이상일 때만 삭제 버튼이 표시됩니다<br>
+                    - 항목이 1개만 있을 때는 삭제 불가능 (최소 1개는 필수)
+                </div>
+
+                <h5>총 견적 금액</h5>
+                <p>모든 항목의 합계가 하단에 <strong>큰 글씨</strong>로 표시됩니다.</p>
 
                 <div class="highlight-box">
                     💡 <strong>한 번에 여러 항목 추가하고 싶다면?</strong><br>
@@ -984,18 +1070,216 @@
 
                 <ol class="step-list">
                     <li>왼쪽 메뉴에서 <strong>"💳 청구서 관리"</strong>를 클릭합니다</li>
-                    <li>화면 우측 상단의 <strong>"새 청구서"</strong> 또는 <strong>"➕ 생성"</strong> 버튼을 클릭합니다</li>
+                    <li>화면 우측 상단의 <strong>"✨ 새 청구서"</strong> 버튼을 클릭합니다</li>
                 </ol>
 
                 <div style="margin: 30px 0;">
                     <img src="images/새 청구서 생성.png" alt="새 청구서 생성 화면" style="max-width: 50%; height: auto; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                 </div>
 
-                <ol class="step-list" start="3">
-                    <li>기본 정보를 입력합니다 (건축주, 프로젝트)</li>
-                    <li>공사 항목을 추가하거나 견적서에서 불러옵니다</li>
-                    <li><strong>"저장"</strong> 또는 <strong>"생성"</strong> 버튼을 클릭합니다</li>
-                </ol>
+                <h4>📋 입력 폼 구조 (3개 섹션)</h4>
+                <p>새 청구서 생성 화면은 3개의 섹션으로 구성되어 있습니다:</p>
+
+                <h4>1️⃣ 기본 정보 섹션</h4>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>항목</th>
+                            <th>설명</th>
+                            <th>필수 여부</th>
+                            <th>예시</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>👤 건축주</td>
+                            <td>등록된 건축주 중 선택</td>
+                            <td>✅ 필수</td>
+                            <td>김철수</td>
+                        </tr>
+                        <tr>
+                            <td>📋 프로젝트</td>
+                            <td>드롭다운 선택 또는 직접 입력</td>
+                            <td>✅ 필수</td>
+                            <td>주방 리모델링</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <div class="highlight-box">
+                                    💡 <strong>프로젝트 입력 방법:</strong><br>
+                                    - 드롭다운에서 "직접 입력" 선택 시 텍스트 입력으로 전환<br>
+                                    - "← 목록에서 선택" 버튼으로 다시 드롭다운으로 전환 가능
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>🏗️ 작업장</td>
+                            <td>선택한 건축주의 작업장 선택</td>
+                            <td>✅ 필수</td>
+                            <td>신축 주택 - 서울시 강남구...</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <div class="success-box">
+                                    ✅ <strong>작업장 주소 자동 표시</strong><br>
+                                    작업장 선택 시 하단에 "작업장 주소: ..." 자동 표시
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>📅 발행일</td>
+                            <td>청구서 발행 날짜</td>
+                            <td>선택</td>
+                            <td>2025-10-22</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>2️⃣ 작업 항목 섹션</h4>
+                <p>우측 상단의 <strong>"+ 항목 추가"</strong> 버튼으로 여러 항목 추가 가능</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>항목</th>
+                            <th>설명</th>
+                            <th>필수 여부</th>
+                            <th>예시</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>📝 내용</td>
+                            <td>작업 내용</td>
+                            <td>✅ 필수</td>
+                            <td>거실 도배</td>
+                        </tr>
+                        <tr>
+                            <td>📁 카테고리</td>
+                            <td>작업 종류 선택 (드롭다운)</td>
+                            <td>선택</td>
+                            <td>마감공사</td>
+                        </tr>
+                        <tr>
+                            <td>🔢 수량</td>
+                            <td>작업 양</td>
+                            <td>선택</td>
+                            <td>100</td>
+                        </tr>
+                        <tr>
+                            <td>📏 단위</td>
+                            <td>수량의 단위 선택 (드롭다운)</td>
+                            <td>선택</td>
+                            <td>㎡</td>
+                        </tr>
+                        <tr>
+                            <td>💰 단가</td>
+                            <td>단위당 가격</td>
+                            <td>선택</td>
+                            <td>5,000</td>
+                        </tr>
+                        <tr>
+                            <td>📄 상세 설명</td>
+                            <td>작업 상세 내용 (1줄 텍스트 영역)</td>
+                            <td>선택</td>
+                            <td>실크벽지 사용</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h5>👷 인부임 정보 (파란색 배경)</h5>
+                <p>각 항목마다 인부임 정보를 입력할 수 있습니다:</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>항목</th>
+                            <th>설명</th>
+                            <th>예시</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>인부수 (1번째)</td>
+                            <td>첫 번째 인부 수</td>
+                            <td>2명</td>
+                        </tr>
+                        <tr>
+                            <td>단가 (1번째)</td>
+                            <td>첫 번째 인부 단가</td>
+                            <td>150,000원</td>
+                        </tr>
+                        <tr>
+                            <td>인부수 (2번째)</td>
+                            <td>두 번째 인부 수</td>
+                            <td>1명</td>
+                        </tr>
+                        <tr>
+                            <td>단가 (2번째)</td>
+                            <td>두 번째 인부 단가</td>
+                            <td>120,000원</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h5>기타 항목 정보</h5>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>항목</th>
+                            <th>설명</th>
+                            <th>필수 여부</th>
+                            <th>예시</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>📝 비고</td>
+                            <td>항목별 추가 메모</td>
+                            <td>선택</td>
+                            <td>주말 작업</td>
+                        </tr>
+                        <tr>
+                            <td>📅 날짜</td>
+                            <td>작업 날짜</td>
+                            <td>선택</td>
+                            <td>2025-10-20</td>
+                        </tr>
+                        <tr>
+                            <td>💵 합계</td>
+                            <td><strong>자동 계산</strong></td>
+                            <td>자동</td>
+                            <td>500,000원</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="warning-box">
+                    ⚠️ <strong>항목 삭제 버튼</strong><br>
+                    - 각 항목 하단 우측에 "항목 삭제" 버튼이 있습니다<br>
+                    - 항목이 2개 이상일 때만 삭제 버튼이 표시됩니다
+                </div>
+
+                <h4>3️⃣ 상태 및 기타 정보 섹션</h4>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>항목</th>
+                            <th>설명</th>
+                            <th>옵션</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>🎯 상태</td>
+                            <td>청구서 상태 선택 (드롭다운)</td>
+                            <td>발송대기, 발송됨, 미결제, 결제완료</td>
+                        </tr>
+                    </tbody>
+                </table>
 
                 <h3>🖨️ 청구서 출력하기</h3>
 
