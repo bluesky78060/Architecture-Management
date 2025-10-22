@@ -958,22 +958,22 @@ const Clients: React.FC = () => {
                   {/* 유형 + 이름/상호 카드 내부 */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">유형</label>
-                      <div className="flex items-center gap-5">
-                        <label className="inline-flex items-center gap-2 text-sm">
-                          <input type="radio" name="type" value="PERSON" checked={newClient.type === 'PERSON'} onChange={() => handleTypeChange('PERSON')} />
+                      <div className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">유형</div>
+                      <div className="flex items-center gap-5" role="group" aria-label="건축주 유형 선택">
+                        <label htmlFor="client-type-person" className="inline-flex items-center gap-2 text-sm">
+                          <input id="client-type-person" type="radio" name="type" value="PERSON" checked={newClient.type === 'PERSON'} onChange={() => handleTypeChange('PERSON')} />
                           개인
                         </label>
-                        <label className="inline-flex items-center gap-2 text-sm">
-                          <input type="radio" name="type" value="BUSINESS" checked={newClient.type === 'BUSINESS'} onChange={() => handleTypeChange('BUSINESS')} />
+                        <label htmlFor="client-type-business" className="inline-flex items-center gap-2 text-sm">
+                          <input id="client-type-business" type="radio" name="type" value="BUSINESS" checked={newClient.type === 'BUSINESS'} onChange={() => handleTypeChange('BUSINESS')} />
                           사업자
                         </label>
                       </div>
                     </div>
                     {newClient.type !== 'BUSINESS' && (
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">이름</label>
-                        <input ref={nameInputRef} type="text" name="name" value={newClient.name} onChange={handleInputChange} className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" required={newClient.type === 'PERSON'} />
+                        <label htmlFor="client-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">이름</label>
+                        <input id="client-name" ref={nameInputRef} type="text" name="name" value={newClient.name} onChange={handleInputChange} autoComplete="name" className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" required={newClient.type === 'PERSON'} />
                       </div>
                     )}
                   </div>
@@ -985,32 +985,32 @@ const Clients: React.FC = () => {
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">상호</label>
-                        <input ref={bizNameInputRef} type="text" name="businessName" value={newClient.business.businessName} onChange={handleBusinessChange} className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" required={newClient.type === 'BUSINESS'} />
+                          <label htmlFor="client-business-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">상호</label>
+                        <input id="client-business-name" ref={bizNameInputRef} type="text" name="businessName" value={newClient.business.businessName} onChange={handleBusinessChange} autoComplete="organization" className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" required={newClient.type === 'BUSINESS'} />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">대표자</label>
-                          <input type="text" name="representative" value={newClient.business.representative} onChange={handleBusinessChange} className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" required={newClient.type === 'BUSINESS'} />
+                          <label htmlFor="client-representative" className="block text-sm font-medium text-gray-700 dark:text-gray-300">대표자</label>
+                          <input id="client-representative" type="text" name="representative" value={newClient.business.representative} onChange={handleBusinessChange} autoComplete="name" className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" required={newClient.type === 'BUSINESS'} />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">사업자등록번호</label>
-                          <input type="text" name="businessNumber" value={newClient.business.businessNumber} onChange={handleBusinessChange} placeholder="000-00-00000" className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" required={newClient.type === 'BUSINESS'} />
+                          <label htmlFor="client-business-number" className="block text-sm font-medium text-gray-700 dark:text-gray-300">사업자등록번호</label>
+                          <input id="client-business-number" type="text" name="businessNumber" value={newClient.business.businessNumber} onChange={handleBusinessChange} placeholder="000-00-00000" className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" required={newClient.type === 'BUSINESS'} />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">발행 이메일</label>
-                          <input type="email" name="taxEmail" value={newClient.business.taxEmail} onChange={handleBusinessChange} className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" required={newClient.type === 'BUSINESS'} />
+                          <label htmlFor="client-tax-email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">발행 이메일</label>
+                          <input id="client-tax-email" type="email" name="taxEmail" value={newClient.business.taxEmail} onChange={handleBusinessChange} autoComplete="email" className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" required={newClient.type === 'BUSINESS'} />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">업태</label>
-                          <input type="text" name="businessType" value={newClient.business.businessType} onChange={handleBusinessChange} className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" />
+                          <label htmlFor="client-business-type" className="block text-sm font-medium text-gray-700 dark:text-gray-300">업태</label>
+                          <input id="client-business-type" type="text" name="businessType" value={newClient.business.businessType} onChange={handleBusinessChange} className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">업종</label>
-                          <input type="text" name="businessItem" value={newClient.business.businessItem} onChange={handleBusinessChange} className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" />
+                          <label htmlFor="client-business-item" className="block text-sm font-medium text-gray-700 dark:text-gray-300">업종</label>
+                          <input id="client-business-item" type="text" name="businessItem" value={newClient.business.businessItem} onChange={handleBusinessChange} className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" />
                         </div>
                         <div className="md:col-span-2">
-                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">사업장 주소</label>
-                          <input type="text" name="businessAddress" value={newClient.business.businessAddress} onChange={handleBusinessChange} className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" />
+                          <label htmlFor="client-business-address" className="block text-sm font-medium text-gray-700 dark:text-gray-300">사업장 주소</label>
+                          <input id="client-business-address" type="text" name="businessAddress" value={newClient.business.businessAddress} onChange={handleBusinessChange} autoComplete="street-address" className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" />
                         </div>
                       </div>
                     </div>
@@ -1027,24 +1027,26 @@ const Clients: React.FC = () => {
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">전화번호</label>
-                      <input type="tel" name="phone" value={newClient.phone} onChange={handleInputChange} placeholder="02-1234-5678" className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" />
+                      <label htmlFor="client-phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300">전화번호</label>
+                      <input id="client-phone" type="tel" name="phone" value={newClient.phone} onChange={handleInputChange} placeholder="02-1234-5678" autoComplete="tel" className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">휴대전화</label>
-                      <input type="tel" name="mobile" value={newClient.mobile} onChange={handleInputChange} placeholder="010-1234-5678" className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" />
+                      <label htmlFor="client-mobile" className="block text-sm font-medium text-gray-700 dark:text-gray-300">휴대전화</label>
+                      <input id="client-mobile" type="tel" name="mobile" value={newClient.mobile} onChange={handleInputChange} placeholder="010-1234-5678" autoComplete="tel-national" className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">이메일</label>
-                      <input type="email" name="email" value={newClient.email} onChange={handleInputChange} placeholder="선택사항" className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" />
+                      <label htmlFor="client-email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">이메일</label>
+                      <input id="client-email" type="email" name="email" value={newClient.email} onChange={handleInputChange} placeholder="선택사항" autoComplete="email" className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" />
                     </div>
                     <div className="md:col-span-2">
                       <div className="flex items-center justify-between">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1"><MapPinIcon className="h-4 w-4 text-slate-600 dark:text-slate-300" />주소</label>
+                        <label htmlFor="client-address" className="block text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1"><MapPinIcon className="h-4 w-4 text-slate-600 dark:text-slate-300" />주소</label>
                         {newClient.type === 'BUSINESS' && (
-                          <label className="text-xs text-gray-600 dark:text-gray-300 inline-flex items-center gap-1">
+                          <label htmlFor="client-alt-address-checkbox" className="text-xs text-gray-600 dark:text-gray-300 inline-flex items-center gap-1">
                             <input
+                              id="client-alt-address-checkbox"
                               type="checkbox"
+                              name="altAddressCheckbox"
                               className="rounded border-gray-300"
                               checked={showAltAddress}
                               onChange={(e) => {
@@ -1070,12 +1072,12 @@ const Clients: React.FC = () => {
                         )}
                       </div>
                       {(newClient.type !== 'BUSINESS' || showAltAddress) && (
-                        <textarea name="address" value={newClient.address} onChange={handleInputChange} rows={1} placeholder="선택사항" className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" />
+                        <textarea id="client-address" name="address" value={newClient.address} onChange={handleInputChange} rows={1} placeholder="선택사항" autoComplete="street-address" className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" />
                       )}
                     </div>
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">메모</label>
-                      <textarea name="notes" value={newClient.notes} onChange={handleInputChange} rows={2} className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" />
+                      <label htmlFor="client-notes" className="block text-sm font-medium text-gray-700 dark:text-gray-300">메모</label>
+                      <textarea id="client-notes" name="notes" value={newClient.notes} onChange={handleInputChange} rows={2} className="mt-0.5 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-md px-3 py-2" />
                     </div>
                   </div>
                 </div>
@@ -1101,11 +1103,19 @@ const Clients: React.FC = () => {
                         )}
                       </div>
                       <div className="space-y-2">
-                        <input type="text" placeholder="작업장명 (예: 신축 주택, 카페 인테리어 등)" value={workplace.name} onChange={(e) => handleWorkplaceChange(index, 'name', e.target.value)} className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded px-2 py-1 text-sm" required />
-                        <input type="text" placeholder="작업장 주소" value={workplace.address} onChange={(e) => handleWorkplaceChange(index, 'address', e.target.value)} className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded px-2 py-1 text-sm" required />
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">프로젝트</label>
-                        <textarea placeholder="프로젝트 (필수사항)" value={workplace.description} onChange={(e) => handleWorkplaceChange(index, 'description', e.target.value)} className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded px-2 py-1 text-sm" rows={2} required />
-                        <p className="mt-1 text-xs text-red-600">필수사항: 프로젝트명을 입력해주세요.</p>
+                        <div>
+                          <label htmlFor={`workplace-name-${index}`} className="sr-only">작업장명</label>
+                          <input id={`workplace-name-${index}`} type="text" name={`workplace-name-${index}`} placeholder="작업장명 (예: 신축 주택, 카페 인테리어 등)" value={workplace.name} onChange={(e) => handleWorkplaceChange(index, 'name', e.target.value)} className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded px-2 py-1 text-sm" required />
+                        </div>
+                        <div>
+                          <label htmlFor={`workplace-address-${index}`} className="sr-only">작업장 주소</label>
+                          <input id={`workplace-address-${index}`} type="text" name={`workplace-address-${index}`} placeholder="작업장 주소" value={workplace.address} onChange={(e) => handleWorkplaceChange(index, 'address', e.target.value)} autoComplete="street-address" className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded px-2 py-1 text-sm" required />
+                        </div>
+                        <div>
+                          <label htmlFor={`workplace-project-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">프로젝트</label>
+                          <textarea id={`workplace-project-${index}`} name={`workplace-project-${index}`} placeholder="프로젝트 (필수사항)" value={workplace.description} onChange={(e) => handleWorkplaceChange(index, 'description', e.target.value)} className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded px-2 py-1 text-sm" rows={2} required />
+                          <p className="mt-1 text-xs text-red-600">필수사항: 프로젝트명을 입력해주세요.</p>
+                        </div>
                       </div>
                     </div>
                   ))}
