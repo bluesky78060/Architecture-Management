@@ -967,12 +967,40 @@
                     - 수동으로 청구서에 항목을 입력할 필요가 없어 편리합니다
                 </div>
 
-                <p><strong>예를 들어:</strong></p>
-                <ul>
-                    <li>좌식 도배공사 - 🔄 진행중</li>
-                    <li>바닥 타일공사 - 🟡 예정</li>
-                    <li>페인트 칠하기 - ✅ 완료</li>
-                </ul>
+                <h4>작업 상태 표시</h4>
+                <p>각 작업 항목은 색상 배지로 상태를 표시합니다:</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>상태</th>
+                            <th>색상</th>
+                            <th>의미</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span style="background-color: #fef3c7; color: #92400e; padding: 4px 8px; border-radius: 9999px; font-size: 12px; font-weight: 600;">예정</span></td>
+                            <td>노란색</td>
+                            <td>작업 시작 전 준비 단계</td>
+                        </tr>
+                        <tr>
+                            <td><span style="background-color: #dbeafe; color: #1e40af; padding: 4px 8px; border-radius: 9999px; font-size: 12px; font-weight: 600;">진행중</span></td>
+                            <td>파란색</td>
+                            <td>현재 작업 진행 중</td>
+                        </tr>
+                        <tr>
+                            <td><span style="background-color: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 9999px; font-size: 12px; font-weight: 600;">완료</span></td>
+                            <td>초록색</td>
+                            <td>작업이 완료됨 (청구서 생성 가능)</td>
+                        </tr>
+                        <tr>
+                            <td><span style="background-color: #fee2e2; color: #991b1b; padding: 4px 8px; border-radius: 9999px; font-size: 12px; font-weight: 600;">보류</span></td>
+                            <td>빨간색</td>
+                            <td>일시적으로 작업 중단</td>
+                        </tr>
+                    </tbody>
+                </table>
 
                 <h3>📝 작업 항목 추가하기</h3>
 
