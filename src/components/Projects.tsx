@@ -190,8 +190,9 @@ const Projects: React.FC = () => {
               <h3 className="text-lg font-medium text-gray-900 mb-4">새 프로젝트 추가</h3>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">프로젝트명</label>
+                  <label htmlFor="project-name" className="block text-sm font-medium text-gray-700">프로젝트명</label>
                   <input
+                    id="project-name"
                     type="text"
                     name="name"
                     value={newProject.name}
@@ -201,8 +202,9 @@ const Projects: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">위치</label>
+                  <label htmlFor="project-location" className="block text-sm font-medium text-gray-700">위치</label>
                   <input
+                    id="project-location"
                     type="text"
                     name="location"
                     value={newProject.location}
@@ -212,8 +214,9 @@ const Projects: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">시작일</label>
+                  <label htmlFor="project-start-date" className="block text-sm font-medium text-gray-700">시작일</label>
                   <input
+                    id="project-start-date"
                     type="date"
                     name="startDate"
                     value={newProject.startDate}
@@ -223,8 +226,9 @@ const Projects: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">종료일</label>
+                  <label htmlFor="project-end-date" className="block text-sm font-medium text-gray-700">종료일</label>
                   <input
+                    id="project-end-date"
                     type="date"
                     name="endDate"
                     value={newProject.endDate}
@@ -234,8 +238,9 @@ const Projects: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">예산</label>
+                  <label htmlFor="project-budget" className="block text-sm font-medium text-gray-700">예산</label>
                   <input
+                    id="project-budget"
                     type="text"
                     name="budget"
                     value={newProject.budget}
@@ -245,8 +250,9 @@ const Projects: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">담당자</label>
+                  <label htmlFor="project-manager" className="block text-sm font-medium text-gray-700">담당자</label>
                   <input
+                    id="project-manager"
                     type="text"
                     name="manager"
                     value={newProject.manager}

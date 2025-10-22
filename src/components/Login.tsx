@@ -446,7 +446,7 @@ const Login: React.FC = () => {
             {/* Remember Me와 비밀번호 찾기 (로그인 모드일 때만 표시) */}
             {mode === 'login' && (
               <div className="flex items-center justify-between">
-                <label className="flex items-center cursor-pointer">
+                <label htmlFor="remember" className="flex items-center cursor-pointer">
                   <input
                     id="remember"
                     name="remember"

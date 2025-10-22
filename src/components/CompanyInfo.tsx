@@ -160,17 +160,17 @@ export default function CompanyInfo(): JSX.Element {
             <div className="grid grid-cols-1 gap-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">업체명 *</label>
+                  <label htmlFor="company-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">업체명 *</label>
                   {isEditing ? (
-                    <input type="text" name="name" value={editForm.name} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required />
+                    <input id="company-name" type="text" name="name" value={editForm.name} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required />
                   ) : (
                     <p className="text-gray-900 dark:text-gray-100 py-2">{companyInfo.name}</p>
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">사업자등록번호 *</label>
+                  <label htmlFor="company-business-number" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">사업자등록번호 *</label>
                   {isEditing ? (
-                    <input type="text" name="businessNumber" value={editForm.businessNumber ?? ''} onChange={handleInputChange} placeholder="000-00-00000" className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required />
+                    <input id="company-business-number" type="text" name="businessNumber" value={editForm.businessNumber ?? ''} onChange={handleInputChange} placeholder="000-00-00000" className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required />
                   ) : (
                     <p className="text-gray-900 dark:text-gray-100 py-2">{companyInfo.businessNumber}</p>
                   )}
@@ -179,17 +179,17 @@ export default function CompanyInfo(): JSX.Element {
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">대표자명 *</label>
+                  <label htmlFor="company-representative" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">대표자명 *</label>
                   {isEditing ? (
-                    <input type="text" name="representative" value={editForm.representative ?? ''} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required />
+                    <input id="company-representative" type="text" name="representative" value={editForm.representative ?? ''} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required />
                   ) : (
                     <p className="text-gray-900 dark:text-gray-100 py-2">{companyInfo.representative}</p>
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">전화번호 *</label>
+                  <label htmlFor="company-phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">전화번호 *</label>
                   {isEditing ? (
-                    <input type="tel" name="phone" value={editForm.phone ?? ''} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required />
+                    <input id="company-phone" type="tel" name="phone" value={editForm.phone ?? ''} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required />
                   ) : (
                     <p className="text-gray-900 dark:text-gray-100 py-2">{companyInfo.phone}</p>
                   )}
@@ -197,18 +197,18 @@ export default function CompanyInfo(): JSX.Element {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">이메일</label>
+                <label htmlFor="company-email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">이메일</label>
                 {isEditing ? (
-                  <input type="email" name="email" value={editForm.email ?? ''} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
+                  <input id="company-email" type="email" name="email" value={editForm.email ?? ''} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
                 ) : (
                   <p className="text-gray-900 dark:text-gray-100 py-2">{companyInfo.email ?? '-'}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">주소 *</label>
+                <label htmlFor="company-address" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">주소 *</label>
                 {isEditing ? (
-                  <input type="text" name="address" value={editForm.address ?? ''} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required />
+                  <input id="company-address" type="text" name="address" value={editForm.address ?? ''} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required />
                 ) : (
                   <p className="text-gray-900 dark:text-gray-100 py-2">{companyInfo.address}</p>
                 )}
@@ -216,17 +216,17 @@ export default function CompanyInfo(): JSX.Element {
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">계좌번호</label>
+                  <label htmlFor="company-bank-account" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">계좌번호</label>
                   {isEditing ? (
-                    <input type="text" name="bankAccount" value={editForm.bankAccount ?? ''} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
+                    <input id="company-bank-account" type="text" name="bankAccount" value={editForm.bankAccount ?? ''} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
                   ) : (
                     <p className="text-gray-900 dark:text-gray-100 py-2">{companyInfo.bankAccount ?? '-'}</p>
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">예금주명</label>
+                  <label htmlFor="company-account-holder" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">예금주명</label>
                   {isEditing ? (
-                    <input type="text" name="accountHolder" value={editForm.accountHolder ?? ''} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
+                    <input id="company-account-holder" type="text" name="accountHolder" value={editForm.accountHolder ?? ''} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
                   ) : (
                     <p className="text-gray-900 dark:text-gray-100 py-2">{companyInfo.accountHolder ?? '-'}</p>
                   )}
