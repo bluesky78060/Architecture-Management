@@ -1221,8 +1221,10 @@ const Estimates: React.FC = () => {
                         </div>
 
                         <div>
-                          <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">비고</label>
+                          <label htmlFor={`estimate-item-notes-${index}`} className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">비고</label>
                           <textarea
+                            id={`estimate-item-notes-${index}`}
+                            name={`estimate-item-notes-${index}`}
                             value={item.notes}
                             onChange={(e) => handleItemChange(index, 'notes', e.target.value)}
                             rows={2}
