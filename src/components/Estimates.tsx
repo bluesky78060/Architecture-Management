@@ -925,8 +925,9 @@ const Estimates: React.FC = () => {
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">건축주</label>
+                      <label htmlFor="estimate-client" className="block text-sm font-medium text-gray-700 dark:text-gray-300">건축주</label>
                       <select
+                        id="estimate-client"
                         name="clientId"
                         value={newEstimate.clientId}
                         onChange={handleInputChange}
@@ -940,8 +941,9 @@ const Estimates: React.FC = () => {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">작업장</label>
+                      <label htmlFor="estimate-workplace" className="block text-sm font-medium text-gray-700 dark:text-gray-300">작업장</label>
                       <select
+                        id="estimate-workplace"
                         name="workplaceId"
                         value={newEstimate.workplaceId}
                         onChange={handleInputChange}
@@ -958,8 +960,9 @@ const Estimates: React.FC = () => {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">프로젝트명</label>
+                      <label htmlFor="estimate-project" className="block text-sm font-medium text-gray-700 dark:text-gray-300">프로젝트명</label>
                       <input
+                        id="estimate-project"
                         type="text"
                         name="projectName"
                         value={newEstimate.projectName}
@@ -969,8 +972,9 @@ const Estimates: React.FC = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">견적서 제목</label>
+                      <label htmlFor="estimate-title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">견적서 제목</label>
                       <input
+                        id="estimate-title"
                         type="text"
                         name="title"
                         value={newEstimate.title}
@@ -980,10 +984,11 @@ const Estimates: React.FC = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">유효기한</label>
+                      <label htmlFor="estimate-valid-until" className="block text-sm font-medium text-gray-700 dark:text-gray-300">유효기한</label>
                       <div className="mt-1 relative inline-block" ref={cal.containerRef}>
                         <div className="flex items-center gap-2">
                           <input
+                            id="estimate-valid-until"
                             type="text"
                             name="validUntil"
                             value={newEstimate.validUntil}
@@ -1004,8 +1009,10 @@ const Estimates: React.FC = () => {
                           >
                             📅
                           </button>
-              <label className="flex items-center gap-1 text-xs text-gray-600 select-none">
+              <label htmlFor="estimate-no-due-date" className="flex items-center gap-1 text-xs text-gray-600 select-none">
                 <input
+                  id="estimate-no-due-date"
+                  name="estimate-no-due-date"
                   type="checkbox"
                   checked={modalState.noDueDate}
                   onChange={(e) => {
@@ -1112,8 +1119,10 @@ const Estimates: React.FC = () => {
                         
                         <div className="grid grid-cols-3 gap-2 mb-2">
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">카테고리</label>
+                            <label htmlFor={`estimate-item-category-${index}`} className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">카테고리</label>
                             <select
+                              id={`estimate-item-category-${index}`}
+                              name={`estimate-item-category-${index}`}
                               value={item.category}
                               onChange={(e) => handleItemChange(index, 'category', e.target.value)}
                               className="w-full border border-gray-200 rounded px-2 py-1 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -1126,8 +1135,10 @@ const Estimates: React.FC = () => {
                             </select>
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">내용</label>
+                            <label htmlFor={`estimate-item-name-${index}`} className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">내용</label>
                             <input
+                              id={`estimate-item-name-${index}`}
+                              name={`estimate-item-name-${index}`}
                               type="text"
                               value={item.name}
                               onChange={(e) => handleItemChange(index, 'name', e.target.value)}
@@ -1136,8 +1147,10 @@ const Estimates: React.FC = () => {
                             />
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">설명</label>
+                            <label htmlFor={`estimate-item-description-${index}`} className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">설명</label>
                             <input
+                              id={`estimate-item-description-${index}`}
+                              name={`estimate-item-description-${index}`}
                               type="text"
                               value={item.description}
                               onChange={(e) => handleItemChange(index, 'description', e.target.value)}
@@ -1148,8 +1161,10 @@ const Estimates: React.FC = () => {
 
                         <div className="grid grid-cols-4 gap-2 mb-2">
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">수량</label>
+                            <label htmlFor={`estimate-item-quantity-${index}`} className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">수량</label>
                             <input
+                              id={`estimate-item-quantity-${index}`}
+                              name={`estimate-item-quantity-${index}`}
                               type="text"
                               value={item.quantity === '' ? '' : format(Number(item.quantity))}
                               onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
@@ -1160,8 +1175,10 @@ const Estimates: React.FC = () => {
                             />
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">단가</label>
+                            <label htmlFor={`estimate-item-unitprice-${index}`} className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">단가</label>
                             <input
+                              id={`estimate-item-unitprice-${index}`}
+                              name={`estimate-item-unitprice-${index}`}
                               type="text"
                               value={(typeof item.unitPrice === 'number' && item.unitPrice !== 0 && !isNaN(item.unitPrice)) ? format(Number(item.unitPrice)) : ''}
                               onChange={(e) => handleItemChange(index, 'unitPrice', e.target.value)}
@@ -1172,8 +1189,10 @@ const Estimates: React.FC = () => {
                             />
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">단위</label>
+                            <label htmlFor={`estimate-item-unit-${index}`} className="block text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">단위</label>
                             <select
+                              id={`estimate-item-unit-${index}`}
+                              name={`estimate-item-unit-${index}`}
                               value={item.unit}
                               onChange={(e) => handleItemChange(index, 'unit', e.target.value)}
                               className="w-full border border-gray-200 rounded px-2 py-1 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
