@@ -52,12 +52,17 @@ const Settings: React.FC = () => {
         try {
           const { data: { user } } = await supabase.auth.getUser();
           if (user !== null && user !== undefined) {
+            // 디버깅: 전체 user 객체 출력
+            console.log('🔍 DEBUG: user.identities:', user.identities);
+            console.log('🔍 DEBUG: user.app_metadata:', user.app_metadata);
+
             // identities 배열에서 provider 확인 (더 정확함)
             let detectedProvider: 'email' | 'google' | 'kakao' = 'email';
 
             if (user.identities && user.identities.length > 0) {
               const identity = user.identities[0];
               const identityProvider = identity.provider;
+              console.log('🔍 DEBUG: identity.provider from identities[0]:', identityProvider);
 
               // provider 매핑: google, kakao 등
               if (identityProvider === 'google') {
@@ -70,6 +75,8 @@ const Settings: React.FC = () => {
             } else {
               // identities가 없으면 app_metadata.provider 사용
               const providerValue = user.app_metadata?.provider;
+              console.log('🔍 DEBUG: provider from app_metadata:', providerValue);
+
               if (providerValue === 'google') {
                 detectedProvider = 'google';
               } else if (providerValue === 'kakao') {
@@ -79,6 +86,7 @@ const Settings: React.FC = () => {
               }
             }
 
+            console.log('✅ DEBUG: Final detectedProvider:', detectedProvider);
             setProvider(detectedProvider);
           }
         } catch (err) {
