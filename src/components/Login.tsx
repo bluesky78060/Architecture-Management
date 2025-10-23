@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LockClosedIcon, UserIcon, EnvelopeIcon } from '@heroicons/react/24/solid';
+import { LockClosedIcon, UserIcon, EnvelopeIcon, BookOpenIcon, ArrowDownTrayIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { supabase } from '../services/supabase';
 import { useUser } from '../contexts/UserContext';
 
@@ -25,6 +25,7 @@ const Login: React.FC = () => {
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [showGuideModal, setShowGuideModal] = useState<boolean>(false);
   const navigate = useNavigate();
   const { isLoggedIn } = useUser();
 
@@ -531,12 +532,143 @@ const Login: React.FC = () => {
             )}
           </div>
 
+          {/* 사용자 가이드 버튼 */}
+          <div className="mt-5">
+            <button
+              type="button"
+              onClick={() => setShowGuideModal(true)}
+              className="
+                w-full flex items-center justify-center px-4 py-2.5 border-2
+                bg-white dark:bg-white border-blue-500 dark:border-blue-500
+                text-blue-600 dark:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-50
+                rounded-lg font-medium text-sm
+                transition-all duration-300 ease-in-out
+                hover:-translate-y-0.5 hover:shadow-lg
+              "
+            >
+              <BookOpenIcon className="w-5 h-5 mr-2" />
+              사용자 가이드
+            </button>
+          </div>
+
           <div className="mt-4 text-xs text-gray-500 dark:text-gray-500 text-center">
             <p>건축 관리 시스템 v2.0</p>
             <p>© 2025 Architecture Management System</p>
           </div>
         </div>
       </div>
+
+      {/* 사용자 가이드 모달 */}
+      {showGuideModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-6 relative animate-fadeIn">
+            {/* 닫기 버튼 */}
+            <button
+              type="button"
+              onClick={() => setShowGuideModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
+            >
+              <XMarkIcon className="w-6 h-6" />
+            </button>
+
+            {/* 모달 헤더 */}
+            <div className="text-center mb-6">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 mb-3">
+                <BookOpenIcon className="w-8 h-8" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                사용자 가이드
+              </h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                시스템 사용 방법을 확인하세요
+              </p>
+            </div>
+
+            {/* 모달 콘텐츠 */}
+            <div className="space-y-3">
+              {/* 온라인 가이드 보기 */}
+              <a
+                href={`${process.env.PUBLIC_URL}/user-guide.html`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="
+                  flex items-center justify-between p-4 bg-blue-50 dark:bg-blue-900/30
+                  border-2 border-blue-200 dark:border-blue-800 rounded-xl
+                  hover:bg-blue-100 dark:hover:bg-blue-900/50 hover:border-blue-300 dark:hover:border-blue-700
+                  transition-all duration-300 group
+                "
+              >
+                <div className="flex items-center">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-blue-600 dark:bg-blue-500 flex items-center justify-center text-white mr-3">
+                    <BookOpenIcon className="w-5 h-5" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                      온라인으로 보기
+                    </h3>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">
+                      웹 브라우저에서 바로 확인
+                    </p>
+                  </div>
+                </div>
+                <svg
+                  className="w-5 h-5 text-blue-600 dark:text-blue-400 group-hover:translate-x-1 transition-transform"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
+
+              {/* PDF 다운로드 */}
+              <a
+                href={`${process.env.PUBLIC_URL}/user-guide.pdf`}
+                download="건축관리시스템_사용자가이드.pdf"
+                className="
+                  flex items-center justify-between p-4 bg-green-50 dark:bg-green-900/30
+                  border-2 border-green-200 dark:border-green-800 rounded-xl
+                  hover:bg-green-100 dark:hover:bg-green-900/50 hover:border-green-300 dark:hover:border-green-700
+                  transition-all duration-300 group
+                "
+              >
+                <div className="flex items-center">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-green-600 dark:bg-green-500 flex items-center justify-center text-white mr-3">
+                    <ArrowDownTrayIcon className="w-5 h-5" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                      PDF 다운로드
+                    </h3>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">
+                      파일로 저장하여 오프라인 열람
+                    </p>
+                  </div>
+                </div>
+                <svg
+                  className="w-5 h-5 text-green-600 dark:text-green-400 group-hover:translate-y-1 transition-transform"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              </a>
+            </div>
+
+            {/* 모달 푸터 */}
+            <div className="mt-6 text-center">
+              <button
+                type="button"
+                onClick={() => setShowGuideModal(false)}
+                className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+              >
+                닫기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
