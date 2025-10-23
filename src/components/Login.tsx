@@ -454,14 +454,14 @@ const Login: React.FC = () => {
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="w-4 h-4 text-blue-600 border-gray-300 dark:border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                    className="w-4 h-4 text-blue-600 bg-white border-2 border-gray-400 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer hover:border-blue-500 transition-colors"
                   />
-                  <span className="ml-2 text-sm text-gray-600 dark:text-gray-600">로그인 상태 유지</span>
+                  <span className="ml-2 text-sm text-gray-700 font-medium">로그인 상태 유지</span>
                 </label>
                 <button
                   type="button"
                   onClick={() => navigate('/forgot-password')}
-                  className="text-sm text-blue-600 dark:text-blue-600 hover:text-blue-800 dark:hover:text-blue-800 font-medium transition-colors"
+                  className="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors underline-offset-2 hover:underline"
                 >
                   비밀번호 찾기
                 </button>
