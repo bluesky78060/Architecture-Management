@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "https://bluesky78060.github.io/Architecture-Management/static/css/main.ead55b06.css",
-    "main.js": "https://bluesky78060.github.io/Architecture-Management/static/js/main.f8824126.js",
+    "main.css": "https://bluesky78060.github.io/Architecture-Management/static/css/main.70b16630.css",
+    "main.js": "https://bluesky78060.github.io/Architecture-Management/static/js/main.139e817f.js",
     "static/js/940.64d615e5.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/940.64d615e5.chunk.js",
     "static/js/347.ea9ccc5a.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/347.ea9ccc5a.chunk.js",
     "static/js/399.f5623933.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/399.f5623933.chunk.js",
     "static/js/28.7b535cc1.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/28.7b535cc1.chunk.js",
     "static/js/355.9779bf72.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/355.9779bf72.chunk.js",
-    "static/js/703.1f3032b8.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/703.1f3032b8.chunk.js",
+    "static/js/703.c6f15f9e.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/703.c6f15f9e.chunk.js",
     "static/js/217.88f5c99a.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/217.88f5c99a.chunk.js",
     "static/js/93.db38fc78.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/93.db38fc78.chunk.js",
     "static/js/776.43b535c8.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/776.43b535c8.chunk.js",
@@ -27,14 +27,14 @@
     "static/media/SCDream5.otf": "https://bluesky78060.github.io/Architecture-Management/static/media/SCDream5.ae5ee4933db75a3ccb04.otf",
     "static/media/SCDream4.otf": "https://bluesky78060.github.io/Architecture-Management/static/media/SCDream4.64c9dc7c860af7a004ad.otf",
     "index.html": "https://bluesky78060.github.io/Architecture-Management/index.html",
-    "main.ead55b06.css.map": "https://bluesky78060.github.io/Architecture-Management/static/css/main.ead55b06.css.map",
-    "main.f8824126.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/main.f8824126.js.map",
+    "main.70b16630.css.map": "https://bluesky78060.github.io/Architecture-Management/static/css/main.70b16630.css.map",
+    "main.139e817f.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/main.139e817f.js.map",
     "940.64d615e5.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/940.64d615e5.chunk.js.map",
     "347.ea9ccc5a.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/347.ea9ccc5a.chunk.js.map",
     "399.f5623933.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/399.f5623933.chunk.js.map",
     "28.7b535cc1.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/28.7b535cc1.chunk.js.map",
     "355.9779bf72.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/355.9779bf72.chunk.js.map",
-    "703.1f3032b8.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/703.1f3032b8.chunk.js.map",
+    "703.c6f15f9e.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/703.c6f15f9e.chunk.js.map",
     "217.88f5c99a.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/217.88f5c99a.chunk.js.map",
     "93.db38fc78.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/93.db38fc78.chunk.js.map",
     "776.43b535c8.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/776.43b535c8.chunk.js.map",
@@ -47,7 +47,7 @@
   },
   "entrypoints": [
     "static/js/vendors.e5f1a85e.js",
-    "static/css/main.ead55b06.css",
-    "static/js/main.f8824126.js"
+    "static/css/main.70b16630.css",
+    "static/js/main.139e817f.js"
   ]
 }
