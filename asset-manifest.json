@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "https://bluesky78060.github.io/Architecture-Management/static/css/main.0390a4d4.css",
-    "main.js": "https://bluesky78060.github.io/Architecture-Management/static/js/main.ea47b174.js",
+    "main.css": "https://bluesky78060.github.io/Architecture-Management/static/css/main.ead55b06.css",
+    "main.js": "https://bluesky78060.github.io/Architecture-Management/static/js/main.f8824126.js",
     "static/js/940.64d615e5.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/940.64d615e5.chunk.js",
     "static/js/347.ea9ccc5a.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/347.ea9ccc5a.chunk.js",
     "static/js/399.f5623933.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/399.f5623933.chunk.js",
     "static/js/28.7b535cc1.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/28.7b535cc1.chunk.js",
     "static/js/355.9779bf72.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/355.9779bf72.chunk.js",
-    "static/js/703.e956a888.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/703.e956a888.chunk.js",
+    "static/js/703.1f3032b8.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/703.1f3032b8.chunk.js",
     "static/js/217.88f5c99a.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/217.88f5c99a.chunk.js",
     "static/js/93.db38fc78.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/93.db38fc78.chunk.js",
     "static/js/776.43b535c8.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/776.43b535c8.chunk.js",
@@ -15,7 +15,7 @@
     "static/js/329.b728b02b.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/329.b728b02b.chunk.js",
     "static/js/686.1d698c08.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/686.1d698c08.chunk.js",
     "static/js/288.62c9b4b6.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/288.62c9b4b6.chunk.js",
-    "vendors.js": "https://bluesky78060.github.io/Architecture-Management/static/js/vendors.65ebf488.js",
+    "vendors.js": "https://bluesky78060.github.io/Architecture-Management/static/js/vendors.e5f1a85e.js",
     "static/js/648.83727047.chunk.js": "https://bluesky78060.github.io/Architecture-Management/static/js/648.83727047.chunk.js",
     "static/media/SCDream8.otf": "https://bluesky78060.github.io/Architecture-Management/static/media/SCDream8.64217e4da7638066e57a.otf",
     "static/media/SCDream7.otf": "https://bluesky78060.github.io/Architecture-Management/static/media/SCDream7.a8d826f4cafb0e728051.otf",
@@ -27,14 +27,14 @@
     "static/media/SCDream5.otf": "https://bluesky78060.github.io/Architecture-Management/static/media/SCDream5.ae5ee4933db75a3ccb04.otf",
     "static/media/SCDream4.otf": "https://bluesky78060.github.io/Architecture-Management/static/media/SCDream4.64c9dc7c860af7a004ad.otf",
     "index.html": "https://bluesky78060.github.io/Architecture-Management/index.html",
-    "main.0390a4d4.css.map": "https://bluesky78060.github.io/Architecture-Management/static/css/main.0390a4d4.css.map",
-    "main.ea47b174.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/main.ea47b174.js.map",
+    "main.ead55b06.css.map": "https://bluesky78060.github.io/Architecture-Management/static/css/main.ead55b06.css.map",
+    "main.f8824126.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/main.f8824126.js.map",
     "940.64d615e5.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/940.64d615e5.chunk.js.map",
     "347.ea9ccc5a.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/347.ea9ccc5a.chunk.js.map",
     "399.f5623933.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/399.f5623933.chunk.js.map",
     "28.7b535cc1.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/28.7b535cc1.chunk.js.map",
     "355.9779bf72.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/355.9779bf72.chunk.js.map",
-    "703.e956a888.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/703.e956a888.chunk.js.map",
+    "703.1f3032b8.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/703.1f3032b8.chunk.js.map",
     "217.88f5c99a.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/217.88f5c99a.chunk.js.map",
     "93.db38fc78.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/93.db38fc78.chunk.js.map",
     "776.43b535c8.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/776.43b535c8.chunk.js.map",
@@ -42,12 +42,12 @@
     "329.b728b02b.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/329.b728b02b.chunk.js.map",
     "686.1d698c08.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/686.1d698c08.chunk.js.map",
     "288.62c9b4b6.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/288.62c9b4b6.chunk.js.map",
-    "vendors.65ebf488.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/vendors.65ebf488.js.map",
+    "vendors.e5f1a85e.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/vendors.e5f1a85e.js.map",
     "648.83727047.chunk.js.map": "https://bluesky78060.github.io/Architecture-Management/static/js/648.83727047.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/vendors.65ebf488.js",
-    "static/css/main.0390a4d4.css",
-    "static/js/main.ea47b174.js"
+    "static/js/vendors.e5f1a85e.js",
+    "static/css/main.ead55b06.css",
+    "static/js/main.f8824126.js"
   ]
 }
