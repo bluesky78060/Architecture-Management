@@ -18,9 +18,9 @@ import {
 
 const navigation = [
   { name: '대시보드', href: '/', icon: HomeIcon, adminOnly: false },
+  { name: '건축주 관리', href: '/clients', icon: UsersIcon, adminOnly: false },
   { name: '견적서 관리', href: '/estimates', icon: CalculatorIcon, adminOnly: false },
   { name: '청구서 관리', href: '/invoices', icon: DocumentTextIcon, adminOnly: false },
-  { name: '건축주 관리', href: '/clients', icon: UsersIcon, adminOnly: false },
   { name: '작업 항목 관리', href: '/work-items', icon: WrenchScrewdriverIcon, adminOnly: false },
   { name: '일정 관리', href: '/schedules', icon: CalendarIcon, adminOnly: false },
   { name: '환경설정', href: '/company-info', icon: CogIcon, adminOnly: false },
